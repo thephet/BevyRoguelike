@@ -3,6 +3,13 @@
 version = 3
 
 [[package]]
+name = "BevyRoguelike"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+]
+
+[[package]]
 name = "Inflector"
 version = "0.11.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2133,13 +2140,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b9f1c5b025cda876f66ef43a113f91ebc9f4ccef34843000e0adf6ebbab84e21"
 dependencies = [
  "winapi 0.3.9",
-]
-
-[[package]]
-name = "my_bevy_game"
-version = "0.1.0"
-dependencies = [
- "bevy",
 ]
 
 [[package]]

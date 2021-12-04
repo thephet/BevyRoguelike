@@ -1,12 +1,16 @@
 #![warn(clippy::pedantic)]
 
 mod map;
+mod components;
+mod renderutils;
 
 mod prelude {
     pub use bevy::prelude::*;
     pub const SCREEN_WIDTH: i32 = 80;
     pub const SCREEN_HEIGHT: i32 = 50;
     pub use crate::map::*;
+    pub use crate::components::*;
+    pub use crate::renderutils::*;
     // resource type
     pub struct CharsetAsset {
         pub atlas: Handle<TextureAtlas>,
@@ -14,6 +18,7 @@ mod prelude {
 }
 
 use prelude::*;
+use bevy::render::pass::ClearColor;
 
 
 fn setup(
@@ -32,14 +37,6 @@ fn setup(
     // Add a 2D Camera
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
 
-    // Spawn the player
-    commands.spawn().insert_bundle(SpriteSheetBundle {
-        texture_atlas: texture_atlas_handle.clone(),
-        transform: Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
-        sprite: TextureAtlasSprite::new(1),
-        ..Default::default()
-    });
-
     // insert map as resource
     commands.insert_resource(Map::new());
 }
@@ -50,13 +47,20 @@ fn main() {
     App::build()
         .insert_resource(WindowDescriptor {
             title: "Roguelike Game".to_string(),
-            width: 80.0,
-            height: 50.0,
+            width: 80.0 * 10.0,
+            height: 50.0 * 10.0,
             vsync: true,
             ..Default::default()
         })
+        .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup.system())
-        .add_system(render_map.system())
+        .add_startup_stage("map_spawn", SystemStage::single(spawn_map_tiles.system()))
+        .add_system_set_to_stage(
+            CoreStage::PostUpdate,
+            SystemSet::new()
+                .with_system(position_translation.system())
+                .with_system(size_scaling.system()),
+        )
         .run();
 }
