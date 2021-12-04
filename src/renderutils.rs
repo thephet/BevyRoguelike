@@ -1,12 +1,14 @@
 use crate::prelude::*;
 
-pub fn size_scaling(windows: Res<Windows>, mut q: Query<(&TileSize, &mut Sprite)>) {
+pub fn size_scaling(windows: Res<Windows>, mut q: Query<(&TileSize, &mut Transform)>) {
     let window = windows.get_primary().unwrap();
-    for (sprite_size, mut sprite) in q.iter_mut() {
-        sprite.size = Vec2::new(
+    for (sprite_size, mut transform) in q.iter_mut() {
+        let scale = Vec3::new(
             sprite_size.width / SCREEN_WIDTH as f32 * window.width() as f32,
             sprite_size.height / SCREEN_HEIGHT as f32 * window.height() as f32,
+            0.0,
         );
+        transform.scale =  scale;
     }
 }
 

@@ -6,8 +6,8 @@ mod renderutils;
 
 mod prelude {
     pub use bevy::prelude::*;
-    pub const SCREEN_WIDTH: i32 = 80;
-    pub const SCREEN_HEIGHT: i32 = 50;
+    pub const SCREEN_WIDTH: i32 = 8;
+    pub const SCREEN_HEIGHT: i32 = 5;
     pub use crate::map::*;
     pub use crate::components::*;
     pub use crate::renderutils::*;
@@ -28,7 +28,7 @@ fn setup(
 ) {
     // Setup the sprite sheet
     let texture_handle = asset_server.load("terminal8x8.png");
-    let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(8.0, 8.0), 16, 16);
+    let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(1.0, 1.0), 16, 16);
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
 
     // add sprite atlas as resource
