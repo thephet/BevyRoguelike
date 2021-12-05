@@ -6,7 +6,7 @@ pub fn size_scaling(windows: Res<Windows>, mut q: Query<(&TileSize, &mut Transfo
         let scale = Vec3::new(
             sprite_size.width / SCREEN_WIDTH as f32 * window.width() as f32,
             sprite_size.height / SCREEN_HEIGHT as f32 * window.height() as f32,
-            0.0,
+            1.0,
         );
         transform.scale =  scale;
     }
@@ -22,7 +22,7 @@ pub fn position_translation(windows: Res<Windows>, mut q: Query<(&Position, &mut
         transform.translation = Vec3::new(
             convert(pos.x as f32, window.width() as f32, SCREEN_WIDTH as f32),
             convert(pos.y as f32, window.height() as f32, SCREEN_HEIGHT as f32),
-            0.0,
+            pos.z as f32,
         );
     }
 }

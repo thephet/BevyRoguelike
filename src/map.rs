@@ -18,6 +18,24 @@ impl Map {
             tiles: vec![TileType::Floor; NUM_TILES],
         }
     }
+
+    pub fn in_bounds(&self, point: Position) -> bool {
+        point.x >= 0 && point.x < SCREEN_WIDTH
+            && point.y >= 0 && point.y < SCREEN_HEIGHT
+    }
+
+    pub fn can_enter_tile(&self, point: Position) -> bool {
+        self.in_bounds(point)
+            && self.tiles[map_idx(point.x, point.y)] == TileType::Floor
+    }
+
+    pub fn try_idx(&self, point: Position) -> Option<usize> {
+        if !self.in_bounds(point) {
+            None
+        } else {
+            Some(map_idx(point.x, point.y))
+        }
+    }
 }
 
 pub fn map_idx(x: i32, y: i32) -> usize {
@@ -41,7 +59,7 @@ pub fn spawn_map_tiles(
                         sprite: TextureAtlasSprite::new(46),
                         ..Default::default()
                     })
-                    .insert(Position { x: x, y: y })
+                    .insert(Position { x: x, y: y, z: 0 })
                     .insert(TileSize::square(1.0));
                 }
                 TileType::Wall => ()

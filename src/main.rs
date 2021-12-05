@@ -3,12 +3,14 @@
 mod map;
 mod components;
 mod renderutils;
+mod player;
 
 mod prelude {
     pub use bevy::prelude::*;
-    pub const SCREEN_WIDTH: i32 = 8;
-    pub const SCREEN_HEIGHT: i32 = 5;
+    pub const SCREEN_WIDTH: i32 = 80;
+    pub const SCREEN_HEIGHT: i32 = 50;
     pub use crate::map::*;
+    pub use crate::player::*;
     pub use crate::components::*;
     pub use crate::renderutils::*;
     // resource type
@@ -56,6 +58,7 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup.system())
         .add_startup_stage("map_spawn", SystemStage::single(spawn_map_tiles.system()))
+        .add_startup_stage_after("map_spawn", "player_spawn", SystemStage::single(spawn_player.system()))
         .add_system_set_to_stage(
             CoreStage::PostUpdate,
             SystemSet::new()
