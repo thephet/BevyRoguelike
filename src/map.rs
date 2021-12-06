@@ -14,8 +14,10 @@ pub struct Map {
 
 impl Map {
     pub fn new() -> Self {
+        let mut tiles = vec![TileType::Floor; NUM_TILES];
+        tiles[2030] = TileType::Wall;
         Self {
-            tiles: vec![TileType::Floor; NUM_TILES],
+            tiles: tiles,
         }
     }
 
@@ -61,8 +63,18 @@ pub fn spawn_map_tiles(
                     })
                     .insert(Position { x: x, y: y, z: 0 })
                     .insert(TileSize::square(1.0));
+                    
                 }
-                TileType::Wall => ()
+                TileType::Wall => {
+                    commands
+                    .spawn_bundle(SpriteSheetBundle {
+                        texture_atlas: atlas.atlas.clone(),
+                        sprite: TextureAtlasSprite::new(35),
+                        ..Default::default()
+                    })
+                    .insert(Position { x: x, y: y, z: 0 })
+                    .insert(TileSize::square(1.0));
+                }
             }
         }
     }

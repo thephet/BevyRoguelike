@@ -22,7 +22,6 @@ mod prelude {
 use prelude::*;
 use bevy::render::pass::ClearColor;
 
-
 fn setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
@@ -49,8 +48,8 @@ fn main() {
     App::build()
         .insert_resource(WindowDescriptor {
             title: "Roguelike Game".to_string(),
-            width: 80.0 * 10.0,
-            height: 50.0 * 10.0,
+            width: 80.0 * 15.0,
+            height: 50.0 * 15.0,
             vsync: true,
             ..Default::default()
         })
@@ -59,6 +58,7 @@ fn main() {
         .add_startup_system(setup.system())
         .add_startup_stage("map_spawn", SystemStage::single(spawn_map_tiles.system()))
         .add_startup_stage_after("map_spawn", "player_spawn", SystemStage::single(spawn_player.system()))
+        .add_system(player_movement.system())
         .add_system_set_to_stage(
             CoreStage::PostUpdate,
             SystemSet::new()

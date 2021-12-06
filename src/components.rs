@@ -1,6 +1,8 @@
 //use crate::prelude::*;
 
-#[derive(Default, Copy, Clone, Eq, PartialEq, Hash)]
+pub struct Player;
+
+#[derive(Default, Copy, Clone, Eq, PartialEq, Hash, Debug)]
 pub struct Position {
     pub x: i32,
     pub y: i32,
