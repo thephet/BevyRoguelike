@@ -1,6 +1,7 @@
 #![warn(clippy::pedantic)]
 
 mod map;
+mod map_builder;
 mod components;
 mod renderutils;
 mod player;
@@ -9,7 +10,9 @@ mod prelude {
     pub use bevy::prelude::*;
     pub const SCREEN_WIDTH: i32 = 80;
     pub const SCREEN_HEIGHT: i32 = 50;
+    pub use rand::Rng;
     pub use crate::map::*;
+    pub use crate::map_builder::*;
     pub use crate::player::*;
     pub use crate::components::*;
     pub use crate::renderutils::*;
@@ -35,11 +38,15 @@ fn setup(
     // add sprite atlas as resource
     commands.insert_resource(CharsetAsset { atlas: texture_atlas_handle.clone() });
 
+    // insert map builder as resource
+    let mb = MapBuilder::new();
+    commands.insert_resource(mb);
+    
     // Add a 2D Camera
-    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
-
-    // insert map as resource
-    commands.insert_resource(Map::new());
+    let mut cam = OrthographicCameraBundle::new_2d();
+    cam.orthographic_projection.scale = 0.5;
+    commands.spawn_bundle(cam)
+        .insert(MainCamera);
 }
 
 
@@ -48,8 +55,8 @@ fn main() {
     App::build()
         .insert_resource(WindowDescriptor {
             title: "Roguelike Game".to_string(),
-            width: 80.0 * 15.0,
-            height: 50.0 * 15.0,
+            width: 80.0 * 10.0,
+            height: 50.0 * 10.0,
             vsync: true,
             ..Default::default()
         })

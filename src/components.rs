@@ -2,7 +2,9 @@
 
 pub struct Player;
 
-#[derive(Default, Copy, Clone, Eq, PartialEq, Hash, Debug)]
+pub struct MainCamera;
+
+#[derive(Default, Copy, Clone, Eq, PartialEq, Hash)]
 pub struct Position {
     pub x: i32,
     pub y: i32,

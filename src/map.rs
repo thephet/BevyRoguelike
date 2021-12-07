@@ -6,6 +6,7 @@ const NUM_TILES: usize = (SCREEN_WIDTH * SCREEN_HEIGHT) as usize;
 pub enum TileType {
     Wall,
     Floor,
+    Void,
 }
 
 pub struct Map {
@@ -45,7 +46,7 @@ pub fn map_idx(x: i32, y: i32) -> usize {
 }
 
 pub fn spawn_map_tiles(
-    map: Res<Map>,
+    mb: Res<MapBuilder>,
     mut commands: Commands,
     atlas: Res<CharsetAsset>,
 ) {
@@ -53,7 +54,7 @@ pub fn spawn_map_tiles(
         for x in 0..SCREEN_WIDTH {
             let idx = map_idx(x, y);
 
-            match map.tiles[idx] {
+            match mb.map.tiles[idx] {
                 TileType::Floor => {
                     commands
                     .spawn_bundle(SpriteSheetBundle {
@@ -75,6 +76,7 @@ pub fn spawn_map_tiles(
                     .insert(Position { x: x, y: y, z: 0 })
                     .insert(TileSize::square(1.0));
                 }
+                TileType::Void => ()
             }
         }
     }
