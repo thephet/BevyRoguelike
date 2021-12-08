@@ -3,8 +3,10 @@
 mod map;
 mod map_builder;
 mod components;
+mod resources;
 mod renderutils;
 mod player;
+mod camera;
 
 mod prelude {
     pub use bevy::prelude::*;
@@ -14,12 +16,10 @@ mod prelude {
     pub use crate::map::*;
     pub use crate::map_builder::*;
     pub use crate::player::*;
+    pub use crate::camera::*;
     pub use crate::components::*;
+    pub use crate::resources::*;
     pub use crate::renderutils::*;
-    // resource type
-    pub struct CharsetAsset {
-        pub atlas: Handle<TextureAtlas>,
-    }
 }
 
 use prelude::*;
@@ -65,7 +65,12 @@ fn main() {
         .add_startup_system(setup.system())
         .add_startup_stage("map_spawn", SystemStage::single(spawn_map_tiles.system()))
         .add_startup_stage_after("map_spawn", "player_spawn", SystemStage::single(spawn_player.system()))
-        .add_system(player_movement.system())
+        .add_system_set(
+            SystemSet::new()
+            .label("movement")
+            .with_system(player_movement.system())
+            .with_system(camera_move.system())
+        )
         .add_system_set_to_stage(
             CoreStage::PostUpdate,
             SystemSet::new()

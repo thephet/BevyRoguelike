@@ -18,10 +18,8 @@ pub fn spawn_player(
 }
 
 pub fn player_movement(
-    windows: Res<Windows>,
     keyboard_input: Res<Input<KeyCode>>,
     mut player_positions: Query<&mut Position, With<Player>>,
-    mut camera_query: Query<&mut Transform, With<MainCamera>>,
     mb: Res<MapBuilder>,
 ) {
 
@@ -44,13 +42,6 @@ pub fn player_movement(
         if mb.map.can_enter_tile(new_position) {
             pos.x = new_position.x;
             pos.y = new_position.y;
-
-            let mut camera_transform = camera_query.single_mut().unwrap();
-            let window = windows.get_primary().unwrap();
-            let cam_x = convert_pos(pos.x as f32, window.width() as f32, SCREEN_WIDTH as f32);
-            let cam_y = convert_pos(pos.y as f32, window.height() as f32, SCREEN_HEIGHT as f32);
-            camera_transform.translation = Vec3::new(cam_x, cam_y, 999.0);
-
         }
     }
 }
