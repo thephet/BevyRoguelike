@@ -5,8 +5,8 @@ mod map_builder;
 mod components;
 mod resources;
 mod renderutils;
-mod player;
-mod camera;
+mod spawner;
+mod systems;
 
 mod prelude {
     pub use bevy::prelude::*;
@@ -15,11 +15,11 @@ mod prelude {
     pub use rand::Rng;
     pub use crate::map::*;
     pub use crate::map_builder::*;
-    pub use crate::player::*;
-    pub use crate::camera::*;
     pub use crate::components::*;
     pub use crate::resources::*;
     pub use crate::renderutils::*;
+    pub use crate::spawner::*;
+    pub use crate::systems::*;
 }
 
 use prelude::*;
@@ -34,7 +34,6 @@ fn setup(
     let texture_handle = asset_server.load("terminal8x8.png");
     let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(1.0, 1.0), 16, 16);
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
-
     // add sprite atlas as resource
     commands.insert_resource(CharsetAsset { atlas: texture_atlas_handle.clone() });
 
@@ -65,12 +64,7 @@ fn main() {
         .add_startup_system(setup.system())
         .add_startup_stage("map_spawn", SystemStage::single(spawn_map_tiles.system()))
         .add_startup_stage_after("map_spawn", "player_spawn", SystemStage::single(spawn_player.system()))
-        .add_system_set(
-            SystemSet::new()
-            .label("movement")
-            .with_system(player_movement.system())
-            .with_system(camera_move.system())
-        )
+        .add_plugin(SystemsPlugin)
         .add_system_set_to_stage(
             CoreStage::PostUpdate,
             SystemSet::new()

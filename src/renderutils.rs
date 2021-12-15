@@ -18,7 +18,6 @@ pub fn convert_pos(pos: f32, bound_window: f32, bound_game: f32) -> f32 {
 }
 
 pub fn position_translation(windows: Res<Windows>, mut q: Query<(&Position, &mut Transform)>) {
-
     let window = windows.get_primary().unwrap();
     for (pos, mut transform) in q.iter_mut() {
         transform.translation = Vec3::new(
