@@ -9,6 +9,13 @@ pub fn player_input(
 
     for mut pos in player_positions.iter_mut() {
 
+        if let Some(key) = keyboard_input.get_pressed().next() {
+            match key {
+                KeyCode::Left => println!("left"),
+                _ => (),
+            }
+        }
+
         let mut new_position = pos.clone();
         if keyboard_input.pressed(KeyCode::Left) {
             new_position.x -= 1;
