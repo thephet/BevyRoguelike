@@ -1,4 +1,4 @@
-use crate::prelude::*;
+use std::ops;
 
 // from bracket-lib
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
@@ -56,5 +56,23 @@ impl Room {
                 f(Position{x, y, z:0});
             }
         }
+    }
+}
+
+
+#[derive(Copy, Clone, PartialEq)]
+pub struct Position {
+    pub x: i32,
+    pub y: i32,
+    pub z: i32,
+}
+/// Support adding a point to a point
+impl ops::Add<Position> for Position {
+    type Output = Position;
+    fn add(mut self, rhs: Position) -> Position {
+        self.x += rhs.x;
+        self.y += rhs.y;
+        self.z += rhs.z;
+        self
     }
 }

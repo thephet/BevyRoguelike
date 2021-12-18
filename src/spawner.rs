@@ -53,5 +53,6 @@ fn spawn_enemy(
         })
         .insert(Position { x: position.x, y: position.y, z: 1 })
         .insert(TileSize::square(1.0))
+        .insert(MovingRandomly)
         .insert(Enemy);
 }
