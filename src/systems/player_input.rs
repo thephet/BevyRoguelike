@@ -9,29 +9,19 @@ pub fn player_input(
 
     for mut pos in player_positions.iter_mut() {
 
-        if let Some(key) = keyboard_input.get_pressed().next() {
+        let mut new_position = pos.clone();
+
+        let key = keyboard_input.get_pressed().next().cloned();
+        if let Some(key) = key {
+
             match key {
-                KeyCode::Left => println!("left"),
+                KeyCode::Left => new_position.x -= 1,
+                KeyCode::Right => new_position.x += 1,
+                KeyCode::Down => new_position.y -= 1,
+                KeyCode::Up => new_position.y += 1,
                 _ => (),
             }
-        }
-
-        let mut new_position = pos.clone();
-        if keyboard_input.pressed(KeyCode::Left) {
-            new_position.x -= 1;
-            keyboard_input.reset(KeyCode::Left);
-        }
-        if keyboard_input.pressed(KeyCode::Right) {
-            new_position.x += 1;
-            keyboard_input.reset(KeyCode::Right);
-        }
-        if keyboard_input.pressed(KeyCode::Down) {
-            new_position.y -= 1;
-            keyboard_input.reset(KeyCode::Down);
-        }
-        if keyboard_input.pressed(KeyCode::Up) {
-            new_position.y += 1;
-            keyboard_input.reset(KeyCode::Up);
+            keyboard_input.reset(key);
         }
 
         if new_position != *pos {
