@@ -1,4 +1,4 @@
-//use crate::prelude::*;
+use crate::prelude::*;
 
 pub struct Player;
 
@@ -20,3 +20,9 @@ impl TileSize {
 }
 
 pub struct MovingRandomly;
+
+#[derive(Clone, Copy)]
+pub struct WantsToMove {
+    pub entity: Entity,
+    pub destination: Position
+}

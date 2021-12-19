@@ -1,13 +1,13 @@
 use crate::prelude::*;
 
 pub fn player_input(
+    mut commands: Commands,
     mut keyboard_input: ResMut<Input<KeyCode>>,
-    mut player_positions: Query<&mut Position, With<Player>>,
-    mb: Res<MapBuilder>,
+    player_positions: Query<(Entity, &Position), With<Player>>,
     mut turn_state: ResMut<State<TurnState>>
 ) {
 
-    for mut pos in player_positions.iter_mut() {
+    for (ent, pos) in player_positions.iter() {
 
         let mut new_position = pos.clone();
 
@@ -21,18 +21,17 @@ pub fn player_input(
                 KeyCode::Up => new_position.y += 1,
                 _ => (),
             }
-            keyboard_input.reset(key);
-        }
 
-        if new_position != *pos {
-            if mb.map.can_enter_tile(new_position) {
-                // move to new position
-                pos.x = new_position.x;
-                pos.y = new_position.y;
-                // update state
-                turn_state.set(TurnState::PlayerTurn).unwrap();
-    
+            // move to new position   
+            if new_position != *pos {      
+                commands.spawn()
+                    .insert( WantsToMove{entity: ent, destination: new_position});
             }
+
+            // reset keyboard, bevys bug when changing states
+            keyboard_input.reset(key);
+            // update state
+            turn_state.set(TurnState::PlayerTurn).unwrap();
         }
     }
 }

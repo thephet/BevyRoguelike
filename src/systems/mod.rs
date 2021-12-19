@@ -5,6 +5,7 @@ mod camera;
 mod collisions;
 mod random_move;
 mod end_turn;
+mod movement;
 
 pub struct SystemsPlugin;
 impl Plugin for SystemsPlugin {
@@ -38,6 +39,7 @@ impl Plugin for PlayerPlugin {
             .add_system_set(
                 SystemSet::on_enter(TurnState::PlayerTurn)
                 .label("player")
+                .with_system(movement::movement.system())
                 .with_system(collisions::collisions.system())
                 .with_system(end_turn::end_turn.system())
             );
@@ -52,6 +54,7 @@ impl Plugin for MonsterPlugin {
                 SystemSet::on_enter(TurnState::MonsterTurn)
                 .label("monster")
                 .with_system(random_move::random_move.system())
+                .with_system(movement::movement.system())
                 .with_system(end_turn::end_turn.system())
             );
     }
