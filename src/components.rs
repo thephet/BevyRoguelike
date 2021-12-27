@@ -26,3 +26,8 @@ pub struct WantsToMove {
     pub entity: Entity,
     pub destination: Position
 }
+
+pub struct  Health {
+    pub current: i32,
+    pub max: i32
+}

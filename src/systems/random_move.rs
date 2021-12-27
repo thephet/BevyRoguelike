@@ -2,7 +2,7 @@ use crate::prelude::*;
 
 pub fn random_move(
     mut commands: Commands,
-    movers: Query<(Entity, &Position), With<Enemy>>,
+    movers: Query<(Entity, &Position), With<(Enemy, MovingRandomly)>>,
 ) {
     let mut rng = rand::thread_rng();
 

@@ -3,11 +3,11 @@ use crate::prelude::*;
 pub fn player_input(
     mut commands: Commands,
     mut keyboard_input: ResMut<Input<KeyCode>>,
-    player_positions: Query<(Entity, &Position), With<Player>>,
+    player_position: Query<(Entity, &Position), With<Player>>,
     mut turn_state: ResMut<State<TurnState>>
 ) {
 
-    for (ent, pos) in player_positions.iter() {
+    if let Ok((ent, pos)) = player_position.single() {
 
         let mut new_position = pos.clone();
 
