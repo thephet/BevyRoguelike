@@ -22,7 +22,7 @@ pub fn position_translation(windows: Res<Windows>, mut q: Query<(&Position, &mut
     for (pos, mut transform) in q.iter_mut() {
         transform.translation = Vec3::new(
             convert_pos(pos.x as f32, window.width() as f32, SCREEN_WIDTH as f32),
-            convert_pos(pos.y as f32, window.height() as f32, SCREEN_HEIGHT as f32),
+            convert_pos((pos.y+UI_HEIGHT/2) as f32, window.height() as f32, SCREEN_HEIGHT as f32),
             pos.z as f32,
         );
     }

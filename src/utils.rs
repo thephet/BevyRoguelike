@@ -66,7 +66,7 @@ pub struct Position {
     pub y: i32,
     pub z: i32,
 }
-/// Support adding a point to a point
+/// Support adding a position to a position
 impl ops::Add<Position> for Position {
     type Output = Position;
     fn add(mut self, rhs: Position) -> Position {
