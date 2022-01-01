@@ -13,7 +13,7 @@ pub fn spawn_player(
         })
         .insert(Position { x: mb.player_start.x, y: mb.player_start.y, z: 1 })
         .insert(TileSize::square(1.0))
-        .insert(Health{current: 20, max: 20})
+        .insert(Health{current: 20, max: 30})
         .insert(Player);
 }
 
