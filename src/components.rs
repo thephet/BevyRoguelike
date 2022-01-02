@@ -1,7 +1,6 @@
 use crate::prelude::*;
 
 pub struct Player;
-
 pub struct Enemy;
 
 pub struct MainCamera;
@@ -31,3 +30,6 @@ pub struct  Health {
     pub current: i32,
     pub max: i32
 }
+
+#[derive(Clone)]
+pub struct Naming(pub String);

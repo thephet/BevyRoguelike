@@ -48,7 +48,8 @@ fn setup(
     
     // Add a 2D Camera
     let mut cam = OrthographicCameraBundle::new_2d();
-    cam.orthographic_projection.scale = 0.5;
+    // cam.orthographic_projection.scale = 0.5;
+    cam.transform.scale = Vec3::new(0.5, 0.5, 1.0);
     commands.spawn_bundle(cam)
         .insert(MainCamera);
     // UI camera

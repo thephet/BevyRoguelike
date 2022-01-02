@@ -203,10 +203,6 @@ fn setup_ui(
                     });
                 });
             });
-            
-
-                    //.insert(AdventurerUI);
-
         });
     });
 }

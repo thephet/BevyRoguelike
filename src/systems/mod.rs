@@ -6,6 +6,7 @@ mod collisions;
 mod random_move;
 mod end_turn;
 mod movement;
+mod mouse;
 
 pub struct SystemsPlugin;
 impl Plugin for SystemsPlugin {
@@ -25,6 +26,7 @@ impl Plugin for AwaitingInputPlugin {
             .add_system_set(
                 SystemSet::on_update(TurnState::AwaitingInput)
                 .label("awaiting_input")
+                .with_system(mouse::cursor_click.system())
                 .with_system(player_input::player_input.system())
                 .with_system(camera::camera_move.system())
             );
