@@ -2,7 +2,7 @@ use crate::prelude::*;
 
 mod player_input;
 mod camera;
-mod collisions;
+mod combat;
 mod random_move;
 mod end_turn;
 mod movement;
@@ -31,7 +31,6 @@ impl Plugin for AwaitingInputPlugin {
     }
 }
 
-
 struct PlayerPlugin;
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut AppBuilder) {
@@ -40,7 +39,7 @@ impl Plugin for PlayerPlugin {
                 SystemSet::on_enter(TurnState::PlayerTurn)
                 .label("player")
                 .with_system(movement::movement.system())
-                .with_system(collisions::collisions.system())
+                .with_system(combat::combat.system())
                 .with_system(end_turn::end_turn.system())
             );
     }
@@ -52,10 +51,10 @@ impl Plugin for MonsterPlugin {
         app
             .add_system_set(
                 SystemSet::on_enter(TurnState::MonsterTurn)
-                .label("monster")
-                .with_system(random_move::random_move.system())
-                .with_system(movement::movement.system())
-                .with_system(end_turn::end_turn.system())
+                .label("enemies")
+                .with_system(random_move::random_move.system().label("random_move"))
+                .with_system(movement::movement.system().after("random_move").label("enemies_move"))
+                .with_system(end_turn::end_turn.system().after("enemies_move").after("random_move"))
             );
     }
 }

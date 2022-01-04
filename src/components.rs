@@ -2,6 +2,10 @@ use crate::prelude::*;
 
 pub struct Player;
 pub struct Enemy;
+pub struct Alive(pub bool);
+
+#[derive(Clone)]
+pub struct Naming(pub String);
 
 pub struct MainCamera;
 
@@ -26,10 +30,14 @@ pub struct WantsToMove {
     pub destination: Position
 }
 
+#[derive(Clone, Copy)]
+pub struct WantsToAttack {
+    pub attacker: Entity,
+    pub victim: Entity
+}
+
 pub struct  Health {
     pub current: i32,
     pub max: i32
 }
 
-#[derive(Clone)]
-pub struct Naming(pub String);

@@ -13,7 +13,8 @@ pub fn spawn_player(
         })
         .insert(Position { x: mb.player_start.x, y: mb.player_start.y, z: 1 })
         .insert(TileSize::square(1.0))
-        .insert(Health{current: 20, max: 20})
+        .insert(Health{current: 15, max: 20})
+        .insert(Alive(true))
         .insert(Player);
 }
 
@@ -70,5 +71,6 @@ fn spawn_enemy(
         .insert(Position { x: position.x, y: position.y, z: 1 })
         .insert(TileSize::square(1.0))
         .insert(MovingRandomly)
+        .insert(Alive(true))
         .insert(Enemy);
 }
