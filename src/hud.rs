@@ -1,12 +1,28 @@
 use crate::prelude::*;
 
+// UI components
+struct LogUI;
+struct HPText;
+struct HPBar;
+struct ToolTipText;
+struct ToolTipBox;
+
+
+fn setup (
+    asset_server: ResMut<AssetServer>,
+    mut commands: Commands,
+) {
+    let font: Handle<Font> = asset_server.load("fonts/dos.ttf");
+    commands.insert_resource(font);
+}
+
 
 fn tooltip_ui(
     mut commands: Commands,
-    asset_server: ResMut<AssetServer>,
+    font: Res<Handle<Font>>,
     mut color_materials: ResMut<Assets<ColorMaterial>>,
 ) {
-    let font: Handle<Font> = asset_server.load("fonts/dos.ttf");
+    //let font: Handle<Font> = asset_server.load("fonts/dos.ttf");
 
     commands
     // root node, just a black rectangle where the text will be
@@ -20,7 +36,7 @@ fn tooltip_ui(
             position_type: PositionType::Absolute,
             ..Default::default()
         },
-        material: color_materials.add(Color::rgb(0.1, 0.1, 0.1).into()),
+        material: color_materials.add(Color::rgb(0.0, 0.0, 0.0).into()),
         ..Default::default()
     })
     .with_children(|parent| {
@@ -49,12 +65,12 @@ fn tooltip_ui(
 }
 
 
+
 fn bottom_ui(
     mut commands: Commands,
-    asset_server: ResMut<AssetServer>,
+    font: Res<Handle<Font>>,
     mut color_materials: ResMut<Assets<ColorMaterial>>,
 ) {
-    let font: Handle<Font> = asset_server.load("fonts/dos.ttf");
 
     commands
     // root node, just a black rectangle where the UI will be
@@ -87,7 +103,7 @@ fn bottom_ui(
                     //align_items: AlignItems::Stretch,
                     ..Default::default()
                 },
-                material: color_materials.add(Color::rgb(0.1, 0.1, 0.1).into()),
+                material: color_materials.add(Color::rgb(0.0, 0.0, 0.0).into()),
                 ..Default::default()
             })
 
@@ -165,7 +181,7 @@ fn bottom_ui(
                     align_items: AlignItems::FlexEnd,
                     ..Default::default()
                 },
-                material: color_materials.add(Color::rgb(0.1, 0.1, 0.1).into()),
+                material: color_materials.add(Color::rgb(0.0, 0.0, 0.0).into()),
                 ..Default::default()
             })
             // top level with HP information
@@ -255,11 +271,6 @@ fn bottom_ui(
     });
 }
 
-struct LogUI;
-struct HPText;
-struct HPBar;
-struct ToolTipText;
-struct ToolTipBox;
 
 fn update_hp_text_and_bar(
     mut text_query: Query<&mut Text, With<HPText>>,
@@ -383,8 +394,14 @@ fn update_tooltip(
 pub struct UIPlugin;
 impl Plugin for UIPlugin {
     fn build(&self, app: &mut AppBuilder) {
-        app.add_startup_system(bottom_ui.system())
-            .add_startup_system(tooltip_ui.system())
+        app
+
+            .add_startup_system(setup.system())
+            
+            .add_startup_stage("bottom_ui", SystemStage::single(bottom_ui.system()))
+            .add_startup_stage_after("bottom_ui", "tooltip_ui", SystemStage::single(tooltip_ui.system()))
+
+
            .add_system(update_hp_text_and_bar.system())
            
            .add_system_set(

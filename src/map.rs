@@ -15,8 +15,7 @@ pub struct Map {
 
 impl Map {
     pub fn new() -> Self {
-        let mut tiles = vec![TileType::Floor; NUM_TILES];
-        tiles[2030] = TileType::Wall;
+        let tiles = vec![TileType::Floor; NUM_TILES];
         Self {
             tiles: tiles,
         }
@@ -46,9 +45,10 @@ pub fn map_idx(x: i32, y: i32) -> usize {
 }
 
 pub fn spawn_map_tiles(
-    mb: Res<MapBuilder>,
     mut commands: Commands,
+    mb: Res<MapBuilder>,
     atlas: Res<CharsetAsset>,
+    mut color_materials: ResMut<Assets<ColorMaterial>>,
 ) {
     for y in 0..SCREEN_HEIGHT {
         for x in 0..SCREEN_WIDTH {
@@ -57,24 +57,41 @@ pub fn spawn_map_tiles(
             match mb.map.tiles[idx] {
                 TileType::Floor => {
                     commands
-                    .spawn_bundle(SpriteSheetBundle {
-                        texture_atlas: atlas.atlas.clone(),
-                        sprite: TextureAtlasSprite::new(46),
+                    .spawn_bundle(SpriteBundle {
+                        material: color_materials.add(Color::rgba(0.3, 0.3, 0.3, 0.7).into()),
+                        sprite: Sprite::new(Vec2::new(1.0, 1.0)),
                         ..Default::default()
                     })
-                    .insert(Position { x: x, y: y, z: 0 })
+                    .insert(Position { x: x, y: y, z: 1 })
                     .insert(TileSize::square(1.0));
-                    
+
+                    // commands           
+                    // .spawn_bundle(SpriteSheetBundle {
+                    //     texture_atlas: atlas.atlas.clone(),
+                    //     sprite: TextureAtlasSprite::new('.' as u32),
+                    //     ..Default::default()
+                    // })
+                    // .insert(Position { x: x, y: y, z: 0 })
+                    // .insert(TileSize::square(1.0));
                 }
                 TileType::Wall => {
                     commands
-                    .spawn_bundle(SpriteSheetBundle {
-                        texture_atlas: atlas.atlas.clone(),
-                        sprite: TextureAtlasSprite::new(35),
+                    .spawn_bundle(SpriteBundle {
+                        material: color_materials.add(Color::rgba(0.3, 0.3, 0.3, 0.2).into()),
+                        sprite: Sprite::new(Vec2::new(1.0, 1.0)),
                         ..Default::default()
                     })
-                    .insert(Position { x: x, y: y, z: 0 })
+                    .insert(Position { x: x, y: y, z: 1 })
                     .insert(TileSize::square(1.0));
+                    
+                    commands
+                        .spawn_bundle(SpriteSheetBundle {
+                            texture_atlas: atlas.atlas.clone(),
+                            sprite: TextureAtlasSprite::new('#' as u32),
+                            ..Default::default()
+                        })
+                        .insert(Position { x: x, y: y, z: 0 })
+                        .insert(TileSize::square(1.0));
                 }
                 TileType::Void => ()
             }

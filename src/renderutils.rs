@@ -8,7 +8,7 @@ pub fn size_scaling(windows: Res<Windows>, mut q: Query<(&TileSize, &mut Transfo
             sprite_size.height / SCREEN_HEIGHT as f32 * window.height() as f32,
             1.0,
         );
-        transform.scale =  scale;
+        transform.scale = scale;
     }
 }
 

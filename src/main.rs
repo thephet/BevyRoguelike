@@ -36,7 +36,7 @@ fn setup(
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
 ) {
     // Setup the sprite sheet
-    let texture_handle = asset_server.load("terminal8x8.png");
+    let texture_handle = asset_server.load("terminal8x8_transparent.png");
     let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(1.0, 1.0), 16, 16);
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
     // add sprite atlas as resource
@@ -67,7 +67,7 @@ fn main() {
             vsync: true,
             ..Default::default()
         })
-        .insert_resource(ClearColor(Color::rgb(0.1, 0.1, 0.1)))
+        .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup.system())
         .add_startup_stage("map_spawn", SystemStage::single(spawn_map_tiles.system()))

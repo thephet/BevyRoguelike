@@ -23,6 +23,7 @@ impl TileSize {
 }
 
 pub struct MovingRandomly;
+pub struct ChasingPlayer;
 
 #[derive(Clone, Copy)]
 pub struct WantsToMove {

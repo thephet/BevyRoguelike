@@ -11,7 +11,7 @@ pub fn spawn_player(
             sprite: TextureAtlasSprite::new('@' as u32),
             ..Default::default()
         })
-        .insert(Position { x: mb.player_start.x, y: mb.player_start.y, z: 1 })
+        .insert(Position { x: mb.player_start.x, y: mb.player_start.y, z: 2 })
         .insert(TileSize::square(1.0))
         .insert(Health{current: 15, max: 20})
         .insert(Alive(true))
@@ -68,9 +68,9 @@ fn spawn_enemy(
         })
         .insert(Naming(name.clone()))
         .insert(Health{current: hp, max: hp})
-        .insert(Position { x: position.x, y: position.y, z: 1 })
+        .insert(Position { x: position.x, y: position.y, z: 2 })
         .insert(TileSize::square(1.0))
-        .insert(MovingRandomly)
+        .insert(ChasingPlayer)
         .insert(Alive(true))
         .insert(Enemy);
 }

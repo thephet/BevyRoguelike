@@ -1,11 +1,12 @@
 use crate::prelude::*;
+use bracket_lib::prelude::Rect;
 
 const NUM_ROOMS: usize = 20;
 
 pub struct MapBuilder {
     pub map: Map,
-    walls: Vec<Room>,
-    rooms: Vec<Room>,
+    walls: Vec<Rect>,
+    rooms: Vec<Rect>,
     pub player_start: Position,
     pub enemies_start: Vec<Position>
 }
@@ -24,7 +25,8 @@ impl MapBuilder {
         mb.fill(TileType::Void);
         mb.build_random_rooms();
         mb.build_corridors();
-        mb.player_start = mb.rooms[0].center();
+        // rooms are rect, as per bracketlib they return a point
+        mb.player_start = Position::from(mb.rooms[0].center());
         mb
     }
 
@@ -36,7 +38,7 @@ impl MapBuilder {
         let mut rng = rand::thread_rng();
 
         while self.rooms.len() < NUM_ROOMS {
-            let room = Room::with_size(
+            let room = Rect::with_size(
                 rng.gen_range(2..SCREEN_WIDTH - 12),
                 rng.gen_range(2..SCREEN_HEIGHT - 12),
                 rng.gen_range(2..12),
@@ -49,7 +51,7 @@ impl MapBuilder {
                 }
             }
             if !overlap {
-                let wall = Room::with_exact(
+                let wall = Rect::with_exact(
                     room.x1 - 1, room.y1 - 1, room.x2 + 1, room.y2 + 1
                 );
                 // First make the floor space that will be the room
@@ -77,7 +79,7 @@ impl MapBuilder {
                 // push the centers to enemies start, which is where they will be placed
                 // except in room 0 where we place the player
                 if self.rooms.len() > 1 {
-                    self.enemies_start.push(room.center());
+                    self.enemies_start.push(Position::from(room.center()));
                 }
             }
         }
