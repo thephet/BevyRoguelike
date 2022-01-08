@@ -31,8 +31,8 @@ pub fn random_move(
                     if let Ok(player_ent) = player.get(victim) {
                         // send an attack message
                         commands.spawn().insert( WantsToAttack{attacker: ent, victim: player_ent});
-                        attacked = true;
                     }
+                    attacked = true;
                 });
     
             if !attacked {

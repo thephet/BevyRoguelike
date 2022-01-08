@@ -3,7 +3,8 @@ use crate::prelude::*;
 mod player_input;
 mod camera;
 mod combat;
-mod random_move;
+// mod random_move;
+mod chasing;
 mod end_turn;
 mod movement;
 
@@ -52,9 +53,10 @@ impl Plugin for MonsterPlugin {
             .add_system_set(
                 SystemSet::on_enter(TurnState::MonsterTurn)
                 .label("enemies")
-                .with_system(random_move::random_move.system().label("random_move"))
-                .with_system(movement::movement.system().after("random_move").label("enemies_move"))
-                .with_system(end_turn::end_turn.system().after("enemies_move").after("random_move"))
+                .with_system(chasing::chasing.system().label("chasing"))
+                .with_system(combat::combat.system().label("combat"))
+                .with_system(movement::movement.system().after("combat").label("enemies_move"))
+                .with_system(end_turn::end_turn.system().after("enemies_move").after("combat"))
             );
     }
 }

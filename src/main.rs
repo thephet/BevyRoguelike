@@ -12,6 +12,7 @@ mod hud;
 
 mod prelude {
     pub use bevy::prelude::*;
+    pub use bracket_lib::prelude::*;
     pub const SCREEN_WIDTH: i32 = 80;
     pub const SCREEN_HEIGHT: i32 = 80;
     pub const UI_HEIGHT: i32 = 10;

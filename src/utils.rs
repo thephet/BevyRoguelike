@@ -1,5 +1,5 @@
 use std::ops;
-use bracket_lib::prelude::Point;
+use crate::prelude::*;
 
 #[derive(Copy, Clone, PartialEq)]
 pub struct Position {
@@ -24,3 +24,29 @@ impl From<Point> for Position {
         Position { x:item.x, y:item.y, z:0 }
     }
 }
+
+impl From<(Point, i32)> for Position {
+    fn from ((point, newz): (Point, i32)) -> Self {
+        Position { x:point.x, y:point.y, z:newz }
+    }
+}
+
+impl From<Position> for Point {
+    fn from(item: Position) -> Self {
+        Point { x:item.x, y:item.y}
+    }
+}
+
+// impl<T: Into<Point>> From<T> for Position {
+//     fn from(item: T) -> Self {
+//         let item = item.into(); //now it's a Point
+//         Position { x:item.x, y:item.y, z:0 }
+//     }  
+// }
+
+// impl<T: Into<Position>> From<T> for Point {
+//     fn from(item: T) -> Self {
+//         let item = item.into(); //now it's a Point
+//         Point { x:item.x, y:item.y }
+//     }  
+// }
