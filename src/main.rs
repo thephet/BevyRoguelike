@@ -29,7 +29,6 @@ mod prelude {
 }
 
 use prelude::*;
-use bevy::render::pass::ClearColor;
 
 fn setup(
     mut commands: Commands,
@@ -38,7 +37,7 @@ fn setup(
 ) {
     // Setup the sprite sheet
     let texture_handle = asset_server.load("terminal8x8_transparent.png");
-    let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(1.0, 1.0), 16, 16);
+    let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(8.0, 8.0), 16, 16);
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
     // add sprite atlas as resource
     commands.insert_resource(CharsetAsset { atlas: texture_atlas_handle.clone() });
@@ -60,7 +59,7 @@ fn setup(
 
 fn main() {
 
-    App::build()
+    App::new()
         .insert_resource(WindowDescriptor {
             title: "Roguelike Game".to_string(),
             width: SCREEN_WIDTH as f32 * 10.0,
@@ -70,17 +69,17 @@ fn main() {
         })
         .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
         .add_plugins(DefaultPlugins)
-        .add_startup_system(setup.system())
-        .add_startup_stage("map_spawn", SystemStage::single(spawn_map_tiles.system()))
-        .add_startup_stage_after("map_spawn", "player_spawn", SystemStage::single(spawn_player.system()))
-        .add_startup_stage_after("map_spawn", "enemies_spawn", SystemStage::single(spawn_enemies.system()))
+        .add_startup_system(setup)
+        .add_startup_stage("map_spawn", SystemStage::single(spawn_map_tiles))
+        .add_startup_stage_after("map_spawn", "player_spawn", SystemStage::single(spawn_player))
+        .add_startup_stage_after("map_spawn", "enemies_spawn", SystemStage::single(spawn_enemies))
         .add_plugin(SystemsPlugin)
         .add_plugin(UIPlugin)
         .add_system_set_to_stage(
             CoreStage::PostUpdate,
             SystemSet::new()
-                .with_system(position_translation.system())
-                .with_system(size_scaling.system()),
+                .with_system(position_translation)
+                .with_system(size_scaling),
         )
         .run();
 }

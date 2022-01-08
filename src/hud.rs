@@ -1,10 +1,19 @@
 use crate::prelude::*;
 
 // UI components
+#[derive(Component)]
 struct LogUI;
+
+#[derive(Component)]
 struct HPText;
+
+#[derive(Component)]
 struct HPBar;
+
+#[derive(Component)]
 struct ToolTipText;
+
+#[derive(Component)]
 struct ToolTipBox;
 
 
@@ -20,15 +29,13 @@ fn setup (
 fn tooltip_ui(
     mut commands: Commands,
     font: Res<Handle<Font>>,
-    mut color_materials: ResMut<Assets<ColorMaterial>>,
 ) {
-    //let font: Handle<Font> = asset_server.load("fonts/dos.ttf");
 
     commands
     // root node, just a black rectangle where the text will be
     .spawn_bundle(NodeBundle {
         // by default we set visible to false so it starts hidden
-        visible: Visible { is_visible: false, is_transparent: true },
+        visibility: Visibility { is_visible: false},
         style: Style {
             size: Size::new(Val::Px(200.0), Val::Px(30.0)),
             flex_direction: FlexDirection::ColumnReverse,
@@ -36,13 +43,13 @@ fn tooltip_ui(
             position_type: PositionType::Absolute,
             ..Default::default()
         },
-        material: color_materials.add(Color::rgb(0.0, 0.0, 0.0).into()),
+        color: UiColor(Color::rgb(0.0, 0.0, 0.0)),
         ..Default::default()
     })
     .with_children(|parent| {
         // text
         parent.spawn_bundle(TextBundle {
-            visible: Visible { is_visible: false, is_transparent: true },
+            visibility: Visibility { is_visible: false},
             style: Style {
                 size: Size::new(Val::Auto, Val::Px(20. * 1.)),
                 margin: Rect::all(Val::Auto),
@@ -69,7 +76,6 @@ fn tooltip_ui(
 fn bottom_ui(
     mut commands: Commands,
     font: Res<Handle<Font>>,
-    mut color_materials: ResMut<Assets<ColorMaterial>>,
 ) {
 
     commands
@@ -80,7 +86,7 @@ fn bottom_ui(
             justify_content: JustifyContent::SpaceBetween,
             ..Default::default()
         },
-        material: color_materials.add(Color::rgb(0.0, 0.0, 0.0).into()),
+        color: UiColor(Color::rgb(0.0, 0.0, 0.0)),
         ..Default::default()
     })
     // left vertical fill (content).
@@ -92,7 +98,7 @@ fn bottom_ui(
                 border: Rect::all(Val::Px(5.0)),
                 ..Default::default()
             },
-            material: color_materials.add(Color::rgb(0.65, 0.65, 0.65).into()),
+            color: UiColor(Color::rgb(0.65, 0.65, 0.65)),
             ..Default::default()
         })
         // now inner rectangle
@@ -103,7 +109,7 @@ fn bottom_ui(
                     //align_items: AlignItems::Stretch,
                     ..Default::default()
                 },
-                material: color_materials.add(Color::rgb(0.0, 0.0, 0.0).into()),
+                color: UiColor(Color::rgb(0.0, 0.0, 0.0)),
                 ..Default::default()
             })
 
@@ -170,7 +176,7 @@ fn bottom_ui(
                 border: Rect::all(Val::Px(5.0)),
                 ..Default::default()
             },
-            material: color_materials.add(Color::rgb(0.65, 0.65, 0.65).into()),
+            color: Color::rgb(0.65, 0.65, 0.65).into(),
             ..Default::default()
         })
         // now inner rectangle
@@ -181,7 +187,7 @@ fn bottom_ui(
                     align_items: AlignItems::FlexEnd,
                     ..Default::default()
                 },
-                material: color_materials.add(Color::rgb(0.0, 0.0, 0.0).into()),
+                color: Color::rgb(0.0, 0.0, 0.0).into(),
                 ..Default::default()
             })
             // top level with HP information
@@ -194,7 +200,7 @@ fn bottom_ui(
                         flex_direction: FlexDirection::Row,
                         ..Default::default()
                     },
-                    material: color_materials.add(Color::rgb(0.1, 0.1, 0.1).into()),
+                    color: Color::rgb(0.0, 0.0, 0.0).into(),
                     ..Default::default()
                 })
                 // container where to place the HP text
@@ -206,7 +212,7 @@ fn bottom_ui(
                             flex_direction: FlexDirection::ColumnReverse,
                             ..Default::default()
                         },
-                        material: color_materials.add(Color::rgb(0.1, 0.1, 0.1).into()),
+                        color: Color::rgb(0.0, 0.0, 0.0).into(),
                         ..Default::default()
                     })
                     // the actual HP text
@@ -240,7 +246,7 @@ fn bottom_ui(
                     // outside HP bar
                     parent.spawn_bundle(NodeBundle {
                         style: Style {
-                            size: Size::new(Val::Percent(65.0), Val::Px(20. * 1.)),
+                            size: Size::new(Val::Percent(63.0), Val::Px(20. * 1.)),
                             border: Rect::all(Val::Px(5.0)),
                             margin: Rect {
                                 left: Val::Auto,
@@ -250,7 +256,7 @@ fn bottom_ui(
                             },
                             ..Default::default()
                         },
-                        material: color_materials.add(Color::rgb(0.5, 0.1, 0.1).into()),
+                        color: Color::rgb(0.5, 0.1, 0.1).into(),
                         ..Default::default()
                     })
                     // inside HP bar
@@ -260,7 +266,7 @@ fn bottom_ui(
                                 size: Size::new(Val::Percent(50.0), Val::Percent(100.0)),
                                 ..Default::default()
                             },
-                            material: color_materials.add(Color::rgb(0.99, 0.1, 0.1).into()),
+                            color: Color::rgb(0.99, 0.1, 0.1).into(),
                             ..Default::default()
                         })
                         .insert(HPBar);
@@ -279,36 +285,35 @@ fn update_hp_text_and_bar(
 ) {
 
     // get player max HP and current hp
-    if let Ok(player_hp) = player_query.single() {
-        let (current, max) = (player_hp.current, player_hp.max);
+    let player_hp = player_query.single();
+    let (current, max) = (player_hp.current, player_hp.max);
 
-        // update HP text
-        for mut text in text_query.iter_mut() {
-            text.sections[0].value = format!("HP: {} / {}", current, max);
-        }
+    // update HP text
+    for mut text in text_query.iter_mut() {
+        text.sections[0].value = format!("HP: {} / {}", current, max);
+    }
 
-        // update HP bar
-        let bar_fill = (current as f32 / max as f32) * 100.0;
-        for mut bar in bar_query.iter_mut() {
-            bar.size.width = Val::Percent(bar_fill);
-        }
+    // update HP bar
+    let bar_fill = (current as f32 / max as f32) * 100.0;
+    for mut bar in bar_query.iter_mut() {
+        bar.size.width = Val::Percent(bar_fill);
     }
 }
 
 // when leaving user input state, hide tooltip
 fn hide_tooltip(
     mut text_box_query : QuerySet<(
-        Query<&mut Visible, With<ToolTipText>>,
-        Query<&mut Visible, With<ToolTipBox>>
+        QueryState<&mut Visibility, With<ToolTipText>>,
+        QueryState<&mut Visibility, With<ToolTipBox>>
     )>,
 ) {
     // update tooltip visiblity
-    for mut visible in text_box_query.q0_mut().iter_mut() {
+    for mut visible in text_box_query.q0().iter_mut() {
         visible.is_visible = false;
     }
 
     // update box visibility
-    for mut visible in text_box_query.q1_mut().iter_mut() {
+    for mut visible in text_box_query.q1().iter_mut() {
         visible.is_visible = false;
     } 
 }
@@ -325,8 +330,8 @@ fn update_tooltip(
     q_names: Query<(&Naming, &Health, &Position)>,
     // // query to get tooltip text and box
     mut text_box_query : QuerySet<(
-        Query<(&mut Text, &mut Visible), With<ToolTipText>>,
-        Query<(&mut Style, &mut Visible), With<ToolTipBox>>
+        QueryState<(&mut Text, &mut Visibility), With<ToolTipText>>,
+        QueryState<(&mut Style, &mut Visibility), With<ToolTipBox>>
     )>,
 ) {
     // if the user left clicks
@@ -344,7 +349,7 @@ fn update_tooltip(
             let p = pos - size / 2.0;
 
             // assuming there is exactly one main camera entity, so this is OK
-            let camera_transform = q_camera.single().unwrap();
+            let camera_transform = q_camera.single();
 
             let tile_size_x = wnd.width() / SCREEN_WIDTH as f32;
             let tile_size_y = wnd.height() / SCREEN_HEIGHT as f32;
@@ -376,13 +381,13 @@ fn update_tooltip(
             }
 
             // update tooltip text
-            for (mut text, mut visible) in text_box_query.q0_mut().iter_mut() {
+            for (mut text, mut visible) in text_box_query.q0().iter_mut() {
                 text.sections[0].value = format!("{} HP: {} / {}", s, currenth, maxh);
                 visible.is_visible = true;
             }
 
             // update box position
-            for (mut boxnode, mut visible) in text_box_query.q1_mut().iter_mut() {
+            for (mut boxnode, mut visible) in text_box_query.q1().iter_mut() {
                 boxnode.position.left = Val::Px(pos.x-100.0);
                 boxnode.position.bottom = Val::Px(pos.y);
                 visible.is_visible = true;
@@ -393,25 +398,25 @@ fn update_tooltip(
 
 pub struct UIPlugin;
 impl Plugin for UIPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app
 
-            .add_startup_system(setup.system())
+            .add_startup_system(setup)
             
-            .add_startup_stage("bottom_ui", SystemStage::single(bottom_ui.system()))
-            .add_startup_stage_after("bottom_ui", "tooltip_ui", SystemStage::single(tooltip_ui.system()))
+            .add_startup_stage("bottom_ui", SystemStage::single(bottom_ui))
+            .add_startup_stage_after("bottom_ui", "tooltip_ui", SystemStage::single(tooltip_ui))
 
 
-           .add_system(update_hp_text_and_bar.system())
+           .add_system(update_hp_text_and_bar)
            
            .add_system_set(
             SystemSet::on_update(TurnState::AwaitingInput)
-             .with_system(update_tooltip.system())
+             .with_system(update_tooltip)
             )
 
            .add_system_set(
                SystemSet::on_exit(TurnState::AwaitingInput)
-                .with_system(hide_tooltip.system())
+                .with_system(hide_tooltip)
            );
     }
 }

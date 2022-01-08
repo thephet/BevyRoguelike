@@ -1,7 +1,7 @@
 use std::ops;
 use crate::prelude::*;
 
-#[derive(Copy, Clone, PartialEq)]
+#[derive(Component, Copy, Clone, PartialEq)]
 pub struct Position {
     pub x: i32,
     pub y: i32,

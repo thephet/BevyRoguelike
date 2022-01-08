@@ -8,7 +8,12 @@ pub fn spawn_player(
     commands
         .spawn_bundle(SpriteSheetBundle {
             texture_atlas: atlas.atlas.clone(),
-            sprite: TextureAtlasSprite::new('@' as u32),
+            sprite: TextureAtlasSprite {
+                custom_size: Some(Vec2::new(1.0, 1.0)), 
+                index: '@' as usize, 
+                ..Default::default()
+            },
+            //TextureAtlasSprite::new('@' as usize),
             ..Default::default()
         })
         .insert(Position { x: mb.player_start.x, y: mb.player_start.y, z: 2 })
@@ -44,7 +49,11 @@ pub fn spawn_enemies(
         spawn_enemy(
             &mut commands, 
             atlas.atlas.clone(), 
-            TextureAtlasSprite::new(glyph as u32),
+            TextureAtlasSprite {
+                custom_size: Some(Vec2::new(1.0, 1.0)), 
+                index: glyph as usize, 
+                ..Default::default()
+            },
             &name,
             hp,
             position);

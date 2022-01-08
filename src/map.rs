@@ -101,7 +101,6 @@ pub fn spawn_map_tiles(
     mut commands: Commands,
     mb: Res<MapBuilder>,
     atlas: Res<CharsetAsset>,
-    mut color_materials: ResMut<Assets<ColorMaterial>>,
 ) {
     for y in 0..SCREEN_HEIGHT {
         for x in 0..SCREEN_WIDTH {
@@ -111,8 +110,11 @@ pub fn spawn_map_tiles(
                 TileType::Floor => {
                     commands
                     .spawn_bundle(SpriteBundle {
-                        material: color_materials.add(Color::rgba(0.3, 0.3, 0.3, 0.7).into()),
-                        sprite: Sprite::new(Vec2::new(1.0, 1.0)),
+                        sprite: Sprite {
+                            color: Color::rgba(0.3, 0.3, 0.3, 0.7),
+                            custom_size: Some(Vec2::new(1.0, 1.0)),
+                            ..Default::default()
+                        },
                         ..Default::default()
                     })
                     .insert(Position { x: x, y: y, z: 1 })
@@ -121,7 +123,7 @@ pub fn spawn_map_tiles(
                     // commands           
                     // .spawn_bundle(SpriteSheetBundle {
                     //     texture_atlas: atlas.atlas.clone(),
-                    //     sprite: TextureAtlasSprite::new('.' as u32),
+                    //     sprite: TextureAtlasSprite::new('.' as usize),
                     //     ..Default::default()
                     // })
                     // .insert(Position { x: x, y: y, z: 0 })
@@ -130,8 +132,11 @@ pub fn spawn_map_tiles(
                 TileType::Wall => {
                     commands
                     .spawn_bundle(SpriteBundle {
-                        material: color_materials.add(Color::rgba(0.3, 0.3, 0.3, 0.2).into()),
-                        sprite: Sprite::new(Vec2::new(1.0, 1.0)),
+                        sprite: Sprite {
+                            color: Color::rgba(0.3, 0.3, 0.3, 0.2),
+                            custom_size: Some(Vec2::new(1.0, 1.0)),
+                            ..Default::default()
+                        },
                         ..Default::default()
                     })
                     .insert(Position { x: x, y: y, z: 1 })
@@ -140,7 +145,11 @@ pub fn spawn_map_tiles(
                     commands
                         .spawn_bundle(SpriteSheetBundle {
                             texture_atlas: atlas.atlas.clone(),
-                            sprite: TextureAtlasSprite::new('#' as u32),
+                            sprite: TextureAtlasSprite {
+                                custom_size: Some(Vec2::new(1.0, 1.0)), 
+                                index: '#' as usize, 
+                                ..Default::default()
+                            },
                             ..Default::default()
                         })
                         .insert(Position { x: x, y: y, z: 0 })

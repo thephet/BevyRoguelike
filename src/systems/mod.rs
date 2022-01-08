@@ -10,7 +10,7 @@ mod movement;
 
 pub struct SystemsPlugin;
 impl Plugin for SystemsPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app
             .add_state(TurnState::AwaitingInput)
             .add_plugin(AwaitingInputPlugin)
@@ -21,7 +21,7 @@ impl Plugin for SystemsPlugin {
 
 struct AwaitingInputPlugin;
 impl Plugin for AwaitingInputPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app
             .add_system_set(
                 SystemSet::on_update(TurnState::AwaitingInput)
@@ -34,7 +34,7 @@ impl Plugin for AwaitingInputPlugin {
 
 struct PlayerPlugin;
 impl Plugin for PlayerPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app
             .add_system_set(
                 SystemSet::on_enter(TurnState::PlayerTurn)
@@ -48,7 +48,7 @@ impl Plugin for PlayerPlugin {
 
 struct MonsterPlugin;
 impl Plugin for MonsterPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app
             .add_system_set(
                 SystemSet::on_enter(TurnState::MonsterTurn)
