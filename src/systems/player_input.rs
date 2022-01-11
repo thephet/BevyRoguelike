@@ -8,7 +8,7 @@ pub fn player_input(
     mut turn_state: ResMut<State<TurnState>>
 ) {
 
-    let (ent, pos, mut health) = player_position_health.single_mut();
+    let (player_ent, pos, mut health) = player_position_health.single_mut();
 
     let mut new_position = pos.clone();
 
@@ -37,13 +37,13 @@ pub fn player_input(
                     hit_something = true;
 
                     commands.spawn()
-                        .insert( WantsToAttack{attacker: ent, victim: victim});
+                        .insert( WantsToAttack{attacker: player_ent, victim: victim});
                 });
 
             // if it did not hit then it is just a movement
             if !hit_something {
                 commands.spawn()
-                    .insert( WantsToMove{entity: ent, destination: new_position});
+                    .insert( WantsToMove{entity: player_ent, destination: new_position});
             } 
         } 
         // else means the user clicked an action which did not move the player.

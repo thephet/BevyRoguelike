@@ -2,10 +2,10 @@ use crate::prelude::*;
 
 #[derive(Component)]
 pub struct Player;
+
 #[derive(Component)]
 pub struct Enemy;
-#[derive(Component)]
-pub struct Alive(pub bool);
+
 
 #[derive(Component, Clone)]
 pub struct Naming(pub String);

@@ -26,8 +26,8 @@ impl Plugin for AwaitingInputPlugin {
             .add_system_set(
                 SystemSet::on_update(TurnState::AwaitingInput)
                 .label("awaiting_input")
-                .with_system(player_input::player_input.system())
-                .with_system(camera::camera_move.system())
+                .with_system(player_input::player_input)
+                .with_system(camera::camera_move)
             );
     }
 }
@@ -39,9 +39,9 @@ impl Plugin for PlayerPlugin {
             .add_system_set(
                 SystemSet::on_enter(TurnState::PlayerTurn)
                 .label("player")
-                .with_system(movement::movement.system())
-                .with_system(combat::combat.system())
-                .with_system(end_turn::end_turn.system())
+                .with_system(movement::movement)
+                .with_system(combat::combat)
+                .with_system(end_turn::end_turn.label("player_end"))
             );
     }
 }
@@ -50,13 +50,14 @@ struct MonsterPlugin;
 impl Plugin for MonsterPlugin {
     fn build(&self, app: &mut App) {
         app
+            //.add_stage_after(CoreStage::Update, "enemies_state", SystemStage::parallel())
             .add_system_set(
                 SystemSet::on_enter(TurnState::MonsterTurn)
                 .label("enemies")
-                .with_system(chasing::chasing.system().label("chasing"))
-                .with_system(combat::combat.system().label("combat"))
-                .with_system(movement::movement.system().after("combat").label("enemies_move"))
-                .with_system(end_turn::end_turn.system().after("enemies_move").after("combat"))
+                .with_system(chasing::chasing.after("player_end").label("chasing"))
+                .with_system(combat::combat.after("chasing").label("combat"))
+                .with_system(movement::movement.after("combat").label("enemies_move"))
+                .with_system(end_turn::end_turn.after("enemies_move").after("combat"))
             );
     }
 }

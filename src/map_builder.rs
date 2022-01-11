@@ -141,4 +141,24 @@ impl MapBuilder {
             }
         }
     }
+
+    // places an entity in a given position in the occupation map
+    pub fn entity_occupy_tile(&mut self, entity: Entity, position: Position) {
+        let idx = map_idx(position.x, position.y);
+        self.map.occupation[idx] = Some(entity);
+    }
+
+    // frees a given position in the occupation map
+    pub fn free_occupy_tile(&mut self, position: Position) {
+        let idx = map_idx(position.x, position.y);
+        self.map.occupation[idx] = None;
+    }
+
+    // moves entity in occupation map, between position
+    pub fn move_entity_occupation(&mut self, entity: Entity, old_p: Position, new_p: Position) {
+        let old_idx = map_idx(old_p.x, old_p.y);
+        let new_idx = map_idx(new_p.x, new_p.y);
+        self.map.occupation[old_idx] = None;
+        self.map.occupation[new_idx] = Some(entity);
+    } 
 }

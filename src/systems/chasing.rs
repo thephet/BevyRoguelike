@@ -7,7 +7,7 @@ pub fn chasing(
     positions: Query<(Entity, &Position), With<Health>>,
     player: Query<(Entity, &Position), With<Player>>,
 ) {
-    // get player position
+
     let (_, player_pos) = player.single();
     // transform x,y position to index in array
     let player_idx = map_idx(player_pos.x, player_pos.y);
@@ -45,9 +45,9 @@ pub fn chasing(
                 .filter(|(_, target_pos)| **target_pos == destination.into())
                 .for_each(|(victim, _)| {
                     // if the victim is the player
-                    if let Ok( (player_ent, _) ) = player.get(victim) {
+                    if let Ok( (player_victim, _) ) = player.get(victim) {
                         // send an attack message
-                        commands.spawn().insert( WantsToAttack{attacker: entity, victim: player_ent});
+                        commands.spawn().insert( WantsToAttack{attacker: entity, victim: player_victim});
                     }
                     attacked = true;
                 });
@@ -59,4 +59,5 @@ pub fn chasing(
                 }
         }
     });
+
 }
