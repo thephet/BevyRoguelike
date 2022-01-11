@@ -16,6 +16,12 @@ struct ToolTipText;
 #[derive(Component)]
 struct ToolTipBox;
 
+#[derive(Component)]
+struct MenuUI;
+
+#[derive(Component)]
+struct TextMenuUI;
+
 
 fn setup (
     asset_server: ResMut<AssetServer>,
@@ -25,6 +31,73 @@ fn setup (
     commands.insert_resource(font);
 }
 
+fn setup_menu(
+    mut commands: Commands,
+    font: Res<Handle<Font>>,
+) {
+    commands
+    .spawn_bundle(NodeBundle {
+        style: Style {
+            size: Size::new(Val::Percent(100.), Val::Percent(100.)),
+            flex_direction: FlexDirection::ColumnReverse,
+            ..Default::default()
+        },
+        color: UiColor(Color::rgb(0.0, 0.0, 0.0)),
+        ..Default::default()
+    })
+    .insert(MenuUI)
+    .with_children(|parent| {
+        // Spawn menu text
+        parent.spawn_bundle(TextBundle {
+            style: Style {
+                size: Size::new(Val::Auto, Val::Px(140. * 1.)),
+                margin: Rect {
+                    left: Val::Auto,
+                    right: Val::Auto,
+                    bottom: Val::Auto,
+                    top: Val::Auto,
+                },
+                ..Default::default()
+            },
+            // Use `Text` directly
+            text: Text {
+                // Construct a `Vec` of `TextSection`s
+                sections: vec![
+                    TextSection {
+                        value: "Roque Quest".to_string(),
+                        style: TextStyle {
+                            font: font.clone(),
+                            font_size: 100.0,
+                            color: Color::GOLD,
+                        },
+                    },
+                    TextSection {
+                        value: "\nPress any key to start game.".to_string(),
+                        style: TextStyle {
+                            font: font.clone(),
+                            font_size: 40.0,
+                            color: Color::WHITE,
+                        },
+                    },
+                ],
+                alignment: TextAlignment {
+                    horizontal: HorizontalAlign::Center,
+                    vertical: VerticalAlign::Center,
+                },
+            },
+            ..Default::default()
+        });
+    });
+}
+
+fn despawn_menu(
+    mut commands: Commands, 
+    query: Query<Entity, With<MenuUI>>,
+) {
+    for e in query.iter() {
+        commands.entity(e).despawn_recursive();
+    }
+}
 
 fn tooltip_ui(
     mut commands: Commands,
@@ -404,6 +477,42 @@ fn update_tooltip(
     }
 }
 
+pub fn start_screen_input(
+    mut keyboard_input: ResMut<Input<KeyCode>>,
+    mut turn_state: ResMut<State<TurnState>>
+) {
+
+    let key = keyboard_input.get_pressed().next().cloned();
+    if let Some(key) = key {
+        // reset keyboard, bevys bug when changing states
+        keyboard_input.reset(key);
+        // update state
+        turn_state.set(TurnState::AwaitingInput).unwrap();
+    }
+}
+
+pub struct MenuPlugin;
+impl Plugin for MenuPlugin {
+    fn build(&self, app: &mut App) {
+        app
+            // setup when entering the state
+            .add_system_set(
+                SystemSet::on_enter(TurnState::StartScreen)
+                    .with_system(setup_menu)
+            )
+            // setup when entering the state
+            .add_system_set(
+                SystemSet::on_update(TurnState::StartScreen)
+                    .with_system(start_screen_input)
+            )
+            // cleanup when exiting the state
+            .add_system_set(
+                SystemSet::on_exit(TurnState::StartScreen)
+                    .with_system(despawn_menu)
+            );
+    }
+}
+
 pub struct UIPlugin;
 impl Plugin for UIPlugin {
     fn build(&self, app: &mut App) {
@@ -411,11 +520,20 @@ impl Plugin for UIPlugin {
 
             .add_startup_system(setup)
             
-            .add_startup_stage("bottom_ui", SystemStage::single(bottom_ui))
-            .add_startup_stage_after("bottom_ui", "tooltip_ui", SystemStage::single(tooltip_ui))
+            .add_system_set(
+            SystemSet::on_exit(TurnState::StartScreen)
+                .with_system(bottom_ui).label("bottom_ui")
+            )
 
+            .add_system_set(
+            SystemSet::on_exit(TurnState::StartScreen)
+                .with_system(tooltip_ui).after("bottom_ui")
+            )
 
-           .add_system(update_hp_text_and_bar)
+            .add_system_set(
+            SystemSet::on_update(TurnState::AwaitingInput)
+                .with_system(update_hp_text_and_bar)
+            )
            
            .add_system_set(
             SystemSet::on_update(TurnState::AwaitingInput)

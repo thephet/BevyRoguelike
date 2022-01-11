@@ -8,6 +8,7 @@ pub fn end_turn(
         TurnState::AwaitingInput => return,
         TurnState::PlayerTurn => TurnState::MonsterTurn,
         TurnState::MonsterTurn => TurnState::AwaitingInput,
+        TurnState::StartScreen => return,
     };
 
     // change state to new turn

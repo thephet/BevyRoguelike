@@ -69,12 +69,17 @@ fn main() {
         })
         .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
         .add_plugins(DefaultPlugins)
+        .add_state(TurnState::StartScreen)
         .add_startup_system(setup)
-        .add_startup_stage("map_spawn", SystemStage::single(spawn_map_tiles))
-        .add_startup_stage_after("map_spawn", "player_spawn", SystemStage::single(spawn_player))
-        .add_startup_stage_after("map_spawn", "enemies_spawn", SystemStage::single(spawn_enemies))
+        .add_system_set(
+            SystemSet::on_exit(TurnState::StartScreen)
+            .label("map_spawn")
+            .with_system(spawn_map_tiles)
+        )
+        .add_plugin(SpawnerPlugin)
         .add_plugin(SystemsPlugin)
         .add_plugin(UIPlugin)
+        .add_plugin(MenuPlugin)
         .add_system_set_to_stage(
             CoreStage::PostUpdate,
             SystemSet::new()

@@ -5,7 +5,6 @@ pub fn spawn_player(
     atlas: Res<CharsetAsset>,
     mut mb: ResMut<MapBuilder>,
 ) {
-
     let player_start = mb.player_start;
 
     let entity = commands
@@ -90,4 +89,17 @@ fn spawn_enemy(
         .insert(TileSize::square(1.0))
         .insert(ChasingPlayer)
         .insert(Enemy).id()
+}
+
+pub struct SpawnerPlugin;
+impl Plugin for SpawnerPlugin {
+    fn build(&self, app: &mut App) {
+        app
+        .add_system_set(
+            SystemSet::on_exit(TurnState::StartScreen)
+            .label("spawn_character")
+            .with_system(spawn_player)
+            .with_system(spawn_enemies)
+        );
+    }
 }

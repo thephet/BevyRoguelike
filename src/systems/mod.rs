@@ -12,7 +12,6 @@ pub struct SystemsPlugin;
 impl Plugin for SystemsPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_state(TurnState::AwaitingInput)
             .add_plugin(AwaitingInputPlugin)
             .add_plugin(PlayerPlugin)
             .add_plugin(MonsterPlugin);
