@@ -1,7 +1,8 @@
 use std::ops;
+use std::cmp;
 use crate::prelude::*;
 
-#[derive(Component, Copy, Clone, PartialEq)]
+#[derive(Component, Copy, Clone, Eq)]
 pub struct Position {
     pub x: i32,
     pub y: i32,
@@ -16,6 +17,12 @@ impl ops::Add<Position> for Position {
         self.y += rhs.y;
         self.z += rhs.z;
         self
+    }
+}
+
+impl cmp::PartialEq<Position> for Position {
+    fn eq(&self, other: &Self) -> bool {
+        self.x == other.x && self.y == other.y
     }
 }
 

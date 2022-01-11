@@ -363,7 +363,7 @@ fn update_tooltip(
 
             // now we go through all the entities with name to see which one is the nearest
             // some variables placeholders to save the entity name and its health
-            let mut distance = 9999.9;
+            let mut distance = 1.0;
             let mut s = String::new();
             let mut maxh = 0;
             let mut currenth = 0;
@@ -382,15 +382,23 @@ fn update_tooltip(
 
             // update tooltip text
             for (mut text, mut visible) in text_box_query.q0().iter_mut() {
-                text.sections[0].value = format!("{} HP: {} / {}", s, currenth, maxh);
-                visible.is_visible = true;
+                if distance < 1.0 {
+                    text.sections[0].value = format!("{} HP: {} / {}", s, currenth, maxh);
+                    visible.is_visible = true;
+                } else {
+                    visible.is_visible = false;
+                }
             }
 
             // update box position
             for (mut boxnode, mut visible) in text_box_query.q1().iter_mut() {
-                boxnode.position.left = Val::Px(pos.x-100.0);
-                boxnode.position.bottom = Val::Px(pos.y);
-                visible.is_visible = true;
+                if distance < 1.0 {
+                    boxnode.position.left = Val::Px(pos.x-100.0);
+                    boxnode.position.bottom = Val::Px(pos.y);
+                    visible.is_visible = true;
+                } else {
+                    visible.is_visible = false;
+                }
             }
         }
     }
