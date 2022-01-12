@@ -4,6 +4,7 @@ pub fn combat(
     mut commands: Commands,
     mut mb: ResMut<MapBuilder>,
     attackers: Query<(Entity, &WantsToAttack)>,
+    player: Query<Entity, With<Player>>,
     mut health_query: Query<(&mut Health, &Position)>,
 ) {
 
@@ -20,8 +21,12 @@ pub fn combat(
 
             // less than 1 HP remove it
             if hp.current < 1 {
-                mb.free_occupy_tile(*pos);
-                commands.entity(*victim).despawn();
+                if let Ok(_) = player.get(*victim) {
+                    
+                } else {
+                    mb.free_occupy_tile(*pos);
+                    commands.entity(*victim).despawn();
+                }
             }
         }
         // remove the message

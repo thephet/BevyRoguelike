@@ -162,3 +162,11 @@ impl MapBuilder {
         self.map.occupation[new_idx] = Some(entity);
     } 
 }
+
+pub fn build_map(
+    mut commands: Commands,
+) {
+    // insert map builder as resource
+    let mb = MapBuilder::new();
+    commands.insert_resource(mb);
+}

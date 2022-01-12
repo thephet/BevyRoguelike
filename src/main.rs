@@ -9,6 +9,7 @@ mod spawner;
 mod systems;
 mod utils;
 mod hud;
+mod menus;
 
 mod prelude {
     pub use bevy::prelude::*;
@@ -26,6 +27,7 @@ mod prelude {
     pub use crate::systems::*;
     pub use crate::utils::*;
     pub use crate::hud::*;
+    pub use crate::menus::*;
 }
 
 use prelude::*;
@@ -41,10 +43,6 @@ fn setup(
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
     // add sprite atlas as resource
     commands.insert_resource(CharsetAsset { atlas: texture_atlas_handle.clone() });
-
-    // insert map builder as resource
-    let mb = MapBuilder::new();
-    commands.insert_resource(mb);
     
     // Add a 2D Camera
     let mut cam = OrthographicCameraBundle::new_2d();
@@ -71,6 +69,11 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_state(TurnState::StartScreen)
         .add_startup_system(setup)
+        .add_system_set(
+            SystemSet::on_enter(TurnState::StartScreen)
+            .label("build_map")
+            .with_system(build_map)
+        )
         .add_system_set(
             SystemSet::on_exit(TurnState::StartScreen)
             .label("map_spawn")

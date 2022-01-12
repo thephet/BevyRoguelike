@@ -19,7 +19,7 @@ pub fn spawn_player(
         })
         .insert(Position { x: player_start.x, y: player_start.y, z: 2 })
         .insert(TileSize::square(1.0))
-        .insert(Health{current: 15, max: 20})
+        .insert(Health{current: 5, max: 20})
         .insert(Player)
         .id();
 
@@ -91,6 +91,16 @@ fn spawn_enemy(
         .insert(Enemy).id()
 }
 
+// player, enemies and tiles have position
+fn despawn_all_with_position(
+    mut commands: Commands, 
+    position_q: Query<Entity, With<Position>>,
+) {
+    for e in position_q.iter() {
+        commands.entity(e).despawn_recursive();
+    }
+}
+
 pub struct SpawnerPlugin;
 impl Plugin for SpawnerPlugin {
     fn build(&self, app: &mut App) {
@@ -100,6 +110,11 @@ impl Plugin for SpawnerPlugin {
             .label("spawn_character")
             .with_system(spawn_player)
             .with_system(spawn_enemies)
+        )
+        .add_system_set(
+            SystemSet::on_enter(TurnState::GameOver)
+            .label("despawn_all")
+            .with_system(despawn_all_with_position)
         );
     }
 }
