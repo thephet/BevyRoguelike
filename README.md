@@ -1,8 +1,8 @@
 # Bevy Roguelike game
 
 <p float="left">
-  <img src="https://raw.githubusercontent.com/thephet/BevyRoguelike/main/screenshots/title_screen.png" width="300" />
-  <img src="https://raw.githubusercontent.com/thephet/BevyRoguelike/main/screenshots/ingame.png" width="300" /> 
+  <img src="https://raw.githubusercontent.com/thephet/BevyRoguelike/main/screenshots/title_screen.png" width="45%" />
+  <img src="https://raw.githubusercontent.com/thephet/BevyRoguelike/main/screenshots/ingame.png" width="45%" /> 
 </p>
 
 Here I am trying to do a Roguelike game, using Rust and Bevy. I am closely following the amazing book "Hands-on Rust" by Herbert Wolverson. 
