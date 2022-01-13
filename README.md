@@ -1,6 +1,9 @@
 # Bevy Roguelike game
 
-![Title Screen](https://raw.githubusercontent.com/thephet/BevyRoguelike/main/screenshots/title_screen.png?raw=true) ![In-game](https://raw.githubusercontent.com/thephet/BevyRoguelike/main/screenshots/ingame.png?raw=true)
+<p float="left">
+  <img src="https://raw.githubusercontent.com/thephet/BevyRoguelike/main/screenshots/title_screen.png" width="100" />
+  <img src="https://raw.githubusercontent.com/thephet/BevyRoguelike/main/screenshots/ingame.png" width="100" /> 
+</p>
 
 Here I am trying to do a Roguelike game, using Rust and Bevy. I am closely following the amazing book "Hands-on Rust" by Herbert Wolverson. 
 The idea is to re-write his code but using Bevy instead of Legion ~~and Bracket-lib~~. Features that are not directly related 
