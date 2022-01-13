@@ -19,8 +19,9 @@ pub fn spawn_player(
         })
         .insert(Position { x: player_start.x, y: player_start.y, z: 2 })
         .insert(TileSize::square(1.0))
-        .insert(Health{current: 5, max: 20})
+        .insert(Health{current: 20, max: 20})
         .insert(Player)
+        .insert(Naming("Player".to_string()))
         .id();
 
     mb.entity_occupy_tile(entity, player_start);
@@ -91,6 +92,30 @@ fn spawn_enemy(
         .insert(Enemy).id()
 }
 
+fn spawn_amulet_of_yala(
+    mut commands: Commands,
+    atlas: Res<CharsetAsset>,
+    mb: Res<MapBuilder>,
+) {
+    let amulet_start = mb.amulet_start;
+    commands
+    .spawn_bundle(SpriteSheetBundle {
+        texture_atlas: atlas.atlas.clone(),
+        sprite: TextureAtlasSprite {
+            color: Color::GOLD,
+            custom_size: Some(Vec2::new(1.0, 1.0)), 
+            index: 6, 
+            ..Default::default()
+        },
+        ..Default::default()
+    })
+    .insert(Naming("Amulet of Yala".to_string()))
+    .insert(Position { x: amulet_start.x, y: amulet_start.y, z: 2 })
+    .insert(TileSize::square(1.0))
+    .insert(Item)
+    .insert(AmuletOfYala);
+}
+
 // player, enemies and tiles have position
 fn despawn_all_with_position(
     mut commands: Commands, 
@@ -110,9 +135,15 @@ impl Plugin for SpawnerPlugin {
             .label("spawn_character")
             .with_system(spawn_player)
             .with_system(spawn_enemies)
+            .with_system(spawn_amulet_of_yala)
         )
         .add_system_set(
             SystemSet::on_enter(TurnState::GameOver)
+            .label("despawn_all")
+            .with_system(despawn_all_with_position)
+        )
+        .add_system_set(
+            SystemSet::on_enter(TurnState::Victory)
             .label("despawn_all")
             .with_system(despawn_all_with_position)
         );

@@ -8,7 +8,8 @@ pub struct MapBuilder {
     walls: Vec<Rect>,
     rooms: Vec<Rect>,
     pub player_start: Position,
-    pub enemies_start: Vec<Position>
+    pub enemies_start: Vec<Position>,
+    pub amulet_start: Position,
 }
 
 impl MapBuilder {
@@ -21,12 +22,33 @@ impl MapBuilder {
             rooms : Vec::new(),
             player_start : Position{x:0, y:0, z:0},
             enemies_start : Vec::new(),
+            amulet_start : Position{x:0, y:0, z:0},
         };
         mb.fill(TileType::Void);
         mb.build_random_rooms();
         mb.build_corridors();
         // rooms are rect, as per bracketlib they return a point
         mb.player_start = Position::from(mb.rooms[0].center());
+
+        // now we will calculate where to place the amulet. that is, as far from the player
+        // as possible. We will calculate this using a Dijkstra map
+        let dijstra_map = DijkstraMap::new(
+            SCREEN_WIDTH,
+            SCREEN_HEIGHT,
+            &vec![mb.map.point2d_to_index(mb.player_start.into())],
+            &mb.map,
+            1024.0,
+        );
+        // now we will get the tile farer away from the player
+        const UNREACHABLE: &f32 = &f32::MAX;
+        mb.amulet_start = mb.map.index_to_point2d
+        (
+            dijstra_map.map.iter()
+                .enumerate()
+                .filter(|(_, dist)| *dist < UNREACHABLE)
+                .max_by(|a,b| a.1.partial_cmp(b.1).unwrap())
+                .unwrap().0
+        ).into();
         mb
     }
 

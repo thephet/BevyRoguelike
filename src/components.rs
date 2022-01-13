@@ -14,6 +14,12 @@ pub struct Naming(pub String);
 pub struct MainCamera;
 
 #[derive(Component)]
+pub struct Item;
+
+#[derive(Component)]
+pub struct AmuletOfYala;
+
+#[derive(Component)]
 pub struct TileSize {
     pub width: f32,
     pub height: f32,

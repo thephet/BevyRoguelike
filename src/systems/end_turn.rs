@@ -2,10 +2,12 @@ use crate::prelude::*;
 
 pub fn end_turn(
     mut turn_state: ResMut<State<TurnState>>,
-    player_hp_q: Query<&Health, With<Player>>,
+    player_hp_q: Query<(&Health, &Position), With<Player>>,
+    amulet_q: Query<&Position, With<AmuletOfYala>>
 ) {
 
-    let player_hp = player_hp_q.single();
+    let (player_hp, player_pos) = player_hp_q.single();
+    let amulet_pos = amulet_q.single();
     let current_state = turn_state.current().clone();
 
     // calculate new turn
@@ -19,6 +21,10 @@ pub fn end_turn(
 
     if player_hp.current < 1 {
         new_state = TurnState::GameOver;
+    }
+
+    if player_pos == amulet_pos {
+        new_state = TurnState::Victory;
     }
 
     // change state to new turn

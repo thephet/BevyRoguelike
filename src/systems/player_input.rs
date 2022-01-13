@@ -3,6 +3,7 @@ use crate::prelude::*;
 pub fn player_input(
     mut commands: Commands,
     mut keyboard_input: ResMut<Input<KeyCode>>,
+    mut gamelog: ResMut<GameLog>,
     mut player_position_health: Query<(Entity, &Position, &mut Health), With<Player>>,
     enemies: Query<(Entity, &Position), With<Enemy>>,
     mut turn_state: ResMut<State<TurnState>>
@@ -50,6 +51,7 @@ pub fn player_input(
         // This will be like a wait that increases the HP
         else {
             health.current = i32::min(health.max, health.current+1);
+            gamelog.add_entry("\nPlayer recovers 1 HP.".to_string());
         }
 
         // reset keyboard, bevys bug when changing states

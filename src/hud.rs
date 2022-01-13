@@ -33,6 +33,8 @@ fn tooltip_ui(
     mut commands: Commands,
     font: Res<Handle<Font>>,
 ) {
+    let gamelog = GameLog::new();
+    commands.insert_resource(gamelog);
 
     commands
     // root node, just a black rectangle where the text will be
@@ -134,7 +136,7 @@ fn bottom_ui(
                                     style: TextStyle {
                                         font: font.clone(),
                                         font_size: 20.0,
-                                        color: Color::WHITE,
+                                        color: Color::YELLOW,
                                     },
                                 },
                                 TextSection {
@@ -142,7 +144,7 @@ fn bottom_ui(
                                     style: TextStyle {
                                         font: font.clone(),
                                         font_size: 20.0,
-                                        color: Color::GOLD,
+                                        color: Color::YELLOW,
                                     },
                                 },
                                 TextSection {
@@ -150,7 +152,7 @@ fn bottom_ui(
                                     style: TextStyle {
                                         font: font.clone(),
                                         font_size: 20.0,
-                                        color: Color::GOLD,
+                                        color: Color::YELLOW,
                                     },
                                 },
                                 TextSection {
@@ -158,7 +160,7 @@ fn bottom_ui(
                                     style: TextStyle {
                                         font: font.clone(),
                                         font_size: 20.0,
-                                        color: Color::GOLD,
+                                        color: Color::YELLOW,
                                     },
                                 },
                             ],
@@ -281,6 +283,16 @@ fn bottom_ui(
     });
 }
 
+fn update_gamelog(
+    gamelog: Res<GameLog>,
+    mut text_query: Query<&mut Text, With<LogUI>>
+) {
+    let mut text = text_query.single_mut();
+    
+    for (i, entry) in gamelog.entries.iter().enumerate() {
+        text.sections[i].value = entry.clone();    
+    }
+}
 
 fn update_hp_text_and_bar(
     mut text_query: Query<&mut Text, With<HPText>>,
@@ -331,7 +343,7 @@ fn update_tooltip(
     // query to get camera transform
     q_camera: Query<&Transform, With<MainCamera>>,
     // query to get all the entities with Name component
-    q_names: Query<(&Naming, &Health, &Position)>,
+    q_names: Query<(&Naming, &Position, Option<&Health>)>,
     // // query to get tooltip text and box
     mut text_box_query : QuerySet<(
         QueryState<(&mut Text, &mut Visibility), With<ToolTipText>>,
@@ -371,7 +383,7 @@ fn update_tooltip(
             let mut s = String::new();
             let mut maxh = 0;
             let mut currenth = 0;
-            for (name, health, pos) in q_names.iter() {
+            for (name, pos, health) in q_names.iter() {
                 // calculate eucledian distance from click to all entities with Naming
                 let mut dist = (grid_x - pos.x as f32).powi(2) + (grid_y - pos.y as f32).powi(2);
                 dist = dist.sqrt();
@@ -379,15 +391,22 @@ fn update_tooltip(
                 if dist < distance {
                     distance = dist;
                     s = name.0.clone();
-                    maxh = health.max;
-                    currenth = health.current;
+                    // if it also has health component
+                    if let Some(health) = health {
+                        maxh = health.max;
+                        currenth = health.current;
+                    }
                 }
             }
 
             // update tooltip text
             for (mut text, mut visible) in text_box_query.q0().iter_mut() {
                 if distance < 1.0 {
-                    text.sections[0].value = format!("{} HP: {} / {}", s, currenth, maxh);
+                    if currenth > 0 {
+                        text.sections[0].value = format!("{} HP: {} / {}", s, currenth, maxh);
+                    } else {
+                        text.sections[0].value = format!("{}", s);
+                    }
                     visible.is_visible = true;
                 } else {
                     visible.is_visible = false;
@@ -428,6 +447,7 @@ impl Plugin for UIPlugin {
             .add_system_set(
             SystemSet::on_update(TurnState::AwaitingInput)
                 .with_system(update_hp_text_and_bar)
+                .with_system(update_gamelog)
             )
            
            .add_system_set(
