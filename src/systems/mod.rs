@@ -7,6 +7,7 @@ mod combat;
 mod chasing;
 mod end_turn;
 mod movement;
+mod fov;
 
 pub struct SystemsPlugin;
 impl Plugin for SystemsPlugin {
@@ -27,6 +28,7 @@ impl Plugin for AwaitingInputPlugin {
                 .label("awaiting_input")
                 .with_system(player_input::player_input)
                 .with_system(camera::camera_move)
+                .with_system(fov::fov)
             );
     }
 }
@@ -38,8 +40,9 @@ impl Plugin for PlayerPlugin {
             .add_system_set(
                 SystemSet::on_enter(TurnState::PlayerTurn)
                 .label("player")
-                .with_system(movement::movement)
                 .with_system(combat::combat)
+                .with_system(movement::movement)
+                .with_system(fov::fov)
                 .with_system(end_turn::end_turn.label("player_end"))
             );
     }
@@ -56,7 +59,8 @@ impl Plugin for MonsterPlugin {
                 .with_system(chasing::chasing.after("player_end").label("chasing"))
                 .with_system(combat::combat.after("chasing").label("combat"))
                 .with_system(movement::movement.after("combat").label("enemies_move"))
-                .with_system(end_turn::end_turn.after("enemies_move").after("combat"))
+                .with_system(fov::fov.after("enemies_move").label("enemies_fov"))
+                .with_system(end_turn::end_turn.after("enemies_fov"))
             );
     }
 }

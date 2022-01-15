@@ -104,6 +104,10 @@ impl BaseMap for Map {
             self.index_to_point2d(idx1), self.index_to_point2d(idx2)
         )
     }
+
+    fn is_opaque(&self, idx: usize) -> bool {
+        self.tiles[idx as usize] != TileType::Floor
+    }
 }
 
 pub fn map_idx(x: i32, y: i32) -> usize {
@@ -132,15 +136,6 @@ pub fn spawn_map_tiles(
                     })
                     .insert(Position { x: x, y: y, z: 1 })
                     .insert(TileSize::square(1.0));
-
-                    // commands           
-                    // .spawn_bundle(SpriteSheetBundle {
-                    //     texture_atlas: atlas.atlas.clone(),
-                    //     sprite: TextureAtlasSprite::new('.' as usize),
-                    //     ..Default::default()
-                    // })
-                    // .insert(Position { x: x, y: y, z: 0 })
-                    // .insert(TileSize::square(1.0));
                 }
                 TileType::Wall => {
                     // commands

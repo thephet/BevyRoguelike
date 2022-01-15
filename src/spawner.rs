@@ -22,6 +22,7 @@ pub fn spawn_player(
         .insert(Health{current: 20, max: 20})
         .insert(Player)
         .insert(Naming("Player".to_string()))
+        .insert(FieldOfView::new(8))
         .id();
 
     mb.entity_occupy_tile(entity, player_start);
@@ -89,6 +90,7 @@ fn spawn_enemy(
         .insert(Position { x: position.x, y: position.y, z: 2 })
         .insert(TileSize::square(1.0))
         .insert(ChasingPlayer)
+        .insert(FieldOfView::new(6))
         .insert(Enemy).id()
 }
 
