@@ -8,6 +8,7 @@ mod chasing;
 mod end_turn;
 mod movement;
 mod fov;
+mod update_entities_visibility;
 
 pub struct SystemsPlugin;
 impl Plugin for SystemsPlugin {
@@ -29,6 +30,7 @@ impl Plugin for AwaitingInputPlugin {
                 .with_system(player_input::player_input)
                 .with_system(camera::camera_move)
                 .with_system(fov::fov)
+                .with_system(update_entities_visibility::update_entities_visibility)
             );
     }
 }

@@ -132,8 +132,10 @@ pub fn spawn_map_tiles(
                             custom_size: Some(Vec2::new(1.0, 1.0)),
                             ..Default::default()
                         },
+                        visibility: Visibility{is_visible:false},
                         ..Default::default()
                     })
+                    .insert(MapTile)
                     .insert(Position { x: x, y: y, z: 1 })
                     .insert(TileSize::square(1.0));
                 }
@@ -159,8 +161,10 @@ pub fn spawn_map_tiles(
                                 index: '#' as usize, 
                                 ..Default::default()
                             },
+                            visibility: Visibility{is_visible:false},
                             ..Default::default()
                         })
+                        .insert(MapTile)
                         .insert(Position { x: x, y: y, z: 0 })
                         .insert(TileSize::square(1.0));
                 }

@@ -83,6 +83,7 @@ fn spawn_enemy(
         .spawn_bundle(SpriteSheetBundle {
             texture_atlas: atlas,
             sprite: sprite,
+            visibility: Visibility{is_visible:false},
             ..Default::default()
         })
         .insert(Naming(name.clone()))
@@ -109,6 +110,7 @@ fn spawn_amulet_of_yala(
             index: 6, 
             ..Default::default()
         },
+        visibility: Visibility{is_visible:false},
         ..Default::default()
     })
     .insert(Naming("Amulet of Yala".to_string()))

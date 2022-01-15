@@ -8,6 +8,8 @@ pub struct Player;
 #[derive(Component)]
 pub struct Enemy;
 
+#[derive(Component)]
+pub struct MapTile;
 
 #[derive(Component, Clone)]
 pub struct Naming(pub String);
