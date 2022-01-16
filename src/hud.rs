@@ -349,6 +349,8 @@ fn update_tooltip(
         QueryState<(&mut Text, &mut Visibility), With<ToolTipText>>,
         QueryState<(&mut Style, &mut Visibility), With<ToolTipBox>>
     )>,
+    // query to get the player field of view
+    player_fov_q: Query<&FieldOfView, With<Player>>,
 ) {
     // if the user left clicks
     if buttons.just_pressed(MouseButton::Left) {
@@ -376,52 +378,50 @@ fn update_tooltip(
             // transform world coordinates to our grid
             let grid_x = (pos_wld.x / tile_size_x) + (SCREEN_WIDTH / 2) as f32;
             let grid_y = (pos_wld.y / tile_size_y) + (SCREEN_HEIGHT / 2) as f32 - (UI_HEIGHT/2) as f32;
+            let grid_position = Position{x: grid_x as i32, y: grid_y as i32, z:0};
 
             // now we go through all the entities with name to see which one is the nearest
             // some variables placeholders to save the entity name and its health
-            let mut distance = 1.0;
+            let mut good_click = false;
             let mut s = String::new();
             let mut maxh = 0;
             let mut currenth = 0;
-            for (name, pos, health) in q_names.iter() {
-                // calculate eucledian distance from click to all entities with Naming
-                let mut dist = (grid_x - pos.x as f32).powi(2) + (grid_y - pos.y as f32).powi(2);
-                dist = dist.sqrt();
-                
-                if dist < distance {
-                    distance = dist;
+            // obtain also player fov
+            let player_fov = player_fov_q.single();
+
+            q_names.iter()
+                .filter(|(_, pos, _)| 
+                    **pos == grid_position && player_fov.visible_tiles.contains( &((**pos).into()) ) )
+                .for_each(|(name, _, health)| {
                     s = name.0.clone();
+                    good_click = true;
                     // if it also has health component
                     if let Some(health) = health {
                         maxh = health.max;
                         currenth = health.current;
                     }
-                }
-            }
+                });
 
             // update tooltip text
             for (mut text, mut visible) in text_box_query.q0().iter_mut() {
-                if distance < 1.0 {
-                    if currenth > 0 {
-                        text.sections[0].value = format!("{} HP: {} / {}", s, currenth, maxh);
-                    } else {
-                        text.sections[0].value = format!("{}", s);
-                    }
-                    visible.is_visible = true;
+                if currenth > 0 {
+                    text.sections[0].value = format!("{} HP: {} / {}", s, currenth, maxh);
                 } else {
-                    visible.is_visible = false;
+                    text.sections[0].value = format!("{}", s);
                 }
+                visible.is_visible = true;
             }
 
             // update box position
             for (mut boxnode, mut visible) in text_box_query.q1().iter_mut() {
-                if distance < 1.0 {
+                if good_click {
                     boxnode.position.left = Val::Px(pos.x-100.0);
                     boxnode.position.bottom = Val::Px(pos.y);
                     visible.is_visible = true;
                 } else {
                     visible.is_visible = false;
                 }
+                
             }
         }
     }
