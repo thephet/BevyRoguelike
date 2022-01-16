@@ -91,7 +91,7 @@ fn spawn_enemy(
         .insert(Position { x: position.x, y: position.y, z: 2 })
         .insert(TileSize::square(1.0))
         .insert(ChasingPlayer)
-        .insert(FieldOfView::new(6))
+        .insert(FieldOfView::new(8))
         .insert(Enemy).id()
 }
 

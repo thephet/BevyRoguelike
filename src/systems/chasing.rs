@@ -3,7 +3,7 @@ use crate::prelude::*;
 pub fn chasing(
     mut commands: Commands,
     mb: Res<MapBuilder>,
-    movers: Query<(Entity, &Position), With<ChasingPlayer>>,
+    movers: Query<(Entity, &Position, &FieldOfView), With<ChasingPlayer>>,
     positions: Query<(Entity, &Position), With<Health>>,
     player: Query<(Entity, &Position), With<Player>>,
 ) {
@@ -24,7 +24,12 @@ pub fn chasing(
     );
 
     movers.iter()
-    .for_each(| (entity, pos) | {
+    .for_each(| (entity, pos, fov) | {
+        // if monster cannot see player, then just return and do nothing
+        if !fov.visible_tiles.contains( &((*player_pos).into()) ) {
+            return;
+        }
+        //println!("yes");
         let idx = map_idx(pos.x, pos.y);
         if let Some(destination) = DijkstraMap::find_lowest_exit(
             &dijkstra_map, idx, &mb.map

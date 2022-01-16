@@ -18,11 +18,9 @@ pub struct Map {
 
 impl Map {
     pub fn new() -> Self {
-        let tiles = vec![TileType::Void; NUM_TILES];
-        let occupation = vec![None; NUM_TILES];
         Self {
-            tiles: tiles,
-            occupation: occupation,
+            tiles: vec![TileType::Void; NUM_TILES],
+            occupation: vec![None; NUM_TILES],
         }
     }
 
@@ -128,7 +126,7 @@ pub fn spawn_map_tiles(
                     commands
                     .spawn_bundle(SpriteBundle {
                         sprite: Sprite {
-                            color: Color::rgb(0.529, 0.529, 0.529),
+                            color: Color::rgba(0.529, 0.529, 0.529, 1.0),
                             custom_size: Some(Vec2::new(1.0, 1.0)),
                             ..Default::default()
                         },
@@ -156,7 +154,7 @@ pub fn spawn_map_tiles(
                         .spawn_bundle(SpriteSheetBundle {
                             texture_atlas: atlas.atlas.clone(),
                             sprite: TextureAtlasSprite {
-                                color: Color::rgb(0.301, 0.301, 0.301),
+                                color: Color::rgba(0.301, 0.301, 0.301, 1.0),
                                 custom_size: Some(Vec2::new(1.0, 1.0)), 
                                 index: '#' as usize, 
                                 ..Default::default()
