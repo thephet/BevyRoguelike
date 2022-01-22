@@ -4,7 +4,7 @@ pub fn update_entities_visibility(
     mut gamelog: ResMut<GameLog>,
     player_fov_q: Query<&FieldOfView, With<Player>>,
     mut entities_q: Query<(Entity, &Position, &mut Visibility, Option<&MapTile>, Option<&mut Sprite>, Option<&mut TextureAtlasSprite>)>,
-    names_q: Query<&Naming>,
+    names_q: Query<&Naming, Without<Player>>,
 ) {
 
     // get the player fov
