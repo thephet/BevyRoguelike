@@ -1,8 +1,8 @@
 use crate::prelude::*;
 use bracket_lib::prelude::Rect;
 
-mod empty;
-use empty::EmptyArchitect;
+mod automata;
+use automata::CellularAutomataArchitect;
 
 trait MapArchitect {
     fn new(&mut self) -> MapBuilder;
@@ -22,26 +22,7 @@ pub struct MapBuilder {
 impl MapBuilder {
 
     pub fn new() -> Self {
-
-        // let mut mb = MapBuilder{
-        //     map : Map::new(),
-        //     walls : Vec::new(),
-        //     rooms : Vec::new(),
-        //     player_start : Position{x:0, y:0, z:0},
-        //     enemies_start : Vec::new(),
-        //     amulet_start : Position{x:0, y:0, z:0},
-        // };
-        // mb.fill(TileType::Void);
-        // mb.build_random_rooms();
-        // mb.build_corridors();
-        // // rooms are rect, as per bracketlib they return a point
-        // mb.player_start = Position::from(mb.rooms[0].center());
-
-        // // now we will calculate where to place the amulet. 
-        // // that is, as far from the player as possible.   
-        // mb.amulet_start = mb.find_most_distant();
-        // mb
-        let mut architect = EmptyArchitect{};
+        let mut architect = CellularAutomataArchitect{};
         architect.new()
     }
 
@@ -115,11 +96,6 @@ impl MapBuilder {
                 });
                 self.rooms.push(room);
                 self.walls.push(wall);
-                // push the centers to enemies start, which is where they will be placed
-                // except in room 0 where we place the player
-                if self.rooms.len() > 1 {
-                    self.enemies_start.push(Position::from(room.center()));
-                }
             }
         }
     }
@@ -200,6 +176,63 @@ impl MapBuilder {
         self.map.occupation[old_idx] = None;
         self.map.occupation[new_idx] = Some(entity);
     } 
+
+    fn spawn_monsters(&self, start: &Position) -> Vec<Position> 
+    {
+        const NUM_MONSTERS : usize = 50;
+        let mut rng = rand::thread_rng();
+
+        let mut spawnable_tiles : Vec<Position> = self.map.tiles
+            .iter()
+            .enumerate()
+            .filter(|(idx, t)|
+                **t == TileType::Floor &&
+                    DistanceAlg::Pythagoras.distance2d(
+                        (*start).into(),
+                        self.map.index_to_point2d(*idx)
+                    ) > 10.0
+            )
+            .map(|(idx, _)| self.map.index_to_point2d(idx))
+            .map(|point| point.into())
+            .collect();
+
+        let mut spawns = Vec::new();
+        for _ in 0 .. NUM_MONSTERS {
+            let target_index = rng.gen_range(0..spawnable_tiles.len());
+            spawns.push(spawnable_tiles[target_index].clone());
+            spawnable_tiles.remove(target_index);
+        }
+        spawns
+    }
+
+    fn count_neighbors(&self, x: i32, y: i32, map: &Map) -> usize 
+    {
+        let mut neighbors = 0;
+        for iy in -1 ..= 1 {
+            for ix in -1 ..= 1 {
+                if !(ix==0 && iy == 0) && map.tiles[map_idx(x+ix, y+iy)] == TileType::Wall
+                {
+                    neighbors += 1;
+                }
+            }
+        }
+        neighbors
+    }
+
+    // replace tiles fully surrounded by walls with void tiles
+    fn clean_walls_replace_with_void(&mut self) {
+        let mut new_tiles = self.map.tiles.clone();
+        for y in 1 .. SCREEN_HEIGHT -1 {
+            for x in 1 .. SCREEN_WIDTH -1 {
+                let neighbors = self.count_neighbors(x, y, &(self.map));
+                let idx = map_idx(x, y);
+                if neighbors == 8 {
+                    new_tiles[idx] = TileType::Void;
+                }
+            }
+        }
+        self.map.tiles = new_tiles;
+    }
 }
 
 pub fn build_map(
