@@ -138,18 +138,6 @@ pub fn spawn_map_tiles(
                     .insert(TileSize::square(1.0));
                 }
                 TileType::Wall => {
-                    // commands
-                    // .spawn_bundle(SpriteBundle {
-                    //     sprite: Sprite {
-                    //         color: Color::rgba(0.529, 0.529, 0.529, 0.2),
-                    //         custom_size: Some(Vec2::new(1.0, 1.0)),
-                    //         ..Default::default()
-                    //     },
-                    //     ..Default::default()
-                    // })
-                    // .insert(Position { x: x, y: y, z: 1 })
-                    // .insert(TileSize::square(1.0));
-                    
                     commands
                         .spawn_bundle(SpriteSheetBundle {
                             texture_atlas: atlas.atlas.clone(),

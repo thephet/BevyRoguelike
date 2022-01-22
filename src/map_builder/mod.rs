@@ -1,6 +1,13 @@
 use crate::prelude::*;
 use bracket_lib::prelude::Rect;
 
+mod empty;
+use empty::EmptyArchitect;
+
+trait MapArchitect {
+    fn new(&mut self) -> MapBuilder;
+}
+
 const NUM_ROOMS: usize = 20;
 
 pub struct MapBuilder {
@@ -16,40 +23,50 @@ impl MapBuilder {
 
     pub fn new() -> Self {
 
-        let mut mb = MapBuilder{
-            map : Map::new(),
-            walls : Vec::new(),
-            rooms : Vec::new(),
-            player_start : Position{x:0, y:0, z:0},
-            enemies_start : Vec::new(),
-            amulet_start : Position{x:0, y:0, z:0},
-        };
-        mb.fill(TileType::Void);
-        mb.build_random_rooms();
-        mb.build_corridors();
-        // rooms are rect, as per bracketlib they return a point
-        mb.player_start = Position::from(mb.rooms[0].center());
+        // let mut mb = MapBuilder{
+        //     map : Map::new(),
+        //     walls : Vec::new(),
+        //     rooms : Vec::new(),
+        //     player_start : Position{x:0, y:0, z:0},
+        //     enemies_start : Vec::new(),
+        //     amulet_start : Position{x:0, y:0, z:0},
+        // };
+        // mb.fill(TileType::Void);
+        // mb.build_random_rooms();
+        // mb.build_corridors();
+        // // rooms are rect, as per bracketlib they return a point
+        // mb.player_start = Position::from(mb.rooms[0].center());
 
-        // now we will calculate where to place the amulet. that is, as far from the player
-        // as possible. We will calculate this using a Dijkstra map
+        // // now we will calculate where to place the amulet. 
+        // // that is, as far from the player as possible.   
+        // mb.amulet_start = mb.find_most_distant();
+        // mb
+        let mut architect = EmptyArchitect{};
+        architect.new()
+    }
+
+    fn find_most_distant(&self) -> Position {
+
+        // create the dijstra map from player
         let dijstra_map = DijkstraMap::new(
             SCREEN_WIDTH,
             SCREEN_HEIGHT,
-            &vec![mb.map.point2d_to_index(mb.player_start.into())],
-            &mb.map,
+            &vec![self.map.point2d_to_index(self.player_start.into())],
+            &self.map,
             1024.0,
         );
-        // now we will get the tile farer away from the player
+
         const UNREACHABLE: &f32 = &f32::MAX;
-        mb.amulet_start = mb.map.index_to_point2d
+
+        // get the point more far away and return it
+        self.map.index_to_point2d
         (
-            dijstra_map.map.iter()
+        dijstra_map.map.iter()
                 .enumerate()
                 .filter(|(_, dist)| *dist < UNREACHABLE)
                 .max_by(|a,b| a.1.partial_cmp(b.1).unwrap())
                 .unwrap().0
-        ).into();
-        mb
+        ).into()
     }
 
     fn fill(&mut self, tile:TileType) {
