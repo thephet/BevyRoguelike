@@ -1,8 +1,12 @@
 use crate::prelude::*;
 use bracket_lib::prelude::Rect;
 
+mod rooms;
+use rooms::RoomsArchitect;
 mod automata;
 use automata::CellularAutomataArchitect;
+mod drunkard;
+use drunkard::DrunkardsWalkArchitect;
 
 trait MapArchitect {
     fn new(&mut self) -> MapBuilder;
@@ -21,8 +25,14 @@ pub struct MapBuilder {
 
 impl MapBuilder {
 
-    pub fn new() -> Self {
-        let mut architect = CellularAutomataArchitect{};
+    pub fn new() -> Self 
+    {
+        let mut rng = rand::thread_rng();
+        let mut architect: Box<dyn MapArchitect> = match rng.gen_range(0..3) {
+            0 => Box::new(DrunkardsWalkArchitect{}),
+            1 => Box::new(RoomsArchitect{}),
+            _ => Box::new(CellularAutomataArchitect{})
+        };
         architect.new()
     }
 
@@ -217,6 +227,23 @@ impl MapBuilder {
             }
         }
         neighbors
+    }
+
+    // puts walls on the boundary, so when the player moves to boundary it is not open
+    fn wall_around_boundary(&mut self)
+    {
+        for y in 0..SCREEN_HEIGHT {
+            let mut idx = map_idx(0, y);
+            self.map.tiles[idx] = TileType::Wall;
+            idx = map_idx(SCREEN_WIDTH-1, y);
+            self.map.tiles[idx] = TileType::Wall;
+        }
+        for x in 0..SCREEN_WIDTH {
+            let mut idx = map_idx(x, 0);
+            self.map.tiles[idx] = TileType::Wall;
+            idx = map_idx(x, SCREEN_HEIGHT-1);
+            self.map.tiles[idx] = TileType::Wall;
+        }
     }
 
     // replace tiles fully surrounded by walls with void tiles
