@@ -22,7 +22,6 @@ pub fn movement(
                     // and execute the movement
                     position.x = move_signal.destination.x;
                     position.y = move_signal.destination.y;
-                    println!("{} {}", position.x, position.y);
                     // mark the fov to be updated
                     fov.is_dirty = true;
                 }
