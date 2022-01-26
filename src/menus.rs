@@ -39,7 +39,7 @@ fn setup_menu(
                 // Construct a `Vec` of `TextSection`s
                 sections: vec![
                     TextSection {
-                        value: "Roque Quest".to_string(),
+                        value: "Rogue Quest".to_string(),
                         style: TextStyle {
                             font: font.clone(),
                             font_size: 100.0,

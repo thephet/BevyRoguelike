@@ -14,6 +14,10 @@ trait MapArchitect {
     fn new(&mut self) -> MapBuilder;
 }
 
+pub trait MapTheme: Sync + Send {
+    fn tile_to_render(&self, tile_type: TileType) -> SpriteSheetBundle;
+}
+
 const NUM_ROOMS: usize = 20;
 
 pub struct MapBuilder {
