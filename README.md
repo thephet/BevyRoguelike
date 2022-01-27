@@ -12,7 +12,7 @@ The idea is to re-write his code but using Bevy instead of Legion ~~and Bracket-
 to Legion or Bracket-lib will be implement using Bevy if it offers a "better" alternative. Why? It is just a learning experience.
 If you check this, feel more than free to provide any sort of feedback.
 
-[Click here to go to Youtube and see the last video of the game](https://www.youtube.com/watch?v=OJuPTUPgVE8)
+[Click here to go to Youtube and see the last video of the game](https://www.youtube.com/watch?v=OJuPTUPgVE8) [or this one to see the different maps and themes](https://www.youtube.com/watch?v=rF9SKP2W7BY).
 
 Stuff implemented so far:
 
@@ -38,4 +38,4 @@ If you want to see the code, [check this commit](https://github.com/thephet/Bevy
 
 **Chapter 11.** This was a very fun chapter to read, but not very fun to implement, basically because there's no ECS, so there's no Bevy, and this chapter is mostly a copy paste of the original code. I only had to change a few non-important things so that it works with my game. The only change I did was to create a "prefab architect", instead of having prefab like a function that you can apply to any map. I plan to use this prefab architect for boss levels. [check this commit](https://github.com/thephet/BevyRoguelike/tree/31eca1705da44c6d5a233bd9687651d8a9a50c0a).
 
-**Chapter 12** This chapter is about adding themes. Again, like the previous chapter, there's no ECS involved so it is mostly copy paste. The main difference is that Bevy's render is different, so I had to work around that. [check this commit](https://github.com/thephet/BevyRoguelike/tree/4d196c8faa9d78eb71645e903dc5f874d03642fa).
+**Chapter 12** This chapter is about adding themes. Again, like the previous chapter, there's no ECS involved so it is mostly copy paste. The main difference is that Bevy's render is different, so I had to work around that. [check this commit](https://github.com/thephet/BevyRoguelike/tree/4d196c8faa9d78eb71645e903dc5f874d03642fa) and [check this video to see the game](https://www.youtube.com/watch?v=rF9SKP2W7BY).
