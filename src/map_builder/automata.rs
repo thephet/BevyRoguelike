@@ -12,7 +12,7 @@ impl MapArchitect for CellularAutomataArchitect {
             player_start : Position::new(0, 0, 0),
             enemies_start : Vec::new(),
             amulet_start : Position::new(0, 0, 0),
-            theme: super::themes::DungeonTheme::new()
+            theme: super::themes::ForestTheme::new()
         };
 
         self.random_noise_map(&mut mb.map);

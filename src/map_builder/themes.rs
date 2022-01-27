@@ -40,30 +40,48 @@ impl MapTheme for DungeonTheme {
     }
 }
 
-// pub struct ForestTheme {}
+pub struct ForestTheme {}
 
-// impl MapTheme for ForestTheme {
-//     fn tile_to_render(&self, tile_type: TileType) -> Option<TextureAtlasSprite> {
-//         match tile_type {
-//             TileType::Floor => Some(TextureAtlasSprite {
-//                                     color: Color::rgba(0.6, 0.847, 0.788, 1.0),
-//                                     custom_size: Some(Vec2::new(1.0, 1.0)), 
-//                                     index: 219 as usize, // 219 is a full square
-//                                     ..Default::default()
-//                                 }),
-//             TileType::Wall => Some(TextureAtlasSprite {
-//                                 color: Color::rgba(0.172, 0.635, 0.372, 1.0),
-//                                 custom_size: Some(Vec2::new(1.0, 1.0)), 
-//                                 index: 30 as usize, 
-//                                 ..Default::default()
-//                             }),
-//             _ => None,
-//         }
-//     }
-// }
+impl MapTheme for ForestTheme {
+    fn tile_to_render(&self, tile_type: TileType) -> Option<Glyph> {
+        match tile_type {
+            // index 219 is a full square
+            TileType::Floor => Some(Glyph::new_nobkg(219, Color::rgba(0.352, 0.682, 0.380, 1.0))),
+            TileType::Wall => Some(Glyph::new(
+                30 as usize,
+                Color::rgba(0.105, 0.470, 0.215, 1.0),
+                Color::rgba(0.352, 0.682, 0.380, 1.0))
+            ),
+            _ => None,
+        }
+    }
+}
 
-// impl ForestTheme {
-//     pub fn new() -> Box<dyn MapTheme> {
-//         Box::new(Self{})
-//     }
-// }
+impl ForestTheme {
+    pub fn new() -> Box<dyn MapTheme> {
+        Box::new(Self{})
+    }
+}
+
+pub struct CaveTheme {}
+
+impl MapTheme for CaveTheme {
+    fn tile_to_render(&self, tile_type: TileType) -> Option<Glyph> {
+        match tile_type {
+            // index 219 is a full square
+            TileType::Floor => Some(Glyph::new_nobkg(219, Color::rgba(0.749, 0.505, 0.176, 1.0))),
+            TileType::Wall => Some(Glyph::new(
+                178 as usize,
+                Color::rgba(0.549, 0.317, 0.039, 1.0),
+                Color::rgba(0.749, 0.505, 0.176, 1.0))
+            ),
+            _ => None,
+        }
+    }
+}
+
+impl CaveTheme {
+    pub fn new() -> Box<dyn MapTheme> {
+        Box::new(Self{})
+    }
+}

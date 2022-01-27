@@ -126,12 +126,10 @@ pub fn spawn_map_tiles(
                 match mb.map.tiles[idx] {
                     TileType::Floor => {
                         commands
-                        .spawn_bundle(SpriteSheetBundle {
-                            texture_atlas: atlas.atlas.clone(),
-                            sprite: TextureAtlasSprite {
+                        .spawn_bundle(SpriteBundle {
+                            sprite: Sprite {
                                 color: glyph.color,
-                                custom_size: Some(Vec2::new(1.0, 1.0)), 
-                                index: glyph.index,
+                                custom_size: Some(Vec2::new(1.0, 1.0)),
                                 ..Default::default()
                             },
                             visibility: Visibility{is_visible:false},
@@ -142,22 +140,12 @@ pub fn spawn_map_tiles(
                         .insert(TileSize::square(1.0));
                     }
                     TileType::Wall => {
-                        commands
-                            // .spawn_bundle(SpriteBundle {
-                            //     sprite: Sprite {
-                            //         color: Color::rgba(0.529, 0.529, 0.529, 1.0),
-                            //         custom_size: Some(Vec2::new(1.0, 1.0)),
-                            //         ..Default::default()
-                            //     },
-                            //     visibility: Visibility{is_visible:false},
-                            //     ..Default::default()
-                            // })
-                            .spawn_bundle(SpriteSheetBundle {
-                                texture_atlas: atlas.atlas.clone(),
-                                sprite: TextureAtlasSprite {
-                                    color: glyph.color,
-                                    custom_size: Some(Vec2::new(1.0, 1.0)), 
-                                    index: 219 as usize, // 219 is a full square
+                        if let Some(bkg_color) = glyph.bkg_color {
+                            commands
+                            .spawn_bundle(SpriteBundle {
+                                sprite: Sprite {
+                                    color: bkg_color,
+                                    custom_size: Some(Vec2::new(1.0, 1.0)),
                                     ..Default::default()
                                 },
                                 visibility: Visibility{is_visible:false},
@@ -166,6 +154,8 @@ pub fn spawn_map_tiles(
                             .insert(MapTile)
                             .insert(Position { x: x, y: y, z: 0 })
                             .insert(TileSize::square(1.0));
+                        }
+
                         commands
                             .spawn_bundle(SpriteSheetBundle {
                                 texture_atlas: atlas.atlas.clone(),

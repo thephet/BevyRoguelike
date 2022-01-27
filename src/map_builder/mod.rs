@@ -37,7 +37,7 @@ impl MapBuilder {
     pub fn new() -> Self 
     {
         let mut rng = rand::thread_rng();
-        let mut architect: Box<dyn MapArchitect> = match rng.gen_range(0..4) {
+        let mut architect: Box<dyn MapArchitect> = match rng.gen_range(0..3) {
             0 => Box::new(DrunkardsWalkArchitect{}),
             1 => Box::new(RoomsArchitect{}),
             2 => Box::new(CellularAutomataArchitect{}),
