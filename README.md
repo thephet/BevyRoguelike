@@ -1,8 +1,10 @@
 # Bevy Roguelike game
 
 <p float="left">
-  <img src="https://raw.githubusercontent.com/thephet/BevyRoguelike/main/screenshots/title_screen.png" width="45%" />
-  <img src="https://raw.githubusercontent.com/thephet/BevyRoguelike/main/screenshots/ingame.png" width="45%" /> 
+  <img src="https://raw.githubusercontent.com/thephet/BevyRoguelike/main/screenshots/title_screen.png" width="24%" />
+  <img src="https://raw.githubusercontent.com/thephet/BevyRoguelike/main/screenshots/dungeon.png" width="24%" /> 
+  <img src="https://raw.githubusercontent.com/thephet/BevyRoguelike/main/screenshots/forest.png" width="24%" /> 
+  <img src="https://raw.githubusercontent.com/thephet/BevyRoguelike/main/screenshots/caves.png" width="24%" /> 
 </p>
 
 Here I am trying to do a Roguelike game, using Rust and Bevy. I am closely following the amazing book "Hands-on Rust" by Herbert Wolverson. 
@@ -35,3 +37,5 @@ If you want to see the code, [check this commit](https://github.com/thephet/Bevy
 **Chapter 10.** This chapter implements field of view, one of the key elements of classic roguelike games. This was an easy and quick one. Basically, since I commited to use Bracketlib, their field of view lib is amazing, so I just used that. I got annoyed because it forces me to use the Point stuff (as far as I know, perhaps there's some other way around in Rust) while I do all my position using Position (3d), but it is what it is. The code itself was quite different because in Bevy we don't handle the render (at least I don't), so it's all about playing with the different Sprite structs to make the stuff visible or not, or change the color. [check this commit](https://github.com/thephet/BevyRoguelike/tree/bc0a70f4c1911859c71f9728a1044b4deb394585) and [check this youtube video to see the game](https://www.youtube.com/watch?v=OJuPTUPgVE8).
 
 **Chapter 11.** This was a very fun chapter to read, but not very fun to implement, basically because there's no ECS, so there's no Bevy, and this chapter is mostly a copy paste of the original code. I only had to change a few non-important things so that it works with my game. The only change I did was to create a "prefab architect", instead of having prefab like a function that you can apply to any map. I plan to use this prefab architect for boss levels. [check this commit](https://github.com/thephet/BevyRoguelike/tree/31eca1705da44c6d5a233bd9687651d8a9a50c0a).
+
+**Chapter 12** This chapter is about adding themes. Again, like the previous chapter, there's no ECS involved so it is mostly copy paste. The main difference is that Bevy's render is different, so I had to work around that. [check this commit](https://github.com/thephet/BevyRoguelike/tree/4d196c8faa9d78eb71645e903dc5f874d03642fa).
