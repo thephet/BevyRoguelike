@@ -120,52 +120,70 @@ pub fn spawn_map_tiles(
     for y in 0..SCREEN_HEIGHT {
         for x in 0..SCREEN_WIDTH {
             let idx = map_idx(x, y);
+            let glyph = mb.theme.tile_to_render(mb.map.tiles[idx]);                
 
-            match mb.map.tiles[idx] {
-                TileType::Floor => {
-                    commands
-                    // .spawn_bundle(SpriteBundle {
-                    //     sprite: Sprite {
-                    //         color: Color::rgba(0.529, 0.529, 0.529, 1.0),
-                    //         custom_size: Some(Vec2::new(1.0, 1.0)),
-                    //         ..Default::default()
-                    //     },
-                    //     visibility: Visibility{is_visible:false},
-                    //     ..Default::default()
-                    // })
-                    .spawn_bundle(SpriteSheetBundle {
-                        texture_atlas: atlas.atlas.clone(),
-                        sprite: TextureAtlasSprite {
-                            color: Color::rgba(0.529, 0.529, 0.529, 1.0),
-                            custom_size: Some(Vec2::new(1.0, 1.0)), 
-                            index: 219 as usize, // 219 is a full square
-                            ..Default::default()
-                        },
-                        visibility: Visibility{is_visible:false},
-                        ..Default::default()
-                    })
-                    .insert(MapTile)
-                    .insert(Position { x: x, y: y, z: 1 })
-                    .insert(TileSize::square(1.0));
-                }
-                TileType::Wall => {
-                    commands
+            if let Some(glyph) = glyph {
+                match mb.map.tiles[idx] {
+                    TileType::Floor => {
+                        commands
                         .spawn_bundle(SpriteSheetBundle {
                             texture_atlas: atlas.atlas.clone(),
                             sprite: TextureAtlasSprite {
-                                color: Color::rgba(0.301, 0.301, 0.301, 1.0),
+                                color: glyph.color,
                                 custom_size: Some(Vec2::new(1.0, 1.0)), 
-                                index: '#' as usize, 
+                                index: glyph.index,
                                 ..Default::default()
                             },
                             visibility: Visibility{is_visible:false},
                             ..Default::default()
                         })
                         .insert(MapTile)
-                        .insert(Position { x: x, y: y, z: 0 })
+                        .insert(Position { x: x, y: y, z: 1 })
                         .insert(TileSize::square(1.0));
+                    }
+                    TileType::Wall => {
+                        commands
+                            // .spawn_bundle(SpriteBundle {
+                            //     sprite: Sprite {
+                            //         color: Color::rgba(0.529, 0.529, 0.529, 1.0),
+                            //         custom_size: Some(Vec2::new(1.0, 1.0)),
+                            //         ..Default::default()
+                            //     },
+                            //     visibility: Visibility{is_visible:false},
+                            //     ..Default::default()
+                            // })
+                            .spawn_bundle(SpriteSheetBundle {
+                                texture_atlas: atlas.atlas.clone(),
+                                sprite: TextureAtlasSprite {
+                                    color: glyph.color,
+                                    custom_size: Some(Vec2::new(1.0, 1.0)), 
+                                    index: 219 as usize, // 219 is a full square
+                                    ..Default::default()
+                                },
+                                visibility: Visibility{is_visible:false},
+                                ..Default::default()
+                            })
+                            .insert(MapTile)
+                            .insert(Position { x: x, y: y, z: 0 })
+                            .insert(TileSize::square(1.0));
+                        commands
+                            .spawn_bundle(SpriteSheetBundle {
+                                texture_atlas: atlas.atlas.clone(),
+                                sprite: TextureAtlasSprite {
+                                    color: glyph.color,
+                                    custom_size: Some(Vec2::new(1.0, 1.0)), 
+                                    index: glyph.index, 
+                                    ..Default::default()
+                                },
+                                visibility: Visibility{is_visible:false},
+                                ..Default::default()
+                            })
+                            .insert(MapTile)
+                            .insert(Position { x: x, y: y, z: 1 })
+                            .insert(TileSize::square(1.0));
+                    }
+                    TileType::Void => ()
                 }
-                TileType::Void => ()
             }
         }
     }

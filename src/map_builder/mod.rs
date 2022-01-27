@@ -9,13 +9,15 @@ mod drunkard;
 use drunkard::DrunkardsWalkArchitect;
 mod prefab;
 use prefab::PrefabArchitect;
+mod themes;
+pub use themes::*;
 
 trait MapArchitect {
     fn new(&mut self) -> MapBuilder;
 }
 
 pub trait MapTheme: Sync + Send {
-    fn tile_to_render(&self, tile_type: TileType) -> SpriteSheetBundle;
+    fn tile_to_render(&self, tile_type: TileType) -> Option<Glyph>;
 }
 
 const NUM_ROOMS: usize = 20;
@@ -27,6 +29,7 @@ pub struct MapBuilder {
     pub player_start: Position,
     pub enemies_start: Vec<Position>,
     pub amulet_start: Position,
+    pub theme: Box<dyn MapTheme>,
 }
 
 impl MapBuilder {

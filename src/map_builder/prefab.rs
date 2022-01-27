@@ -32,7 +32,8 @@ impl MapArchitect for PrefabArchitect
             walls: Vec::new(),
             player_start : Position::new(0, 0, 0),
             enemies_start : Vec::new(),
-            amulet_start : Position::new(0, 0, 0)
+            amulet_start : Position::new(0, 0, 0),
+            theme: super::themes::DungeonTheme::new()
         };
 
         mb.fill(TileType::Wall);
