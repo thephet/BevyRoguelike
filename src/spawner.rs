@@ -47,25 +47,32 @@ pub fn spawn_enemies(
 
     for position in enemies_start {
 
-        let (hp, name, glyph) = match rng.gen_range(0..4) {
-            0 => orc(),
-            _ => goblin(),
-        };
+        let roll = rng.gen_range(1..6);
+        match roll {
+            1 => spawn_healing_potion(&mut commands, atlas.atlas.clone(), &position),
+            2 => spawn_magic_mapper(&mut commands, atlas.atlas.clone(), &position),
+            _ => {
+                let (hp, name, glyph) = match rng.gen_range(0..4) {
+                    0 => orc(),
+                    _ => goblin(),
+                };
+                
+                let monster_entity = spawn_enemy(
+                    &mut commands, 
+                    atlas.atlas.clone(), 
+                    TextureAtlasSprite {
+                        color: Color::rgb(0.698, 0.094, 0.168),
+                        custom_size: Some(Vec2::new(1.0, 1.0)), 
+                        index: glyph as usize, 
+                        ..Default::default()
+                    },
+                    &name,
+                    hp,
+                    &position);
         
-        let monster_entity = spawn_enemy(
-            &mut commands, 
-            atlas.atlas.clone(), 
-            TextureAtlasSprite {
-                color: Color::rgb(0.698, 0.094, 0.168),
-                custom_size: Some(Vec2::new(1.0, 1.0)), 
-                index: glyph as usize, 
-                ..Default::default()
-            },
-            &name,
-            hp,
-            &position);
-
-        mb.entity_occupy_tile(monster_entity, position);
+                mb.entity_occupy_tile(monster_entity, position);
+            }
+        }
     }
 }
 
@@ -118,6 +125,54 @@ fn spawn_amulet_of_yala(
     .insert(TileSize::square(1.0))
     .insert(Item)
     .insert(AmuletOfYala);
+}
+
+fn spawn_healing_potion(
+    commands: &mut Commands,
+    atlas: Handle<TextureAtlas>,
+    position: &Position,
+) {
+    commands
+    .spawn_bundle(SpriteSheetBundle {
+        texture_atlas: atlas,
+        sprite: TextureAtlasSprite {
+            color: Color::GREEN,
+            custom_size: Some(Vec2::new(1.0, 1.0)), 
+            index: 'p' as usize, 
+            ..Default::default()
+        },
+        visibility: Visibility{is_visible:false},
+        ..Default::default()
+    })
+    .insert(Naming("Healing Potion".to_string()))
+    .insert(Position { x: position.x, y: position.y, z: 2 })
+    .insert(TileSize::square(1.0))
+    .insert(Item)
+    .insert(ProvidesHealing{amount: 6});
+}
+
+fn spawn_magic_mapper(
+    commands: &mut Commands,
+    atlas: Handle<TextureAtlas>,
+    position: &Position,
+) {
+    commands
+    .spawn_bundle(SpriteSheetBundle {
+        texture_atlas: atlas,
+        sprite: TextureAtlasSprite {
+            color: Color::GREEN,
+            custom_size: Some(Vec2::new(1.0, 1.0)), 
+            index: 'm' as usize, 
+            ..Default::default()
+        },
+        visibility: Visibility{is_visible:false},
+        ..Default::default()
+    })
+    .insert(Naming("Dungeon Map".to_string()))
+    .insert(Position { x: position.x, y: position.y, z: 2 })
+    .insert(TileSize::square(1.0))
+    .insert(Item)
+    .insert(ProvidesDungeonMap{});
 }
 
 // player, enemies and tiles have position

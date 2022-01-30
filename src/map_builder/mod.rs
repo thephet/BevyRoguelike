@@ -46,8 +46,8 @@ impl MapBuilder {
         architect.new()
     }
 
-    fn find_most_distant(&self) -> Position {
-
+    fn find_most_distant(&self) -> Position 
+    {
         // create the dijstra map from player
         let dijstra_map = DijkstraMap::new(
             SCREEN_WIDTH,
@@ -120,7 +120,8 @@ impl MapBuilder {
         }
     }
 
-    fn apply_horizontal_tunnel_walls(&mut self, x1:i32, x2:i32, y:i32) {
+    fn apply_horizontal_tunnel_walls(&mut self, x1:i32, x2:i32, y:i32) 
+    {
         use std::cmp::{min, max};
         for x in min(x1,x2) ..= max(x1,x2) {
             if let Some(idx) = self.map.try_idx(Position{x, y, z:0}) {
@@ -139,7 +140,8 @@ impl MapBuilder {
         }
     }
 
-    fn apply_vertical_tunnel_walls(&mut self, y1:i32, y2:i32, x:i32) {
+    fn apply_vertical_tunnel_walls(&mut self, y1:i32, y2:i32, x:i32) 
+    {
         use std::cmp::{min, max};
         for y in min(y1,y2) ..= max(y1,y2) {
             if let Some(idx) = self.map.try_idx(Position{x, y, z:0}) {

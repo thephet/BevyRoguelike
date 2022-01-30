@@ -76,3 +76,10 @@ pub struct  Health {
     pub max: i32
 }
 
+#[derive(Component)]
+pub struct  ProvidesHealing {
+    pub amount: i32,
+}
+
+#[derive(Component)]
+pub struct  ProvidesDungeonMap;

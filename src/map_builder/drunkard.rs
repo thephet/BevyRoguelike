@@ -81,6 +81,7 @@ impl MapArchitect for DrunkardsWalkArchitect {
 
         mb.fill(TileType::Wall);
         let center = Position::new_from2d(SCREEN_WIDTH /2, SCREEN_HEIGHT/2);
+        self.drunkard(&center,&mut  mb.map);
         self.drunkard_loop(&center, &mut mb.map, 4.0);
 
         mb.wall_around_boundary();
