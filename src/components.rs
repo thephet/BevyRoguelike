@@ -83,3 +83,6 @@ pub struct  ProvidesHealing {
 
 #[derive(Component)]
 pub struct  ProvidesDungeonMap;
+
+#[derive(Component)]
+pub struct  Carried(pub Entity);

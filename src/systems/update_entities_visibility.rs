@@ -4,7 +4,8 @@ pub fn update_entities_visibility(
     mut gamelog: ResMut<GameLog>,
     player_fov_q: Query<&FieldOfView, With<Player>>,
     mut entities_q: Query<(Entity, &Position, &mut Visibility, Option<&MapTile>, Option<&mut Sprite>, Option<&mut TextureAtlasSprite>)>,
-    names_q: Query<&Naming, Without<Player>>,
+    names_enemies_q: Query<&Naming, With<Enemy>>,
+    names_items_q: Query<&Naming, With<Item>>,
 ) {
 
     // get the player fov
@@ -41,15 +42,20 @@ pub fn update_entities_visibility(
                     atlas_sprite.color.set_a(0.1);
                 }
             }
-        } else { // if it is not a map tile, but some character
+        } else { // if it is not a map tile, but some character or entity
             // if this thing is on the player fov, make it visible
             if player_fov.visible_tiles.contains(&((*pos).into())) {
                 // if it was not visible before, make it appear and describe in gamelog
                 if vis.is_visible == false {
                     vis.is_visible = true;
-                    // get name of entity and update gamelog
-                    if let Ok(name) = names_q.get(ent) {
+                    // if enemy, get name update gamelog
+                    if let Ok(name) = names_enemies_q.get(ent) {
                         let message = format!("\n{} appears.", name.0);
+                        gamelog.add_entry(message);
+                    }
+                    // if item, provide hint
+                    if let Ok(name) = names_items_q.get(ent) {
+                        let message = format!("\n{}. Press G to grab.", name.0);
                         gamelog.add_entry(message);
                     }
                 }

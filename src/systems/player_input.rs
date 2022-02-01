@@ -6,10 +6,12 @@ pub fn player_input(
     mut gamelog: ResMut<GameLog>,
     mut player_position_health: Query<(Entity, &Position, &mut Health), With<Player>>,
     enemies: Query<(Entity, &Position), With<Enemy>>,
+    items: Query<(Entity, &Position), With<Item>>,
     mut turn_state: ResMut<State<TurnState>>
 ) {
 
     let (player_ent, pos, mut health) = player_position_health.single_mut();
+    let mut action = true;
 
     let mut new_position = pos.clone();
 
@@ -21,7 +23,18 @@ pub fn player_input(
             KeyCode::Right => new_position.x += 1,
             KeyCode::Down => new_position.y -= 1,
             KeyCode::Up => new_position.y += 1,
-            _ => (),
+            KeyCode::G => {
+                // Grab item at this position
+                items.iter()
+                    .filter(|(_, item_pos)| **item_pos == *pos)
+                    .for_each(|(item_ent, _)| {
+                        // remove render info and add carried component
+                        commands.entity(item_ent).remove_bundle::<SpriteSheetBundle>()
+                            .insert(Carried(player_ent));
+                    }
+                );
+            }
+            _ => action = false,
         }
 
         // move to new position   
@@ -49,7 +62,7 @@ pub fn player_input(
         } 
         // else means the user clicked an action which did not move the player.
         // This will be like a wait that increases the HP
-        else {
+        else if !action {
             health.current = i32::min(health.max, health.current+1);
             gamelog.add_entry("\nPlayer recovers 1 HP.".to_string());
         }
