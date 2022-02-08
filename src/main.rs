@@ -8,8 +8,7 @@ mod renderutils;
 mod spawner;
 mod systems;
 mod utils;
-mod hud;
-mod menus;
+mod ui;
 
 mod prelude {
     pub use bevy::prelude::*;
@@ -26,8 +25,7 @@ mod prelude {
     pub use crate::spawner::*;
     pub use crate::systems::*;
     pub use crate::utils::*;
-    pub use crate::hud::*;
-    pub use crate::menus::*;
+    pub use crate::ui::*;
 }
 
 use prelude::*;
@@ -82,7 +80,6 @@ fn main() {
         .add_plugin(SpawnerPlugin)
         .add_plugin(SystemsPlugin)
         .add_plugin(UIPlugin)
-        .add_plugin(MenuPlugin)
         .add_system_set_to_stage(
             CoreStage::PostUpdate,
             SystemSet::new()
