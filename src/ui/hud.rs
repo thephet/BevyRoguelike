@@ -10,6 +10,9 @@ struct HPText;
 #[derive(Component)]
 struct HPBar;
 
+#[derive(Component)]
+struct InventoryText;
+
 fn bottom_hud(
     mut commands: Commands,
     font: Res<Handle<Font>>,
@@ -123,6 +126,7 @@ fn bottom_hud(
                 style: Style {
                     size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                     align_items: AlignItems::FlexEnd,
+                    flex_direction: FlexDirection::ColumnReverse,
                     ..Default::default()
                 },
                 color: Color::rgb(0.0, 0.0, 0.0).into(),
@@ -134,82 +138,134 @@ fn bottom_hud(
                 parent.spawn_bundle(NodeBundle {
                     style: Style {
                         size: Size::new(Val::Percent(100.0), Val::Percent(33.0)),
-                        // Place content up to down
                         flex_direction: FlexDirection::Row,
                         ..Default::default()
                     },
                     color: Color::rgb(0.0, 0.0, 0.0).into(),
                     ..Default::default()
                 })
-                // container where to place the HP text
-                .with_children(|parent| {
+                    // container where to place the HP text
+                    .with_children(|parent| {
+                        parent
+                            .spawn_bundle(NodeBundle {
+                                style: Style {
+                                    size: Size::new(Val::Percent(35.0), Val::Percent(100.0)),
+                                    // Place content up to down
+                                    flex_direction: FlexDirection::ColumnReverse,
+                                    ..Default::default()
+                                },
+                                color: Color::rgb(0.0, 0.0, 0.0).into(),
+                                ..Default::default()
+                            })
+                            // the actual HP text
+                            .with_children(|parent| {
+                                parent.spawn_bundle(TextBundle {
+                                    style: Style {
+                                        // Set height to font size * number of text lines
+                                        size: Size::new(Val::Auto, Val::Px(20. * 1.)),
+                                        margin: Rect {
+                                            left: Val::Auto,
+                                            right: Val::Auto,
+                                            bottom: Val::Auto,
+                                            top: Val::Auto,
+                                        },
+                                        ..Default::default()
+                                    },
+                                    text: Text::with_section(
+                                        "HP: 20 / 20".to_string(),
+                                        TextStyle {
+                                            font_size: 20.0,
+                                            font: font.clone(),
+                                            color: Color::rgb(0.99, 0.99, 0.99),
+                                        },
+                                        Default::default(),
+                                    ),
+                                    ..Default::default()
+                                })
+                                .insert(HPText);
+                            });
+                        // outside HP bar
+                        parent
+                            .spawn_bundle(NodeBundle {
+                                style: Style {
+                                    size: Size::new(Val::Percent(63.0), Val::Px(20. * 1.)),
+                                    border: Rect::all(Val::Px(5.0)),
+                                    margin: Rect {
+                                        left: Val::Auto,
+                                        right: Val::Auto,
+                                        bottom: Val::Auto,
+                                        top: Val::Auto,
+                                    },
+                                    ..Default::default()
+                                },
+                                color: Color::rgb(0.5, 0.1, 0.1).into(),
+                                ..Default::default()
+                            })
+                            // inside HP bar
+                            .with_children(|parent| {
+                                parent.spawn_bundle(NodeBundle {
+                                    style: Style {
+                                        size: Size::new(Val::Percent(50.0), Val::Percent(100.0)),
+                                        ..Default::default()
+                                    },
+                                    color: Color::rgb(0.99, 0.1, 0.1).into(),
+                                    ..Default::default()
+                                })
+                                .insert(HPBar);
+                            });
+                    });
+
+                    // Node for the Inventory text
                     parent.spawn_bundle(NodeBundle {
                         style: Style {
-                            size: Size::new(Val::Percent(35.0), Val::Percent(100.0)),
-                            // Place content up to down
-                            flex_direction: FlexDirection::ColumnReverse,
+                            size: Size::new(Val::Percent(100.0), Val::Percent(33.0)),
+                            flex_direction: FlexDirection::Row,
                             ..Default::default()
                         },
                         color: Color::rgb(0.0, 0.0, 0.0).into(),
                         ..Default::default()
                     })
-                    // the actual HP text
-                    .with_children(|parent| {
-                        parent.spawn_bundle(TextBundle {
-                            style: Style {
-                                // Set height to font size * number of text lines
-                                size: Size::new(Val::Auto, Val::Px(20. * 1.)),
-                                // Set left margin to auto to push the text to the right
-                                margin: Rect {
-                                    left: Val::Auto,
-                                    right: Val::Auto,
-                                    bottom: Val::Auto,
-                                    top: Val::Auto,
-                                },
-                                ..Default::default()
-                            },
-                            text: Text::with_section(
-                                "HP: 20 / 20".to_string(),
-                                TextStyle {
-                                    font_size: 20.0,
-                                    font: font.clone(),
-                                    color: Color::rgb(0.99, 0.99, 0.99),
-                                },
-                                Default::default(),
-                            ),
-                            ..Default::default()
-                        })
-                        .insert(HPText);
-                    });
-                    // outside HP bar
-                    parent.spawn_bundle(NodeBundle {
-                        style: Style {
-                            size: Size::new(Val::Percent(63.0), Val::Px(20. * 1.)),
-                            border: Rect::all(Val::Px(5.0)),
-                            margin: Rect {
-                                left: Val::Auto,
-                                right: Val::Auto,
-                                bottom: Val::Auto,
-                                top: Val::Auto,
-                            },
-                            ..Default::default()
-                        },
-                        color: Color::rgb(0.5, 0.1, 0.1).into(),
-                        ..Default::default()
-                    })
-                    // inside HP bar
-                    .with_children(|parent| {
-                        parent.spawn_bundle(NodeBundle {
-                            style: Style {
-                                size: Size::new(Val::Percent(50.0), Val::Percent(100.0)),
-                                ..Default::default()
-                            },
-                            color: Color::rgb(0.99, 0.1, 0.1).into(),
-                            ..Default::default()
-                        })
-                        .insert(HPBar);
-                    });
-                });
+                        // container where to place the Inventory text
+                        .with_children(|parent| {
+                            parent
+                                .spawn_bundle(NodeBundle {
+                                    style: Style {
+                                        size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                                        ..Default::default()
+                                    },
+                                    color: Color::rgb(0.0, 0.0, 0.0).into(),
+                                    ..Default::default()
+                                })
+                            // the actual Inventory text
+                            .with_children(|parent| {
+                                parent.spawn_bundle(TextBundle {
+                                    style: Style {
+                                        // Set height to font size * number of text lines
+                                        size: Size::new(Val::Auto, Val::Px(20. * 1.)),
+                                        // Set left margin to auto to push the text to the right
+                                        margin: Rect {
+                                            left: Val::Px(10.),
+                                            right: Val::Auto,
+                                            bottom: Val::Auto,
+                                            top: Val::Auto,
+                                        },
+                                        ..Default::default()
+                                    },
+                                    text: Text::with_section(
+                                        "(I)nventory: No items.".to_string(),
+                                        TextStyle {
+                                            font_size: 20.0,
+                                            font: font.clone(),
+                                            color: Color::rgb(0.99, 0.99, 0.99),
+                                        },
+                                        Default::default(),
+                                    ),
+                                    ..Default::default()
+                                })
+                                .insert(InventoryText);
+                            });
+                        });
+
             });
         });
     });
