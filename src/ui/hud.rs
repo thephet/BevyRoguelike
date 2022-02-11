@@ -23,7 +23,7 @@ fn bottom_hud(
     .spawn_bundle(NodeBundle {
         style: Style {
             size: Size::new(Val::Percent(100.0), Val::Px(100.0)),
-            justify_content: JustifyContent::SpaceBetween,
+            //justify_content: JustifyContent::SpaceBetween,
             ..Default::default()
         },
         color: UiColor(Color::rgb(0.0, 0.0, 0.0)),
@@ -244,7 +244,7 @@ fn bottom_hud(
                                         size: Size::new(Val::Auto, Val::Px(20. * 1.)),
                                         // Set left margin to auto to push the text to the right
                                         margin: Rect {
-                                            left: Val::Px(10.),
+                                            left: Val::Auto,
                                             right: Val::Auto,
                                             bottom: Val::Auto,
                                             top: Val::Auto,
@@ -252,7 +252,48 @@ fn bottom_hud(
                                         ..Default::default()
                                     },
                                     text: Text::with_section(
-                                        "(I)nventory: No items.".to_string(),
+                                        "(I)nventory".to_string(),
+                                        TextStyle {
+                                            font_size: 20.0,
+                                            font: font.clone(),
+                                            color: Color::rgb(0.99, 0.99, 0.99),
+                                        },
+                                        Default::default(),
+                                    ),
+                                    ..Default::default()
+                                })
+                                .insert(InventoryText);
+                            });
+                        })
+
+                        // container where to place the Equipmem text
+                        .with_children(|parent| {
+                            parent
+                                .spawn_bundle(NodeBundle {
+                                    style: Style {
+                                        size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                                        ..Default::default()
+                                    },
+                                    color: Color::rgb(0.0, 0.0, 0.0).into(),
+                                    ..Default::default()
+                                })
+                            // the actual Inventory text
+                            .with_children(|parent| {
+                                parent.spawn_bundle(TextBundle {
+                                    style: Style {
+                                        // Set height to font size * number of text lines
+                                        size: Size::new(Val::Auto, Val::Px(20. * 1.)),
+                                        // Set left margin to auto to push the text to the right
+                                        margin: Rect {
+                                            left: Val::Auto,
+                                            right: Val::Auto,
+                                            bottom: Val::Auto,
+                                            top: Val::Auto,
+                                        },
+                                        ..Default::default()
+                                    },
+                                    text: Text::with_section(
+                                        "(E)quipment".to_string(),
                                         TextStyle {
                                             font_size: 20.0,
                                             font: font.clone(),
@@ -313,8 +354,14 @@ impl Plugin for HudPlugin {
                 SystemSet::on_exit(TurnState::StartScreen)
                     .with_system(bottom_hud).label("bottom_hud")
                 )
+
+            .add_system_set(
+                SystemSet::on_inactive_update(TurnState::AwaitingInput)
+                    .with_system(update_hp_text_and_bar)
+                    .with_system(update_gamelog)
+                )
     
-                .add_system_set(
+            .add_system_set(
                 SystemSet::on_update(TurnState::AwaitingInput)
                     .with_system(update_hp_text_and_bar)
                     .with_system(update_gamelog)

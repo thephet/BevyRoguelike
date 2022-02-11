@@ -14,6 +14,8 @@ pub enum TurnState {
     MonsterTurn,
     GameOver,
     Victory,
+    //EquipmentPopup,
+    InventoryPopup,
 }
 
 pub struct GameLog {

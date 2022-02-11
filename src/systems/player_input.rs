@@ -12,6 +12,7 @@ pub fn player_input(
 
     let (player_ent, pos, mut health) = player_position_health.single_mut();
     let mut action = true;
+    let mut wait = false;
 
     let mut new_position = pos.clone();
 
@@ -34,7 +35,12 @@ pub fn player_input(
                     }
                 );
             }
-            _ => action = false,
+            KeyCode::I => {
+                turn_state.push(TurnState::InventoryPopup).unwrap();
+                // turn_state.set(TurnState::InventoryPopup).unwrap();
+                action = false;
+            }
+            _ => wait = true,
         }
 
         // move to new position   
@@ -62,14 +68,18 @@ pub fn player_input(
         } 
         // else means the user clicked an action which did not move the player.
         // This will be like a wait that increases the HP
-        else if !action {
+        else if wait {
             health.current = i32::min(health.max, health.current+1);
             gamelog.add_entry("\nPlayer recovers 1 HP.".to_string());
         }
 
         // reset keyboard, bevys bug when changing states
         keyboard_input.reset(key);
-        // update state
-        turn_state.set(TurnState::PlayerTurn).unwrap();
+
+        if action {
+            // update state
+            turn_state.set(TurnState::PlayerTurn).unwrap();
+        }
+
     }
 }
