@@ -37,7 +37,6 @@ pub fn player_input(
             }
             KeyCode::I => {
                 turn_state.push(TurnState::InventoryPopup).unwrap();
-                // turn_state.set(TurnState::InventoryPopup).unwrap();
                 action = false;
             }
             _ => wait = true,

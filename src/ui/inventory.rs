@@ -3,6 +3,9 @@ use crate::prelude::*;
 #[derive(Component)]
 struct InventoryUI;
 
+#[derive(Component)]
+struct InventoryText;
+
 fn inventory_popup(
     mut commands: Commands,
     font: Res<Handle<Font>>,
@@ -12,7 +15,6 @@ fn inventory_popup(
     .spawn_bundle(NodeBundle {
         style: Style {
             size: Size::new(Val::Percent(50.), Val::Percent(50.)),
-            flex_direction: FlexDirection::Column,
             position_type: PositionType::Absolute,
             position: Rect {
                 left: Val::Percent(25.0),
@@ -32,51 +34,82 @@ fn inventory_popup(
         parent.spawn_bundle(NodeBundle {
             style: Style {
                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
-                //align_items: AlignItems::Stretch,
+                flex_direction: FlexDirection::ColumnReverse,
                 ..Default::default()
             },
             color: UiColor(Color::rgb(0.0, 0.0, 0.0)),
             ..Default::default()
         })
 
+        // now the different text inside box
         .with_children(|parent| {
-            // Spawn menu text
-            parent.spawn_bundle(TextBundle {
+            // invetory title
+            parent.spawn_bundle(NodeBundle {
                 style: Style {
-                    size: Size::new(Val::Auto, Val::Px(80. * 1.)),
-                    margin: Rect {
-                        left: Val::Auto,
-                        right: Val::Auto,
-                        bottom: Val::Auto,
-                        top: Val::Auto,
-                    },
+                    size: Size::new(Val::Percent(100.0), Val::Px(100. * 1.)),
+                    flex_direction: FlexDirection::ColumnReverse,
                     ..Default::default()
                 },
-                text: Text {
-                    sections: vec![
-                        TextSection {
-                            value: "Inventory".to_string(),
-                            style: TextStyle {
-                                font: font.clone(),
-                                font_size: 60.0,
-                                color: Color::GOLD,
-                            },
-                        },
-                        TextSection {
-                            value: "\nList of items.".to_string(),
-                            style: TextStyle {
-                                font: font.clone(),
-                                font_size: 20.0,
-                                color: Color::WHITE,
-                            },
-                        },
-                    ],
-                    alignment: TextAlignment {
-                        horizontal: HorizontalAlign::Center,
-                        vertical: VerticalAlign::Center,
-                    },
-                },
+                color: Color::rgb(0.5, 0.0, 0.0).into(),
                 ..Default::default()
+            })
+            .with_children(|parent| {
+                parent.spawn_bundle(TextBundle {
+                    style: Style {
+                        size: Size::new(Val::Auto, Val::Px(50. * 1.)),
+                        margin: Rect {
+                            left: Val::Auto,
+                            right: Val::Auto,
+                            top: Val::Auto,
+                            bottom: Val::Auto,
+                        },
+                        ..Default::default()
+                    },
+                    text: Text::with_section(
+                        "Inventory".to_string(),
+                        TextStyle {
+                            font_size: 50.0,
+                            font: font.clone(),
+                            color: Color::GOLD,
+                        },
+                        Default::default(),
+                    ),
+                    ..Default::default()
+                });
+            });
+            parent.spawn_bundle(NodeBundle {
+                style: Style {
+                    size: Size::new(Val::Percent(100.0), Val::Px(100. * 1.)),
+                    flex_direction: FlexDirection::ColumnReverse,
+                    ..Default::default()
+                },
+                color: Color::rgb(0.0, 0.0, 0.5).into(),
+                ..Default::default()
+            })
+            .with_children(|parent| {
+                parent.spawn_bundle(TextBundle {
+                    style: Style {
+                        size: Size::new(Val::Auto, Val::Px(20. * 1.)),
+                        margin: Rect {
+                            left: Val::Auto,
+                            right: Val::Auto,
+                            top: Val::Auto,
+                            bottom: Val::Auto,
+                        },
+                        ..Default::default()
+                    },
+                    text: Text::with_section(
+                        "You have no items".to_string(),
+                        TextStyle {
+                            font_size: 20.0,
+                            font: font.clone(),
+                            color: Color::WHITE,
+                        },
+                        Default::default(),
+                    ),
+                    ..Default::default()
+                })
+                .insert(InventoryText);;
             });
         });
     });
@@ -102,6 +135,17 @@ pub fn inventory_input(
     }
 }
 
+fn update_inventory_text(
+    mut text_query: Query<&mut Text, With<InventoryText>>,
+    items_query: Query<&Naming, With<Carried>>,
+) {
+
+    // update HP text
+    for mut text in text_query.iter_mut() {
+        text.sections[0].value = format!("HP:");
+    }
+}
+
 // function to kill either start screen or game over screen
 fn despawn_menu(
     mut commands: Commands, 
@@ -121,6 +165,7 @@ impl Plugin for InventoryPlugin {
         .add_system_set(
             SystemSet::on_update(TurnState::InventoryPopup)
                 .with_system(inventory_input)
+                .with_system(update_inventory_text)
         )
 
         // cleanup when exiting
