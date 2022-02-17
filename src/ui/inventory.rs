@@ -81,7 +81,7 @@ fn inventory_popup(
             });
             parent.spawn_bundle(NodeBundle {
                 style: Style {
-                    size: Size::new(Val::Percent(100.0), Val::Px(100. * 1.)),
+                    size: Size::new(Val::Percent(100.0), Val::Px(20. * 6.)),
                     flex_direction: FlexDirection::ColumnReverse,
                     ..Default::default()
                 },
@@ -91,7 +91,7 @@ fn inventory_popup(
             .with_children(|parent| {
                 parent.spawn_bundle(TextBundle {
                     style: Style {
-                        size: Size::new(Val::Auto, Val::Px(20. * 1.)),
+                        size: Size::new(Val::Auto, Val::Px(20. * 6.)),
                         margin: Rect {
                             left: Val::Auto,
                             right: Val::Auto,
@@ -100,15 +100,60 @@ fn inventory_popup(
                         },
                         ..Default::default()
                     },
-                    text: Text::with_section(
-                        "You have no items".to_string(),
-                        TextStyle {
-                            font_size: 20.0,
-                            font: font.clone(),
-                            color: Color::WHITE,
-                        },
-                        Default::default(),
-                    ),
+                    text: Text {
+                        // Construct a `Vec` of `TextSection`s
+                        sections: vec![
+                            TextSection {
+                                value: "You have no items.".to_string(),
+                                style: TextStyle {
+                                    font: font.clone(),
+                                    font_size: 20.0,
+                                    color: Color::WHITE,
+                                },
+                            },
+                            TextSection {
+                                value: "\n ".to_string(),
+                                style: TextStyle {
+                                    font: font.clone(),
+                                    font_size: 20.0,
+                                    color: Color::GOLD,
+                                },
+                            },
+                            TextSection {
+                                value: "\n ".to_string(),
+                                style: TextStyle {
+                                    font: font.clone(),
+                                    font_size: 20.0,
+                                    color: Color::GOLD,
+                                },
+                            },
+                            TextSection {
+                                value: "\n ".to_string(),
+                                style: TextStyle {
+                                    font: font.clone(),
+                                    font_size: 20.0,
+                                    color: Color::GOLD,
+                                },
+                            },
+                            TextSection {
+                                value: "\n ".to_string(),
+                                style: TextStyle {
+                                    font: font.clone(),
+                                    font_size: 20.0,
+                                    color: Color::GOLD,
+                                },
+                            },
+                            TextSection {
+                                value: "\n ".to_string(),
+                                style: TextStyle {
+                                    font: font.clone(),
+                                    font_size: 20.0,
+                                    color: Color::GOLD,
+                                },
+                            },
+                        ],
+                        ..Default::default()
+                    },
                     ..Default::default()
                 })
                 .insert(InventoryText);
@@ -169,7 +214,12 @@ fn update_inventory_text(
     }
     for (index, (entity, item)) in items_query.iter().enumerate() {
         // update text
-        text.sections[index].value = format!("{}", item.0);
+        if index == 0 {
+            text.sections[index].value = format!("{}", item.0);
+        } else {
+            text.sections[index].value = format!("\n{}", item.0);
+        }
+        
         if index as i32 == selected_item {
             commands.entity(entity).despawn_recursive();
         }
