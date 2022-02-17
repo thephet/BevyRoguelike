@@ -6,6 +6,8 @@ struct InventoryUI;
 #[derive(Component)]
 struct InventoryText;
 
+struct ChosenItemEvent(i32);
+
 fn inventory_popup(
     mut commands: Commands,
     font: Res<Handle<Font>>,
@@ -109,40 +111,68 @@ fn inventory_popup(
                     ),
                     ..Default::default()
                 })
-                .insert(InventoryText);;
+                .insert(InventoryText);
             });
         });
     });
 }
 
-pub fn inventory_input(
+fn inventory_input(
+    mut chosen_item: EventWriter<ChosenItemEvent>,
     mut keyboard_input: ResMut<Input<KeyCode>>,
     mut turn_state: ResMut<State<TurnState>>,
     mut player_query: Query<&mut Health, With<Player>>,
 ) {
-
+    // current item selected by user, to send as event
+    let current_item = 0;
     // get player max HP
     let mut health = player_query.single_mut();
 
     let key = keyboard_input.get_pressed().next().cloned();
-    if let Some(key) = key {
-        health.current = i32::min(health.max, health.current+1);
-        // reset keyboard, bevys bug when changing states
-        keyboard_input.reset(key);
-        // update state
-        turn_state.pop().unwrap();
-        
+    if let Some(key) = key 
+    {
+        match key {
+            KeyCode::Escape => {
+                // reset keyboard, bevys bug when changing states
+                keyboard_input.reset(key);
+                // update state
+                turn_state.pop().unwrap();
+            }
+            KeyCode::Return => {
+                chosen_item.send(ChosenItemEvent(current_item));
+                health.current = i32::min(health.max, health.current+1);
+                // update state
+                turn_state.pop().unwrap();
+            }
+            _ => (),
+        }
     }
 }
 
 fn update_inventory_text(
+    mut commands: Commands, 
+    mut chosen_item: EventReader<ChosenItemEvent>,
     mut text_query: Query<&mut Text, With<InventoryText>>,
-    items_query: Query<&Naming, With<Carried>>,
+    items_query: Query<(Entity, &Naming), With<Carried>>,
 ) {
 
-    // update HP text
-    for mut text in text_query.iter_mut() {
-        text.sections[0].value = format!("HP:");
+    // if user selected an item, then it will have a number over 0, otherwise -1
+    let mut selected_item = -1;
+    for se in chosen_item.iter() {
+        selected_item = se.0 as i32;
+    }
+
+    let mut text = text_query.single_mut();
+
+    if items_query.is_empty() {
+        text.sections[0].value = format!("You have no items.");
+    }
+    for (index, (entity, item)) in items_query.iter().enumerate() {
+        // update text
+        text.sections[index].value = format!("{}", item.0);
+        if index as i32 == selected_item {
+            commands.entity(entity).despawn_recursive();
+        }
     }
 }
 
@@ -161,11 +191,13 @@ impl Plugin for InventoryPlugin {
     fn build(&self, app: &mut App) {
         app
 
+        .add_event::<ChosenItemEvent>()
+
         // listening to user input on inventory screen
         .add_system_set(
             SystemSet::on_update(TurnState::InventoryPopup)
-                .with_system(inventory_input)
-                .with_system(update_inventory_text)
+                .with_system(inventory_input.label("inventory_input"))
+                .with_system(update_inventory_text.after("inventory_input"))
         )
 
         // cleanup when exiting
