@@ -7,7 +7,7 @@ struct InventoryUI;
 struct InventoryText;
 
 struct ChosenItemEvent(i32);
-struct HighlightedItemEvent(i32);
+struct HighlightedItem(i32);
 
 fn inventory_popup(
     mut commands: Commands,
@@ -165,52 +165,43 @@ fn inventory_popup(
 
 fn inventory_input(
     mut chosen_item: EventWriter<ChosenItemEvent>,
-    mut highlighted_item: EventWriter<HighlightedItemEvent>,
+    mut highlighted_item: ResMut<HighlightedItem>,
     mut keyboard_input: ResMut<Input<KeyCode>>,
     mut turn_state: ResMut<State<TurnState>>,
-    mut player_query: Query<&mut Health, With<Player>>,
-    text_query: Query<With<InventoryText>>,
+    text_query: Query<&Text, With<InventoryText>>,
 ) {
-    // current item selected by user, to send as event
-    let mut current_item = 0;
-    // get player max HP
-    let mut health = player_query.single_mut();
     // get the number of slots for items
-    let item_slots = text_query.iter().count();
+    let item_slots = text_query.single().sections.len();
 
     let key = keyboard_input.get_pressed().next().cloned();
     if let Some(key) = key 
     {
         match key {
             KeyCode::Escape => { // close inventory window
-                // reset keyboard, bevys bug when changing states
-                keyboard_input.reset(key);
                 // update state
                 turn_state.pop().unwrap();
             }
             KeyCode::Return => { // activate selected item and close inventory window
-                chosen_item.send(ChosenItemEvent(current_item));
-                health.current = i32::min(health.max, health.current+1);
+                chosen_item.send(ChosenItemEvent(highlighted_item.0));
                 // update state
                 turn_state.pop().unwrap();
             }
             KeyCode::Up => { // move to previous item in list
-                current_item = i32::max(0, current_item-1);
-                highlighted_item.send(HighlightedItemEvent(current_item));
+                highlighted_item.0 = i32::max(0, highlighted_item.0-1);
             }
             KeyCode::Down => { // move to next item in list
-                current_item = i32::min(item_slots as i32, current_item+1);
-                highlighted_item.send(HighlightedItemEvent(current_item));
+                highlighted_item.0 = i32::min(item_slots as i32, highlighted_item.0+1);
             }
             _ => (),
         }
+        keyboard_input.reset(key);
     }
 }
 
 fn update_inventory_text(
-    mut commands: Commands, 
+    mut commands: Commands,
     mut chosen_item: EventReader<ChosenItemEvent>,
-    mut highlighted_item: EventReader<HighlightedItemEvent>,
+    mut highlighted_item: ResMut<HighlightedItem>,
     mut text_query: Query<&mut Text, With<InventoryText>>,
     items_query: Query<(Entity, &Naming), With<Carried>>,
 ) {
@@ -221,23 +212,17 @@ fn update_inventory_text(
         selected_item = se.0 as i32;
     }
 
-    // there will be always a highlighted item, default it will be 0
-    let mut high_item = 0;
-    for hi in highlighted_item.iter() {
-        high_item = hi.0 as i32;
-    }
-
     let mut text = text_query.single_mut();
-    let mut mark = "";
+    let mut mark = " ";
 
     if items_query.is_empty() {
         text.sections[0].value = format!("You have no items.");
     } else {
         for (index, (entity, item)) in items_query.iter().enumerate() {
-            if index as i32 == high_item {
+            if index as i32 == highlighted_item.0 {
                 mark = "-";
             } else {
-                mark = "";
+                mark = " ";
             }
             // update text
             if index == 0 {
@@ -247,6 +232,7 @@ fn update_inventory_text(
             }
             
             if index as i32 == selected_item {
+                highlighted_item.0 = 0;
                 commands.entity(entity).despawn_recursive();
             }
         }
@@ -269,7 +255,7 @@ impl Plugin for InventoryPlugin {
         app
 
         .add_event::<ChosenItemEvent>()
-        .add_event::<HighlightedItemEvent>()
+        .insert_resource(HighlightedItem(0))
 
         // listening to user input on inventory screen
         .add_system_set(
