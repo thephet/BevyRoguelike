@@ -9,6 +9,8 @@ struct InventoryText;
 struct ChosenItemEvent(i32);
 struct HighlightedItem(i32);
 
+const INVENTORY_SLOTS: i32 = 10;
+
 fn inventory_popup(
     mut commands: Commands,
     font: Res<Handle<Font>>,
@@ -82,7 +84,7 @@ fn inventory_popup(
             });
             parent.spawn_bundle(NodeBundle {
                 style: Style {
-                    size: Size::new(Val::Percent(100.0), Val::Px(20. * 6.)),
+                    size: Size::new(Val::Percent(100.0), Val::Px(20. * INVENTORY_SLOTS as f32)),
                     flex_direction: FlexDirection::ColumnReverse,
                     ..Default::default()
                 },
@@ -90,9 +92,20 @@ fn inventory_popup(
                 ..Default::default()
             })
             .with_children(|parent| {
+                let mut sections = Vec::new();
+                for _ in 0..INVENTORY_SLOTS {
+                    sections.push(TextSection {
+                        value: "\n ".to_string(),
+                        style: TextStyle {
+                            font: font.clone(),
+                            font_size: 20.0,
+                            color: Color::WHITE,
+                        },
+                    });
+                }
                 parent.spawn_bundle(TextBundle {
                     style: Style {
-                        size: Size::new(Val::Auto, Val::Px(20. * 6.)),
+                        size: Size::new(Val::Auto, Val::Px(20. * INVENTORY_SLOTS as f32)),
                         margin: Rect {
                             left: Val::Auto,
                             right: Val::Auto,
@@ -103,56 +116,7 @@ fn inventory_popup(
                     },
                     text: Text {
                         // Construct a `Vec` of `TextSection`s
-                        sections: vec![
-                            TextSection {
-                                value: "You have no items.".to_string(),
-                                style: TextStyle {
-                                    font: font.clone(),
-                                    font_size: 20.0,
-                                    color: Color::WHITE,
-                                },
-                            },
-                            TextSection {
-                                value: "\n ".to_string(),
-                                style: TextStyle {
-                                    font: font.clone(),
-                                    font_size: 20.0,
-                                    color: Color::WHITE,
-                                },
-                            },
-                            TextSection {
-                                value: "\n ".to_string(),
-                                style: TextStyle {
-                                    font: font.clone(),
-                                    font_size: 20.0,
-                                    color: Color::WHITE,
-                                },
-                            },
-                            TextSection {
-                                value: "\n ".to_string(),
-                                style: TextStyle {
-                                    font: font.clone(),
-                                    font_size: 20.0,
-                                    color: Color::WHITE,
-                                },
-                            },
-                            TextSection {
-                                value: "\n ".to_string(),
-                                style: TextStyle {
-                                    font: font.clone(),
-                                    font_size: 20.0,
-                                    color: Color::WHITE,
-                                },
-                            },
-                            TextSection {
-                                value: "\n ".to_string(),
-                                style: TextStyle {
-                                    font: font.clone(),
-                                    font_size: 20.0,
-                                    color: Color::WHITE,
-                                },
-                            },
-                        ],
+                        sections: sections,
                         ..Default::default()
                     },
                     ..Default::default()
@@ -168,10 +132,7 @@ fn inventory_input(
     mut highlighted_item: ResMut<HighlightedItem>,
     mut keyboard_input: ResMut<Input<KeyCode>>,
     mut turn_state: ResMut<State<TurnState>>,
-    text_query: Query<&Text, With<InventoryText>>,
 ) {
-    // get the number of slots for items
-    let item_slots = text_query.single().sections.len();
 
     let key = keyboard_input.get_pressed().next().cloned();
     if let Some(key) = key 
@@ -190,7 +151,7 @@ fn inventory_input(
                 highlighted_item.0 = i32::max(0, highlighted_item.0-1);
             }
             KeyCode::Down => { // move to next item in list
-                highlighted_item.0 = i32::min(item_slots as i32, highlighted_item.0+1);
+                highlighted_item.0 = i32::min(INVENTORY_SLOTS as i32, highlighted_item.0+1);
             }
             _ => (),
         }
@@ -213,10 +174,14 @@ fn update_inventory_text(
     }
 
     let mut text = text_query.single_mut();
-    let mut mark = " ";
+    let mut mark;
 
     if items_query.is_empty() {
+        for i in 1..INVENTORY_SLOTS as usize {
+            text.sections[i].value = format!("\n ");
+        }
         text.sections[0].value = format!("You have no items.");
+
     } else {
         for (index, (entity, item)) in items_query.iter().enumerate() {
             if index as i32 == highlighted_item.0 {
