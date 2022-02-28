@@ -6,6 +6,9 @@ struct InventoryUI;
 #[derive(Component)]
 struct InventoryText;
 
+#[derive(Component)]
+struct DescriptionText;
+
 struct ChosenItemEvent(i32);
 struct HighlightedItem(i32);
 
@@ -15,6 +18,9 @@ fn inventory_popup(
     mut commands: Commands,
     font: Res<Handle<Font>>,
 ) {
+
+    // background color for the inventory window
+    let bkg_color = UiColor(Color::rgb(0.15, 0.15, 0.15));
 
     commands
     .spawn_bundle(NodeBundle {
@@ -42,20 +48,21 @@ fn inventory_popup(
                 flex_direction: FlexDirection::ColumnReverse,
                 ..Default::default()
             },
-            color: UiColor(Color::rgb(0.0, 0.0, 0.0)),
+            color: bkg_color,
             ..Default::default()
         })
 
         // now the different text inside box
-        .with_children(|parent| {
-            // invetory title
+        .with_children(|parent| 
+        {
+            // inventory title
             parent.spawn_bundle(NodeBundle {
                 style: Style {
                     size: Size::new(Val::Percent(100.0), Val::Px(100. * 1.)),
                     flex_direction: FlexDirection::ColumnReverse,
                     ..Default::default()
                 },
-                color: Color::rgb(0.5, 0.0, 0.0).into(),
+                color: bkg_color,
                 ..Default::default()
             })
             .with_children(|parent| {
@@ -82,16 +89,18 @@ fn inventory_popup(
                     ..Default::default()
                 });
             });
+
             parent.spawn_bundle(NodeBundle {
                 style: Style {
                     size: Size::new(Val::Percent(100.0), Val::Px(20. * INVENTORY_SLOTS as f32)),
                     flex_direction: FlexDirection::ColumnReverse,
                     ..Default::default()
                 },
-                color: Color::rgb(0.0, 0.0, 0.5).into(),
+                color: bkg_color,
                 ..Default::default()
             })
             .with_children(|parent| {
+                // create vector with text sections
                 let mut sections = Vec::new();
                 for _ in 0..INVENTORY_SLOTS {
                     sections.push(TextSection {
@@ -105,7 +114,7 @@ fn inventory_popup(
                 }
                 parent.spawn_bundle(TextBundle {
                     style: Style {
-                        size: Size::new(Val::Auto, Val::Px(20. * INVENTORY_SLOTS as f32)),
+                        size: Size::new(Val::Auto, Val::Px(20. * (INVENTORY_SLOTS+1) as f32)),
                         margin: Rect {
                             left: Val::Auto,
                             right: Val::Auto,
@@ -123,6 +132,49 @@ fn inventory_popup(
                 })
                 .insert(InventoryText);
             });
+
+            // hint section
+            parent.spawn_bundle(NodeBundle {
+                style: Style {
+                    size: Size::new(Val::Percent(100.0), Val::Auto),
+                    flex_direction: FlexDirection::ColumnReverse,
+                    margin: Rect {
+                        left: Val::Auto,
+                        right: Val::Auto,
+                        top: Val::Auto,
+                        bottom: Val::Auto,
+                    },
+                    ..Default::default()
+                },
+                color: bkg_color,
+                ..Default::default()
+            })
+            .with_children(|parent| {
+                parent.spawn_bundle(TextBundle {
+                    style: Style {
+                        size: Size::new(Val::Auto, Val::Px(20.)),
+                        margin: Rect {
+                            left: Val::Auto,
+                            right: Val::Auto,
+                            top: Val::Auto,
+                            bottom: Val::Auto,
+                        },
+                        ..Default::default()
+                    },
+                    text: Text::with_section(
+                        " ".to_string(),
+                        TextStyle {
+                            font_size: 20.0,
+                            font: font.clone(),
+                            color: Color::WHITE,
+                        },
+                        Default::default(),
+                    ),
+                    ..Default::default()
+                })
+                .insert(DescriptionText);
+            });
+
         });
     });
 }
@@ -163,8 +215,9 @@ fn update_inventory_text(
     mut commands: Commands,
     mut chosen_item: EventReader<ChosenItemEvent>,
     mut highlighted_item: ResMut<HighlightedItem>,
-    mut text_query: Query<&mut Text, With<InventoryText>>,
-    items_query: Query<(Entity, &Naming), With<Carried>>,
+    mut text_query: Query<&mut Text, (With<InventoryText>, Without<DescriptionText>)>,
+    mut description_query: Query<&mut Text, (With<DescriptionText>, Without<InventoryText>)>,
+    items_query: Query<(Entity, &Naming, &Description), With<Carried>>,
 ) {
 
     // if user selected an item, then it will have a number over 0, otherwise -1
@@ -174,6 +227,7 @@ fn update_inventory_text(
     }
 
     let mut text = text_query.single_mut();
+    let mut description = description_query.single_mut();
     let mut mark;
 
     if items_query.is_empty() {
@@ -181,11 +235,13 @@ fn update_inventory_text(
             text.sections[i].value = format!("\n ");
         }
         text.sections[0].value = format!("You have no items.");
+        description.sections[0].value = format!(" ");
 
     } else {
-        for (index, (entity, item)) in items_query.iter().enumerate() {
+        for (index, (entity, item, desc)) in items_query.iter().enumerate() {
             if index as i32 == highlighted_item.0 {
                 mark = "-";
+                description.sections[0].value = format!("{}", desc.0);
             } else {
                 mark = " ";
             }
