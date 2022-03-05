@@ -215,11 +215,14 @@ fn update_inventory_text(
     mut commands: Commands,
     mut chosen_item: EventReader<ChosenItemEvent>,
     mut highlighted_item: ResMut<HighlightedItem>,
+    player_query: Query<Entity, With<Player>>,
     mut text_query: Query<&mut Text, (With<InventoryText>, Without<DescriptionText>)>,
     mut description_query: Query<&mut Text, (With<DescriptionText>, Without<InventoryText>)>,
-    items_query: Query<(Entity, &Naming, &Description), With<Carried>>,
+    items_query: Query<(Entity, &Naming, &Description, &Carried)>,
 ) {
 
+    // get player entity, we will need it to filter out items carried by player
+    let player_ent = player_query.single();
     // if user selected an item, then it will have a number over 0, otherwise -1
     let mut selected_item = -1;
     for se in chosen_item.iter() {
@@ -228,7 +231,6 @@ fn update_inventory_text(
 
     let mut text = text_query.single_mut();
     let mut description = description_query.single_mut();
-    let mut mark;
 
     if items_query.is_empty() {
         for i in 1..INVENTORY_SLOTS as usize {
@@ -238,25 +240,52 @@ fn update_inventory_text(
         description.sections[0].value = format!(" ");
 
     } else {
-        for (index, (entity, item, desc)) in items_query.iter().enumerate() {
-            if index as i32 == highlighted_item.0 {
-                mark = "-";
-                description.sections[0].value = format!("{}", desc.0);
-            } else {
-                mark = " ";
-            }
-            // update text
-            if index == 0 {
-                text.sections[index].value = format!("{} {} {}", mark, item.0, mark);
-            } else {
-                text.sections[index].value = format!("\n{} {} {}", mark, item.0, mark);
-            }
+        items_query.iter()
+            .filter(|(_, _, _, carried)| carried.0 == player_ent)
+            .enumerate()
+            .for_each(|(index, (entity, item, desc, _))| 
+            {
+                let mut mark;
+                if index as i32 == highlighted_item.0 {
+                    mark = "-";
+                    description.sections[0].value = format!("{}", desc.0);
+                } else {
+                    mark = " ";
+                }
+                // update text
+                if index == 0 {
+                    text.sections[index].value = format!("{} {} {}", mark, item.0, mark);
+                } else {
+                    text.sections[index].value = format!("\n{} {} {}", mark, item.0, mark);
+                }
+                
+                if index as i32 == selected_item {
+                    highlighted_item.0 = 0;
+                    commands.entity(entity).despawn_recursive();
+                }
+            });
+
+        // for (index, (entity, item, desc)) 
+        //     in items_query.iter().enumerate() 
+        // {
+        //     if index as i32 == highlighted_item.0 {
+        //         mark = "-";
+        //         description.sections[0].value = format!("{}", desc.0);
+        //     } else {
+        //         mark = " ";
+        //     }
+        //     // update text
+        //     if index == 0 {
+        //         text.sections[index].value = format!("{} {} {}", mark, item.0, mark);
+        //     } else {
+        //         text.sections[index].value = format!("\n{} {} {}", mark, item.0, mark);
+        //     }
             
-            if index as i32 == selected_item {
-                highlighted_item.0 = 0;
-                commands.entity(entity).despawn_recursive();
-            }
-        }
+        //     if index as i32 == selected_item {
+        //         highlighted_item.0 = 0;
+        //         commands.entity(entity).despawn_recursive();
+        //     }
+        // }
     }
 }
 
