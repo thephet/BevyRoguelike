@@ -19,6 +19,8 @@ impl MapArchitect for CellularAutomataArchitect {
         for _ in 0..10 {
             self.iteration(&mut mb);
         }
+
+        mb.wall_around_boundary();
         mb.clean_walls_replace_with_void();
         let start = self.find_start(&mb.map);
         mb.enemies_start = mb.spawn_monsters(&start);

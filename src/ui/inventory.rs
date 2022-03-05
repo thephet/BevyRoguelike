@@ -239,7 +239,8 @@ fn update_inventory_text(
         items_query.iter()
             .filter(|(_, _, _, carried)| carried.0 == player_ent)
             .enumerate()
-            .for_each(|(index, (_, item, desc, _))| 
+            .filter(|(index, _)| *index < INVENTORY_SLOTS as usize)
+            .for_each(|(index, (_, item, desc, _))|
             {
                 let mark;
                 if index as i32 == highlighted_item.0 {

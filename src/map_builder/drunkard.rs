@@ -84,7 +84,6 @@ impl MapArchitect for DrunkardsWalkArchitect {
         self.drunkard(&center,&mut  mb.map);
         self.drunkard_loop(&center, &mut mb.map, 4.0);
 
-        mb.wall_around_boundary();
         mb.clean_walls_replace_with_void();
         mb.enemies_start = mb.spawn_monsters(&center);
         mb.player_start = center;

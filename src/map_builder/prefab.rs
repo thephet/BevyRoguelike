@@ -44,7 +44,6 @@ impl MapArchitect for PrefabArchitect
         mb.player_start = center;
         mb.amulet_start = mb.find_most_distant();
         self.apply_prefab(&mut mb);
-        mb.wall_around_boundary();
         mb.clean_walls_replace_with_void();
         mb
     }

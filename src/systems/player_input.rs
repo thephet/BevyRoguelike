@@ -4,13 +4,13 @@ pub fn player_input(
     mut commands: Commands,
     mut keyboard_input: ResMut<Input<KeyCode>>,
     mut gamelog: ResMut<GameLog>,
-    mut player_position_health: Query<(Entity, &Position, &mut Health), With<Player>>,
+    player_position: Query<(Entity, &Position), With<Player>>,
     enemies: Query<(Entity, &Position), With<Enemy>>,
     items: Query<(Entity, &Position), With<Item>>,
     mut turn_state: ResMut<State<TurnState>>
 ) {
 
-    let (player_ent, pos, mut health) = player_position_health.single_mut();
+    let (player_ent, pos) = player_position.single();
     let mut action = true;
     let mut wait = false;
 
