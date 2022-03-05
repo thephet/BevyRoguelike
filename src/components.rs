@@ -75,18 +75,24 @@ pub struct WantsToAttack {
 }
 
 #[derive(Component)]
-pub struct  Health {
+pub struct Health {
     pub current: i32,
     pub max: i32
 }
 
 #[derive(Component)]
-pub struct  ProvidesHealing {
+pub struct ProvidesHealing {
     pub amount: i32,
 }
 
 #[derive(Component)]
-pub struct  ProvidesDungeonMap;
+pub struct ProvidesDungeonMap;
 
 #[derive(Component)]
-pub struct  Carried(pub Entity);
+pub struct Carried(pub Entity);
+
+#[derive(Component)]
+pub struct ActivateItem {
+    pub used_by: Entity,
+    pub item: Entity
+}

@@ -47,7 +47,7 @@ pub fn spawn_enemies(
 
     for position in enemies_start {
 
-        let roll = rng.gen_range(1..6);
+        let roll = rng.gen_range(1..3);
         match roll {
             1 => spawn_healing_potion(&mut commands, atlas.atlas.clone(), &position),
             2 => spawn_magic_mapper(&mut commands, atlas.atlas.clone(), &position),

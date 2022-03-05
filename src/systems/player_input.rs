@@ -66,10 +66,8 @@ pub fn player_input(
             } 
         } 
         // else means the user clicked an action which did not move the player.
-        // This will be like a wait that increases the HP
         else if wait {
-            health.current = i32::min(health.max, health.current+1);
-            gamelog.add_entry("\nPlayer recovers 1 HP.".to_string());
+            gamelog.add_entry("\nPlayer waits.".to_string());
         }
 
         // reset keyboard, bevys bug when changing states

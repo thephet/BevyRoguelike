@@ -184,7 +184,11 @@ fn inventory_input(
     mut highlighted_item: ResMut<HighlightedItem>,
     mut keyboard_input: ResMut<Input<KeyCode>>,
     mut turn_state: ResMut<State<TurnState>>,
+    player_items: Query<(Entity, &Carried)>,
 ) {
+
+    let carried_items = player_items.iter().count();
+    let list_len = i32::min(carried_items as i32, INVENTORY_SLOTS) - 1;
 
     let key = keyboard_input.get_pressed().next().cloned();
     if let Some(key) = key 
@@ -196,14 +200,12 @@ fn inventory_input(
             }
             KeyCode::Return => { // activate selected item and close inventory window
                 chosen_item.send(ChosenItemEvent(highlighted_item.0));
-                // update state
-                turn_state.pop().unwrap();
             }
             KeyCode::Up => { // move to previous item in list
                 highlighted_item.0 = i32::max(0, highlighted_item.0-1);
             }
             KeyCode::Down => { // move to next item in list
-                highlighted_item.0 = i32::min(INVENTORY_SLOTS as i32, highlighted_item.0+1);
+                highlighted_item.0 = i32::min(list_len as i32, highlighted_item.0+1);
             }
             _ => (),
         }
@@ -212,9 +214,7 @@ fn inventory_input(
 }
 
 fn update_inventory_text(
-    mut commands: Commands,
-    mut chosen_item: EventReader<ChosenItemEvent>,
-    mut highlighted_item: ResMut<HighlightedItem>,
+    highlighted_item: Res<HighlightedItem>,
     player_query: Query<Entity, With<Player>>,
     mut text_query: Query<&mut Text, (With<InventoryText>, Without<DescriptionText>)>,
     mut description_query: Query<&mut Text, (With<DescriptionText>, Without<InventoryText>)>,
@@ -223,12 +223,8 @@ fn update_inventory_text(
 
     // get player entity, we will need it to filter out items carried by player
     let player_ent = player_query.single();
-    // if user selected an item, then it will have a number over 0, otherwise -1
-    let mut selected_item = -1;
-    for se in chosen_item.iter() {
-        selected_item = se.0 as i32;
-    }
 
+    // text list of items, and the description at the bottom
     let mut text = text_query.single_mut();
     let mut description = description_query.single_mut();
 
@@ -243,9 +239,9 @@ fn update_inventory_text(
         items_query.iter()
             .filter(|(_, _, _, carried)| carried.0 == player_ent)
             .enumerate()
-            .for_each(|(index, (entity, item, desc, _))| 
+            .for_each(|(index, (_, item, desc, _))| 
             {
-                let mut mark;
+                let mark;
                 if index as i32 == highlighted_item.0 {
                     mark = "-";
                     description.sections[0].value = format!("{}", desc.0);
@@ -258,35 +254,47 @@ fn update_inventory_text(
                 } else {
                     text.sections[index].value = format!("\n{} {} {}", mark, item.0, mark);
                 }
-                
-                if index as i32 == selected_item {
-                    highlighted_item.0 = 0;
-                    commands.entity(entity).despawn_recursive();
-                }
             });
-
-        // for (index, (entity, item, desc)) 
-        //     in items_query.iter().enumerate() 
-        // {
-        //     if index as i32 == highlighted_item.0 {
-        //         mark = "-";
-        //         description.sections[0].value = format!("{}", desc.0);
-        //     } else {
-        //         mark = " ";
-        //     }
-        //     // update text
-        //     if index == 0 {
-        //         text.sections[index].value = format!("{} {} {}", mark, item.0, mark);
-        //     } else {
-        //         text.sections[index].value = format!("\n{} {} {}", mark, item.0, mark);
-        //     }
-            
-        //     if index as i32 == selected_item {
-        //         highlighted_item.0 = 0;
-        //         commands.entity(entity).despawn_recursive();
-        //     }
-        // }
     }
+}
+
+fn use_item(
+    mut commands: Commands,
+    mut highlighted_item: ResMut<HighlightedItem>,
+    mut chosen_item: EventReader<ChosenItemEvent>,
+    player_query: Query<Entity, With<Player>>,
+    items_query: Query<(Entity, &Carried)>,
+    mut turn_state: ResMut<State<TurnState>>
+) {
+    // if user selected an item, then it will have a number over 0, otherwise -1
+    let mut selected_item = -1;
+    for se in chosen_item.iter() {
+        selected_item = se.0 as i32;
+    }
+
+    // get player entity, we will need it to filter out items carried by player
+    let player_ent = player_query.single();
+
+    // get the item entity selected by the player
+    let item_entity = items_query.iter()
+            .filter(|(_, carried)| carried.0 == player_ent)
+            .enumerate()
+            .filter(|(item_count, (_,_))| *item_count as i32 == selected_item)
+            .find_map(|(_, (item_entity, _))| Some(item_entity));
+
+    // if the item exists, send a message to activate it
+    if let Some(item_entity) = item_entity 
+    {
+        commands.spawn()
+            .insert( ActivateItem{used_by: player_ent, item: item_entity});
+        // set also highlighted item to 0, since previous item wont exist on list
+        highlighted_item.0 = 0;
+
+        // after using an item, move turn state
+        turn_state.set(TurnState::PlayerTurn).unwrap();
+    }
+
+    
 }
 
 // function to kill either start screen or game over screen
@@ -311,6 +319,7 @@ impl Plugin for InventoryPlugin {
         .add_system_set(
             SystemSet::on_update(TurnState::InventoryPopup)
                 .with_system(inventory_input.label("inventory_input"))
+                .with_system(use_item.after("inventory_input"))
                 .with_system(update_inventory_text.after("inventory_input"))
         )
 

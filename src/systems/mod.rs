@@ -9,6 +9,7 @@ mod end_turn;
 mod movement;
 mod fov;
 mod update_entities_visibility;
+mod use_items;
 
 pub struct SystemsPlugin;
 impl Plugin for SystemsPlugin {
@@ -42,6 +43,7 @@ impl Plugin for PlayerPlugin {
             .add_system_set(
                 SystemSet::on_enter(TurnState::PlayerTurn)
                 .label("player")
+                .with_system(use_items::use_items)
                 .with_system(combat::combat)
                 .with_system(movement::movement)
                 .with_system(fov::fov)
