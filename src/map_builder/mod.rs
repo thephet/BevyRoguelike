@@ -277,7 +277,12 @@ impl MapBuilder {
 pub fn build_map(
     mut commands: Commands,
 ) {
+    // create map
+    let mut mb = MapBuilder::new();
+    // replace more far away tile with an exit tile
+    let farer_position = mb.amulet_start;
+    let idx = mb.map.point2d_to_index(farer_position.into());
+    mb.map.tiles[idx] = TileType::Exit;
     // insert map builder as resource
-    let mb = MapBuilder::new();
     commands.insert_resource(mb);
 }

@@ -6,6 +6,7 @@ const NUM_TILES: usize = (SCREEN_WIDTH * SCREEN_HEIGHT) as usize;
 pub enum TileType {
     Wall,
     Floor,
+    Exit,
     Void,
 }
 
@@ -33,8 +34,10 @@ impl Map {
     // checks if it is physically possible (ie no wall or physical object)
     pub fn can_enter_tile<T: Into<Position>> (&self, position: T) -> bool {
         let position = position.into();
-        self.in_bounds(position)
-            && self.tiles[map_idx(position.x, position.y)] == TileType::Floor
+        self.in_bounds(position) && (
+            self.tiles[map_idx(position.x, position.y)] == TileType::Floor ||
+            self.tiles[map_idx(position.x, position.y)] == TileType::Exit
+        )
     }
 
     // checks if another entity like an enemy or player, are already in that cell
@@ -139,7 +142,7 @@ pub fn spawn_map_tiles(
                         .insert(Position { x: x, y: y, z: 1 })
                         .insert(TileSize::square(1.0));
                     }
-                    TileType::Wall => {
+                    TileType::Wall | TileType::Exit => {
                         if let Some(bkg_color) = glyph.bkg_color {
                             commands
                             .spawn_bundle(SpriteBundle {

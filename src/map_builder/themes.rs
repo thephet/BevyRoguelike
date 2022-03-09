@@ -26,15 +26,16 @@ impl DungeonTheme {
 }
 
 impl MapTheme for DungeonTheme {
-    fn tile_to_render(&self, tile_type: TileType) -> Option<Glyph> {
+    fn tile_to_render(&self, tile_type: TileType) -> Option<Glyph> 
+    {
+        let glyph_color = Color::rgba(0.3, 0.3, 0.3, 1.0);
+        let cell_color = Color::rgba(0.05, 0.05, 0.05, 1.0);
+
         match tile_type {
             // index 219 is a full square
             TileType::Floor => Some(Glyph::new_nobkg(219, Color::rgba(0.529, 0.529, 0.529, 1.0))),
-            TileType::Wall => Some(Glyph::new(
-                '#' as usize,
-                Color::rgba(0.3, 0.3, 0.3, 1.0),
-                Color::rgba(0.05, 0.05, 0.05, 1.0))
-            ),
+            TileType::Wall => Some(Glyph::new('#' as usize, glyph_color, cell_color)),
+            TileType::Exit => Some(Glyph::new('>' as usize, glyph_color, cell_color)),
             _ => None,
         }
     }
@@ -43,15 +44,16 @@ impl MapTheme for DungeonTheme {
 pub struct ForestTheme {}
 
 impl MapTheme for ForestTheme {
-    fn tile_to_render(&self, tile_type: TileType) -> Option<Glyph> {
+    fn tile_to_render(&self, tile_type: TileType) -> Option<Glyph> 
+    {
+        let glyph_color = Color::rgba(0.105, 0.470, 0.215, 1.0);
+        let cell_color = Color::rgba(0.352, 0.682, 0.380, 1.0);
+
         match tile_type {
             // index 219 is a full square
             TileType::Floor => Some(Glyph::new_nobkg(219, Color::rgba(0.352, 0.682, 0.380, 1.0))),
-            TileType::Wall => Some(Glyph::new(
-                30 as usize,
-                Color::rgba(0.105, 0.470, 0.215, 1.0),
-                Color::rgba(0.352, 0.682, 0.380, 1.0))
-            ),
+            TileType::Wall => Some(Glyph::new(30 as usize, glyph_color, cell_color)),
+            TileType::Exit => Some(Glyph::new('>' as usize, glyph_color, cell_color)),
             _ => None,
         }
     }
@@ -66,15 +68,16 @@ impl ForestTheme {
 pub struct CaveTheme {}
 
 impl MapTheme for CaveTheme {
-    fn tile_to_render(&self, tile_type: TileType) -> Option<Glyph> {
+    fn tile_to_render(&self, tile_type: TileType) -> Option<Glyph> 
+    {
+        let glyph_color = Color::rgba(0.549, 0.317, 0.039, 1.0);
+        let cell_color = Color::rgba(0.749, 0.505, 0.176, 1.0);
+
         match tile_type {
             // index 219 is a full square
             TileType::Floor => Some(Glyph::new_nobkg(219, Color::rgba(0.749, 0.505, 0.176, 1.0))),
-            TileType::Wall => Some(Glyph::new(
-                178 as usize,
-                Color::rgba(0.549, 0.317, 0.039, 1.0),
-                Color::rgba(0.749, 0.505, 0.176, 1.0))
-            ),
+            TileType::Wall => Some(Glyph::new(178 as usize, glyph_color, cell_color)),
+            TileType::Exit => Some(Glyph::new('>' as usize, glyph_color, cell_color)),
             _ => None,
         }
     }

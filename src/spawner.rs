@@ -196,7 +196,7 @@ impl Plugin for SpawnerPlugin {
             .label("spawn_character")
             .with_system(spawn_player)
             .with_system(spawn_enemies)
-            .with_system(spawn_amulet_of_yala)
+            //.with_system(spawn_amulet_of_yala)
         )
         .add_system_set(
             SystemSet::on_enter(TurnState::GameOver)
