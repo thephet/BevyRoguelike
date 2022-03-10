@@ -20,7 +20,7 @@ pub fn spawn_player(
         .insert(Position { x: player_start.x, y: player_start.y, z: 2 })
         .insert(TileSize::square(1.0))
         .insert(Health{current: 10, max: 20})
-        .insert(Player)
+        .insert(Player{map_level: 0})
         .insert(Naming("Player".to_string()))
         .insert(FieldOfView::new(8))
         .id();

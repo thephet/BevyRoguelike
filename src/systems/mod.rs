@@ -11,16 +11,6 @@ mod fov;
 mod update_entities_visibility;
 mod use_items;
 
-pub struct SystemsPlugin;
-impl Plugin for SystemsPlugin {
-    fn build(&self, app: &mut App) {
-        app
-            .add_plugin(AwaitingInputPlugin)
-            .add_plugin(PlayerPlugin)
-            .add_plugin(MonsterPlugin);
-    }
-}
-
 struct AwaitingInputPlugin;
 impl Plugin for AwaitingInputPlugin {
     fn build(&self, app: &mut App) {
@@ -66,5 +56,15 @@ impl Plugin for MonsterPlugin {
                 .with_system(fov::fov.after("enemies_move").label("enemies_fov"))
                 .with_system(end_turn::end_turn.after("enemies_fov"))
             );
+    }
+}
+
+pub struct SystemsPlugin;
+impl Plugin for SystemsPlugin {
+    fn build(&self, app: &mut App) {
+        app
+            .add_plugin(AwaitingInputPlugin)
+            .add_plugin(PlayerPlugin)
+            .add_plugin(MonsterPlugin);
     }
 }

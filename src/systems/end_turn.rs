@@ -3,7 +3,8 @@ use crate::prelude::*;
 pub fn end_turn(
     mut turn_state: ResMut<State<TurnState>>,
     player_hp_q: Query<(&Health, &Position), With<Player>>,
-    amulet_q: Query<&Position, With<AmuletOfYala>>
+    amulet_q: Query<&Position, With<AmuletOfYala>>,
+    exit_q: Query<&Position, With<ExitTile>>
 ) {
 
     let (player_hp, player_pos) = player_hp_q.single();
@@ -12,6 +13,10 @@ pub fn end_turn(
     // amulet position if spawned, otherwise set it as -1, -1
     let amulet_default = Position::new_from2d(-1, -1);
     let amulet_pos = amulet_q.iter().nth(0).unwrap_or(&amulet_default);
+
+    // exit position if spawned, otherwise set it as -1, -1
+    let exit_default = Position::new_from2d(-1, -1);
+    let exit_pos = exit_q.iter().nth(0).unwrap_or(&exit_default);
 
     // calculate new turn
     let mut new_state = match turn_state.current() {
@@ -28,6 +33,10 @@ pub fn end_turn(
 
     if player_pos == amulet_pos {
         new_state = TurnState::Victory;
+    }
+
+    if player_pos == exit_pos {
+        new_state = TurnState::NextLevel;
     }
 
     // change state to new turn

@@ -3,7 +3,9 @@ use std::collections::HashSet;
 use crate::prelude::*;
 
 #[derive(Component)]
-pub struct Player;
+pub struct Player {
+    pub map_level: u32
+}
 
 #[derive(Component)]
 pub struct Enemy;
@@ -40,6 +42,9 @@ impl TileSize {
         }
     }
 }
+
+#[derive(Component)]
+pub struct ExitTile;
 
 #[derive(Component)]
 pub struct FieldOfView {

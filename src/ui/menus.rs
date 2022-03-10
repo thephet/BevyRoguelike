@@ -253,28 +253,28 @@ impl Plugin for MenuPlugin {
                 SystemSet::on_enter(TurnState::GameOver)
                     .with_system(gameover_screen)
             )
-            // setup when on the start screen
+            // setup when on the gameover screen
             .add_system_set(
                 SystemSet::on_update(TurnState::GameOver)
                     .with_system(start_screen_input)
             )
-            // cleanup when exiting the start screen
+            // cleanup when exiting the gameover screen
             .add_system_set(
                 SystemSet::on_exit(TurnState::GameOver)
                     .with_system(despawn_menu)
             )
 
-            // setup when entering the gameover screen
+            // setup when entering the victory screen
             .add_system_set(
                 SystemSet::on_enter(TurnState::Victory)
                     .with_system(victory_screen)
             )
-            // setup when on the start screen
+            // setup when on the victory screen
             .add_system_set(
                 SystemSet::on_update(TurnState::Victory)
                     .with_system(start_screen_input)
             )
-            // cleanup when exiting the start screen
+            // cleanup when exiting the victory screen
             .add_system_set(
                 SystemSet::on_exit(TurnState::Victory)
                     .with_system(despawn_menu)

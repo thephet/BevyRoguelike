@@ -29,13 +29,14 @@ impl MapTheme for DungeonTheme {
     fn tile_to_render(&self, tile_type: TileType) -> Option<Glyph> 
     {
         let glyph_color = Color::rgba(0.3, 0.3, 0.3, 1.0);
-        let cell_color = Color::rgba(0.05, 0.05, 0.05, 1.0);
+        let wall_color = Color::rgba(0.05, 0.05, 0.05, 1.0);
+        let floor_color = Color::rgba(0.529, 0.529, 0.529, 1.0);
 
         match tile_type {
             // index 219 is a full square
-            TileType::Floor => Some(Glyph::new_nobkg(219, Color::rgba(0.529, 0.529, 0.529, 1.0))),
-            TileType::Wall => Some(Glyph::new('#' as usize, glyph_color, cell_color)),
-            TileType::Exit => Some(Glyph::new('>' as usize, glyph_color, cell_color)),
+            TileType::Floor => Some(Glyph::new_nobkg(219, floor_color)),
+            TileType::Wall => Some(Glyph::new('#' as usize, glyph_color, wall_color)),
+            TileType::Exit => Some(Glyph::new('>' as usize, glyph_color, floor_color)),
             _ => None,
         }
     }
@@ -51,7 +52,7 @@ impl MapTheme for ForestTheme {
 
         match tile_type {
             // index 219 is a full square
-            TileType::Floor => Some(Glyph::new_nobkg(219, Color::rgba(0.352, 0.682, 0.380, 1.0))),
+            TileType::Floor => Some(Glyph::new_nobkg(219, cell_color)),
             TileType::Wall => Some(Glyph::new(30 as usize, glyph_color, cell_color)),
             TileType::Exit => Some(Glyph::new('>' as usize, glyph_color, cell_color)),
             _ => None,
@@ -75,7 +76,7 @@ impl MapTheme for CaveTheme {
 
         match tile_type {
             // index 219 is a full square
-            TileType::Floor => Some(Glyph::new_nobkg(219, Color::rgba(0.749, 0.505, 0.176, 1.0))),
+            TileType::Floor => Some(Glyph::new_nobkg(219, cell_color)),
             TileType::Wall => Some(Glyph::new(178 as usize, glyph_color, cell_color)),
             TileType::Exit => Some(Glyph::new('>' as usize, glyph_color, cell_color)),
             _ => None,

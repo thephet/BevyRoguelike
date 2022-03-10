@@ -126,8 +126,10 @@ pub fn spawn_map_tiles(
             let glyph = mb.theme.tile_to_render(mb.map.tiles[idx]);                
 
             if let Some(glyph) = glyph {
-                match mb.map.tiles[idx] {
-                    TileType::Floor => {
+                match mb.map.tiles[idx] 
+                {
+                    TileType::Floor => 
+                    {
                         commands
                         .spawn_bundle(SpriteBundle {
                             sprite: Sprite {
@@ -142,7 +144,15 @@ pub fn spawn_map_tiles(
                         .insert(Position { x: x, y: y, z: 1 })
                         .insert(TileSize::square(1.0));
                     }
-                    TileType::Wall | TileType::Exit => {
+                    
+                    tiletype @ (TileType::Wall | TileType::Exit) => 
+                    {
+                        // if exit, add entity with exit component, so it's easy to find later
+                        if tiletype == TileType::Exit {
+                            commands.spawn()
+                                .insert(Position { x: x, y: y, z: 1 })
+                                .insert(ExitTile);
+                        }
                         if let Some(bkg_color) = glyph.bkg_color {
                             commands
                             .spawn_bundle(SpriteBundle {
