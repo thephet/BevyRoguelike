@@ -1,6 +1,9 @@
 use crate::prelude::*;
 use bracket_lib::prelude::Rect;
 
+mod map;
+pub use map::*;
+
 mod rooms;
 use rooms::RoomsArchitect;
 mod automata;
@@ -285,4 +288,23 @@ pub fn build_map(
     mb.map.tiles[idx] = TileType::Exit;
     // insert map builder as resource
     commands.insert_resource(mb);
+}
+
+pub struct MapPlugin;
+impl Plugin for MapPlugin 
+{
+    fn build(&self, app: &mut App) 
+    {
+        app
+        .add_system_set(
+            SystemSet::on_enter(TurnState::StartScreen)
+            .label("build_map")
+            .with_system(build_map)
+        )
+        .add_system_set(
+            SystemSet::on_exit(TurnState::StartScreen)
+            .label("map_spawn")
+            .with_system(spawn_map_tiles)
+        );
+    }
 }

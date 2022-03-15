@@ -29,7 +29,7 @@ pub fn chasing(
         if !fov.visible_tiles.contains( &((*player_pos).into()) ) {
             return;
         }
-        //println!("yes");
+
         let idx = map_idx(pos.x, pos.y);
         if let Some(destination) = DijkstraMap::find_lowest_exit(
             &dijkstra_map, idx, &mb.map

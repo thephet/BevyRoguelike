@@ -1,6 +1,6 @@
 #![warn(clippy::pedantic)]
 
-mod map;
+
 mod map_builder;
 mod components;
 mod resources;
@@ -17,7 +17,6 @@ mod prelude {
     pub const SCREEN_HEIGHT: i32 = 80;
     pub const UI_HEIGHT: i32 = 10;
     pub use rand::Rng;
-    pub use crate::map::*;
     pub use crate::map_builder::*;
     pub use crate::components::*;
     pub use crate::resources::*;
@@ -67,16 +66,7 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_state(TurnState::StartScreen)
         .add_startup_system(setup)
-        .add_system_set(
-            SystemSet::on_enter(TurnState::StartScreen)
-            .label("build_map")
-            .with_system(build_map)
-        )
-        .add_system_set(
-            SystemSet::on_exit(TurnState::StartScreen)
-            .label("map_spawn")
-            .with_system(spawn_map_tiles)
-        )
+        .add_plugin(MapPlugin)
         .add_plugin(SpawnerPlugin)
         .add_plugin(SystemsPlugin)
         .add_plugin(UIPlugin)

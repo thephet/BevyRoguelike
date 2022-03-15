@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use bevy::utils::HashSet;
 
 pub fn spawn_player(
     mut commands: Commands,
@@ -185,6 +186,37 @@ fn despawn_all_with_position(
     for e in position_q.iter() {
         commands.entity(e).despawn_recursive();
     }
+}
+
+// advance level requires to delete all entities, except the player their items
+// set the field of view to dirty so it is re-calculated
+fn advance_level(
+    mut commands: Commands, 
+    // player_q: Query<Entity, With<Player>>,
+    position_q: Query<Entity, (With<Position>, Without<Player>)>,
+    // items_q: Query<(Entity, &Carried)>,
+    mut fov_q: Query<&mut FieldOfView>
+) {
+
+    // // get the player
+    // let player = player_q.single();
+    // // create a set to store the entities to keep, add player
+    // let mut entities_to_keep = HashSet::default();
+    // entities_to_keep.insert(player);
+    
+    // remove all the entities with position component except player
+    for e in position_q.iter() {
+        commands.entity(e).despawn_recursive();
+    }
+
+    // // save items carried by player
+    // items_q.iter()
+    //     .filter(|(_, carry)| carry.0 == player)
+    //     .map(|(e, _)| e)
+    //     .for_each(|e| {entities_to_keep.insert(e); });
+
+    // set all the fov is_dirty to true, so they will need to be recalculated
+    fov_q.iter_mut().for_each(|mut fov| fov.is_dirty = true);
 }
 
 pub struct SpawnerPlugin;
