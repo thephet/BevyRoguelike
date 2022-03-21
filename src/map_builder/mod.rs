@@ -296,6 +296,7 @@ impl Plugin for MapPlugin
     fn build(&self, app: &mut App) 
     {
         app
+        // when starting a new game
         .add_system_set(
             SystemSet::on_enter(TurnState::StartScreen)
             .label("build_map")
@@ -303,6 +304,17 @@ impl Plugin for MapPlugin
         )
         .add_system_set(
             SystemSet::on_exit(TurnState::StartScreen)
+            .label("map_spawn")
+            .with_system(spawn_map_tiles)
+        )
+        // when advancing level 
+        .add_system_set(
+            SystemSet::on_enter(TurnState::NextLevel)
+            .label("build_map")
+            .with_system(build_map)
+        )
+        .add_system_set(
+            SystemSet::on_exit(TurnState::NextLevel)
             .label("map_spawn")
             .with_system(spawn_map_tiles)
         );

@@ -24,6 +24,7 @@ pub fn end_turn(
         TurnState::PlayerTurn => TurnState::MonsterTurn,
         TurnState::MonsterTurn => TurnState::AwaitingInput,
         TurnState::StartScreen => return,
+        TurnState::NextLevel => TurnState::AwaitingInput,
         _ => current_state
     };
 

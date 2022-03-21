@@ -191,29 +191,15 @@ fn despawn_all_with_position(
 // advance level requires to delete all entities, except the player their items
 // set the field of view to dirty so it is re-calculated
 fn advance_level(
-    mut commands: Commands, 
-    // player_q: Query<Entity, With<Player>>,
+    mut commands: Commands,
     position_q: Query<Entity, (With<Position>, Without<Player>)>,
-    // items_q: Query<(Entity, &Carried)>,
     mut fov_q: Query<&mut FieldOfView>
 ) {
-
-    // // get the player
-    // let player = player_q.single();
-    // // create a set to store the entities to keep, add player
-    // let mut entities_to_keep = HashSet::default();
-    // entities_to_keep.insert(player);
     
     // remove all the entities with position component except player
     for e in position_q.iter() {
         commands.entity(e).despawn_recursive();
     }
-
-    // // save items carried by player
-    // items_q.iter()
-    //     .filter(|(_, carry)| carry.0 == player)
-    //     .map(|(e, _)| e)
-    //     .for_each(|e| {entities_to_keep.insert(e); });
 
     // set all the fov is_dirty to true, so they will need to be recalculated
     fov_q.iter_mut().for_each(|mut fov| fov.is_dirty = true);
@@ -225,7 +211,7 @@ impl Plugin for SpawnerPlugin {
         app
         .add_system_set(
             SystemSet::on_exit(TurnState::StartScreen)
-            .label("spawn_character")
+            .label("spawn_characters")
             .with_system(spawn_player)
             .with_system(spawn_enemies)
             //.with_system(spawn_amulet_of_yala)
@@ -239,6 +225,11 @@ impl Plugin for SpawnerPlugin {
             SystemSet::on_enter(TurnState::Victory)
             .label("despawn_all")
             .with_system(despawn_all_with_position)
+        )        
+        .add_system_set(
+            SystemSet::on_enter(TurnState::NextLevel)
+            .label("next_level")
+            .with_system(advance_level)
         );
     }
 }
