@@ -4,8 +4,10 @@ use super::MapArchitect;
 pub struct RoomsArchitect {}
 
 impl MapArchitect for RoomsArchitect {
-    fn new(&mut self) -> MapBuilder {
-        let mut mb = MapBuilder{
+    fn new(&mut self) -> MapBuilder
+    {
+        let mut mb = MapBuilder
+        {
             map : Map::new(),
             rooms: Vec::new(),
             walls: Vec::new(),

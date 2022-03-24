@@ -279,13 +279,26 @@ impl MapBuilder {
 
 pub fn build_map(
     mut commands: Commands,
+    player_q: Query<&Player>,
 ) {
+    // start by getting the player, if it exists, to get the level
+    // if it doesnt exist, then it is level 0
+    let mut level= 0;
+    if player_q.iter().count() > 0 {
+        level = player_q.single().map_level;
+    }
+
     // create map
     let mut mb = MapBuilder::new();
-    // replace more far away tile with an exit tile
-    let farer_position = mb.amulet_start;
-    let idx = mb.map.point2d_to_index(farer_position.into());
-    mb.map.tiles[idx] = TileType::Exit;
+
+    // during the first two level, place exit tile. last level will have amulet
+    if level < 2 {
+        // replace more far away tile with an exit tile
+        let farer_position = mb.amulet_start;
+        let idx = mb.map.point2d_to_index(farer_position.into());
+        mb.map.tiles[idx] = TileType::Exit;
+    }
+
     // insert map builder as resource
     commands.insert_resource(mb);
 }
