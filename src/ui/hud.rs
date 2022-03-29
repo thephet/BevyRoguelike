@@ -354,6 +354,10 @@ impl Plugin for HudPlugin {
                 SystemSet::on_exit(TurnState::StartScreen)
                     .with_system(bottom_hud).label("bottom_hud")
                 )
+            .add_system_set(
+                SystemSet::on_exit(TurnState::NextLevel)
+                    .with_system(bottom_hud).label("bottom_hud")
+                )
 
             .add_system_set(
                 SystemSet::on_inactive_update(TurnState::AwaitingInput)

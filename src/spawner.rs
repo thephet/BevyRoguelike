@@ -113,6 +113,8 @@ fn spawn_amulet_of_yala(
     let mut level= 0;
     if player_q.iter().count() > 0 {
         level = player_q.single().map_level;
+        // increase level by 1, because this system gets executed before the post_nextlevel
+        level += 1;
     }
 
     // only spawn amulet if we are in the last level
@@ -214,7 +216,7 @@ fn pre_advance_level(
     fov_q.iter_mut().for_each(|mut fov| fov.is_dirty = true);
 }
 
-// pre_advance level sets the location of the player in the new map, advaces its level var
+// post_advance level sets the location of the player in the new map, advaces its level var
 fn post_advance_level(
     mut mb: ResMut<MapBuilder>,
     mut player_q: Query<(Entity, &mut Position, &mut Player)>,
@@ -240,7 +242,6 @@ impl Plugin for SpawnerPlugin {
             .label("spawn_characters")
             .with_system(spawn_player)
             .with_system(spawn_enemies)
-            .with_system(spawn_amulet_of_yala)
         )
         .add_system_set(
             SystemSet::on_enter(TurnState::GameOver)
@@ -261,6 +262,7 @@ impl Plugin for SpawnerPlugin {
             SystemSet::on_exit(TurnState::NextLevel)
             .label("post_next_level")
             .with_system(post_advance_level)
+            .with_system(spawn_amulet_of_yala)
         );
     }
 }

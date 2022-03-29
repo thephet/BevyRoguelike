@@ -23,7 +23,7 @@ pub trait MapTheme: Sync + Send {
     fn tile_to_render(&self, tile_type: TileType) -> Option<Glyph>;
 }
 
-const NUM_ROOMS: usize = 20;
+const NUM_ROOMS: usize = 2;
 
 pub struct MapBuilder {
     pub map: Map,
@@ -40,9 +40,9 @@ impl MapBuilder {
     pub fn new() -> Self 
     {
         let mut rng = rand::thread_rng();
-        let mut architect: Box<dyn MapArchitect> = match rng.gen_range(0..3) {
-            0 => Box::new(DrunkardsWalkArchitect{}),
-            1 => Box::new(RoomsArchitect{}),
+        let mut architect: Box<dyn MapArchitect> = match rng.gen_range(0..1) {
+            0 => Box::new(RoomsArchitect{}),
+            1 => Box::new(DrunkardsWalkArchitect{}),
             2 => Box::new(CellularAutomataArchitect{}),
             _ => Box::new(PrefabArchitect{}),
         };
@@ -286,6 +286,8 @@ pub fn build_map(
     let mut level= 0;
     if player_q.iter().count() > 0 {
         level = player_q.single().map_level;
+        // increase level by 1, because this system gets executed before the post_nextlevel
+        level += 1;
     }
 
     // create map

@@ -65,7 +65,7 @@ fn setup_menu(
     });
 }
 
-// function to kill either start screen or game over screen
+// function to kill the current menu screen
 fn despawn_menu(
     mut commands: Commands, 
     query_startscreen: Query<Entity, With<MenuUI>>,
@@ -209,6 +209,71 @@ fn victory_screen(
     });
 }
 
+fn nextlevel_screen(
+    mut commands: Commands,
+    font: Res<Handle<Font>>,
+    top_ui_node_q: Query<Entity, With<TopUINode>>,
+) {
+
+    // First we need to remove ALL the other stuff around the game
+    let top_ui_node = top_ui_node_q.single();
+    commands.entity(top_ui_node).despawn_recursive();
+
+    commands
+    .spawn_bundle(NodeBundle {
+        style: Style {
+            size: Size::new(Val::Percent(100.), Val::Percent(100.)),
+            flex_direction: FlexDirection::ColumnReverse,
+            ..Default::default()
+        },
+        color: UiColor(Color::rgb(0.0, 0.0, 0.0)),
+        ..Default::default()
+    })
+    .insert(GameOverUI)
+    .with_children(|parent| {
+        // Spawn menu text
+        parent.spawn_bundle(TextBundle {
+            style: Style {
+                size: Size::new(Val::Auto, Val::Px(140. * 1.)),
+                margin: Rect {
+                    left: Val::Auto,
+                    right: Val::Auto,
+                    bottom: Val::Auto,
+                    top: Val::Auto,
+                },
+                ..Default::default()
+            },
+            // Use `Text` directly
+            text: Text {
+                // Construct a `Vec` of `TextSection`s
+                sections: vec![
+                    TextSection {
+                        value: "Level completed".to_string(),
+                        style: TextStyle {
+                            font: font.clone(),
+                            font_size: 100.0,
+                            color: Color::GOLD,
+                        },
+                    },
+                    TextSection {
+                        value: "\nPress any key to continue.".to_string(),
+                        style: TextStyle {
+                            font: font.clone(),
+                            font_size: 40.0,
+                            color: Color::WHITE,
+                        },
+                    },
+                ],
+                alignment: TextAlignment {
+                    horizontal: HorizontalAlign::Center,
+                    vertical: VerticalAlign::Center,
+                },
+            },
+            ..Default::default()
+        });
+    });
+}
+
 pub fn start_screen_input(
     mut keyboard_input: ResMut<Input<KeyCode>>,
     mut turn_state: ResMut<State<TurnState>>
@@ -219,7 +284,9 @@ pub fn start_screen_input(
         // reset keyboard, bevys bug when changing states
         keyboard_input.reset(key);
         // update state
-        if *turn_state.current() == TurnState::StartScreen {
+        if (*turn_state.current() == TurnState::StartScreen) || 
+            (*turn_state.current() == TurnState::NextLevel) 
+        {
             turn_state.set(TurnState::AwaitingInput).unwrap();
         } else {
             turn_state.set(TurnState::StartScreen).unwrap();
@@ -277,6 +344,22 @@ impl Plugin for MenuPlugin {
             // cleanup when exiting the victory screen
             .add_system_set(
                 SystemSet::on_exit(TurnState::Victory)
+                    .with_system(despawn_menu)
+            )
+
+            // setup when entering the next level screen
+            .add_system_set(
+                SystemSet::on_enter(TurnState::NextLevel)
+                    .with_system(nextlevel_screen)
+            )
+            // setup when on the next level screen
+            .add_system_set(
+                SystemSet::on_update(TurnState::NextLevel)
+                    .with_system(start_screen_input)
+            )
+            // cleanup when exiting the next level screen
+            .add_system_set(
+                SystemSet::on_exit(TurnState::NextLevel)
                     .with_system(despawn_menu)
             );
     }
