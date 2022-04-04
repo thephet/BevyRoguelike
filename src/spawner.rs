@@ -245,12 +245,12 @@ impl Plugin for SpawnerPlugin {
         )
         .add_system_set(
             SystemSet::on_enter(TurnState::GameOver)
-            .label("despawn_all")
+            .label("despawn_all_gameover")
             .with_system(despawn_all_with_position)
         )
         .add_system_set(
             SystemSet::on_enter(TurnState::Victory)
-            .label("despawn_all")
+            .label("despawn_all_victory")
             .with_system(despawn_all_with_position)
         )        
         .add_system_set(
@@ -261,8 +261,9 @@ impl Plugin for SpawnerPlugin {
         .add_system_set(
             SystemSet::on_exit(TurnState::NextLevel)
             .label("post_next_level")
-            .with_system(post_advance_level)
-            .with_system(spawn_amulet_of_yala)
+            .with_system(post_advance_level.label("post_advance_level"))
+            .with_system(spawn_amulet_of_yala.before("post_advance_level"))
+            .with_system(spawn_enemies)
         );
     }
 }

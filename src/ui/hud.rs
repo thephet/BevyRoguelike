@@ -13,6 +13,9 @@ struct HPBar;
 #[derive(Component)]
 struct InventoryText;
 
+#[derive(Component)]
+struct DungeonLevelText;
+
 fn bottom_hud(
     mut commands: Commands,
     font: Res<Handle<Font>>,
@@ -144,52 +147,25 @@ fn bottom_hud(
                     color: Color::rgb(0.0, 0.0, 0.0).into(),
                     ..Default::default()
                 })
-                    // container where to place the HP text
-                    .with_children(|parent| {
-                        parent
-                            .spawn_bundle(NodeBundle {
-                                style: Style {
-                                    size: Size::new(Val::Percent(35.0), Val::Percent(100.0)),
-                                    // Place content up to down
-                                    flex_direction: FlexDirection::ColumnReverse,
-                                    ..Default::default()
-                                },
-                                color: Color::rgb(0.0, 0.0, 0.0).into(),
+                // container where to place the HP text
+                .with_children(|parent| {
+                    parent
+                        .spawn_bundle(NodeBundle {
+                            style: Style {
+                                size: Size::new(Val::Percent(35.0), Val::Percent(100.0)),
+                                // Place content up to down
+                                flex_direction: FlexDirection::ColumnReverse,
                                 ..Default::default()
-                            })
-                            // the actual HP text
-                            .with_children(|parent| {
-                                parent.spawn_bundle(TextBundle {
-                                    style: Style {
-                                        // Set height to font size * number of text lines
-                                        size: Size::new(Val::Auto, Val::Px(20. * 1.)),
-                                        margin: Rect {
-                                            left: Val::Auto,
-                                            right: Val::Auto,
-                                            bottom: Val::Auto,
-                                            top: Val::Auto,
-                                        },
-                                        ..Default::default()
-                                    },
-                                    text: Text::with_section(
-                                        "HP: 20 / 20".to_string(),
-                                        TextStyle {
-                                            font_size: 20.0,
-                                            font: font.clone(),
-                                            color: Color::rgb(0.99, 0.99, 0.99),
-                                        },
-                                        Default::default(),
-                                    ),
-                                    ..Default::default()
-                                })
-                                .insert(HPText);
-                            });
-                        // outside HP bar
-                        parent
-                            .spawn_bundle(NodeBundle {
+                            },
+                            color: Color::rgb(0.0, 0.0, 0.0).into(),
+                            ..Default::default()
+                        })
+                        // the actual HP text
+                        .with_children(|parent| {
+                            parent.spawn_bundle(TextBundle {
                                 style: Style {
-                                    size: Size::new(Val::Percent(63.0), Val::Px(20. * 1.)),
-                                    border: Rect::all(Val::Px(5.0)),
+                                    // Set height to font size * number of text lines
+                                    size: Size::new(Val::Auto, Val::Px(20. * 1.)),
                                     margin: Rect {
                                         left: Val::Auto,
                                         right: Val::Auto,
@@ -198,114 +174,191 @@ fn bottom_hud(
                                     },
                                     ..Default::default()
                                 },
-                                color: Color::rgb(0.5, 0.1, 0.1).into(),
+                                text: Text::with_section(
+                                    "HP: 17 / 20".to_string(),
+                                    TextStyle {
+                                        font_size: 20.0,
+                                        font: font.clone(),
+                                        color: Color::rgb(0.99, 0.99, 0.99),
+                                    },
+                                    Default::default(),
+                                ),
                                 ..Default::default()
                             })
-                            // inside HP bar
-                            .with_children(|parent| {
-                                parent.spawn_bundle(NodeBundle {
-                                    style: Style {
-                                        size: Size::new(Val::Percent(50.0), Val::Percent(100.0)),
-                                        ..Default::default()
-                                    },
-                                    color: Color::rgb(0.99, 0.1, 0.1).into(),
+                            .insert(HPText);
+                        });
+                    // outside HP bar
+                    parent
+                        .spawn_bundle(NodeBundle {
+                            style: Style {
+                                size: Size::new(Val::Percent(63.0), Val::Px(20. * 1.)),
+                                border: Rect::all(Val::Px(5.0)),
+                                margin: Rect {
+                                    left: Val::Auto,
+                                    right: Val::Auto,
+                                    bottom: Val::Auto,
+                                    top: Val::Auto,
+                                },
+                                ..Default::default()
+                            },
+                            color: Color::rgb(0.5, 0.1, 0.1).into(),
+                            ..Default::default()
+                        })
+                        // inside HP bar
+                        .with_children(|parent| {
+                            parent.spawn_bundle(NodeBundle {
+                                style: Style {
+                                    size: Size::new(Val::Percent(50.0), Val::Percent(100.0)),
                                     ..Default::default()
-                                })
-                                .insert(HPBar);
-                            });
+                                },
+                                color: Color::rgb(0.99, 0.1, 0.1).into(),
+                                ..Default::default()
+                            })
+                            .insert(HPBar);
+                        });
+                });
+
+                // Node for the Inventory text
+                parent.spawn_bundle(NodeBundle {
+                    style: Style {
+                        size: Size::new(Val::Percent(100.0), Val::Percent(33.0)),
+                        flex_direction: FlexDirection::Row,
+                        ..Default::default()
+                    },
+                    color: Color::rgb(0.0, 0.0, 0.0).into(),
+                    ..Default::default()
+                })
+                    // container where to place the Inventory text
+                    .with_children(|parent| {
+                        parent
+                            .spawn_bundle(NodeBundle {
+                                style: Style {
+                                    size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                                    ..Default::default()
+                                },
+                                color: Color::rgb(0.0, 0.0, 0.0).into(),
+                                ..Default::default()
+                            })
+                        // the actual Inventory text
+                        .with_children(|parent| {
+                            parent.spawn_bundle(TextBundle {
+                                style: Style {
+                                    // Set height to font size * number of text lines
+                                    size: Size::new(Val::Auto, Val::Px(20. * 1.)),
+                                    // Set left margin to auto to push the text to the right
+                                    margin: Rect {
+                                        left: Val::Auto,
+                                        right: Val::Auto,
+                                        bottom: Val::Auto,
+                                        top: Val::Auto,
+                                    },
+                                    ..Default::default()
+                                },
+                                text: Text::with_section(
+                                    "(I)nventory".to_string(),
+                                    TextStyle {
+                                        font_size: 20.0,
+                                        font: font.clone(),
+                                        color: Color::rgb(0.99, 0.99, 0.99),
+                                    },
+                                    Default::default(),
+                                ),
+                                ..Default::default()
+                            })
+                            .insert(InventoryText);
+                        });
+                    })
+
+                    // container where to place the Equipment text
+                    .with_children(|parent| {
+                        parent
+                            .spawn_bundle(NodeBundle {
+                                style: Style {
+                                    size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                                    ..Default::default()
+                                },
+                                color: Color::rgb(0.0, 0.0, 0.0).into(),
+                                ..Default::default()
+                            })
+                        // the actual Inventory text
+                        .with_children(|parent| {
+                            parent.spawn_bundle(TextBundle {
+                                style: Style {
+                                    // Set height to font size * number of text lines
+                                    size: Size::new(Val::Auto, Val::Px(20. * 1.)),
+                                    // Set left margin to auto to push the text to the right
+                                    margin: Rect {
+                                        left: Val::Auto,
+                                        right: Val::Auto,
+                                        bottom: Val::Auto,
+                                        top: Val::Auto,
+                                    },
+                                    ..Default::default()
+                                },
+                                text: Text::with_section(
+                                    "(E)quipment".to_string(),
+                                    TextStyle {
+                                        font_size: 20.0,
+                                        font: font.clone(),
+                                        color: Color::rgb(0.99, 0.99, 0.99),
+                                    },
+                                    Default::default(),
+                                ),
+                                ..Default::default()
+                            })
+                            .insert(InventoryText);
+                        });
                     });
 
-                    // Node for the Inventory text
-                    parent.spawn_bundle(NodeBundle {
-                        style: Style {
-                            size: Size::new(Val::Percent(100.0), Val::Percent(33.0)),
-                            flex_direction: FlexDirection::Row,
-                            ..Default::default()
-                        },
-                        color: Color::rgb(0.0, 0.0, 0.0).into(),
+                // Node for the Dungeon Level text
+                parent.spawn_bundle(NodeBundle {
+                    style: Style {
+                        size: Size::new(Val::Percent(100.0), Val::Percent(33.0)),
+                        flex_direction: FlexDirection::Row,
                         ..Default::default()
+                    },
+                    color: Color::rgb(0.0, 0.0, 0.0).into(),
+                    ..Default::default()
+                })
+                // container where to place the Dungeon level text
+                .with_children(|parent| {
+                    parent.spawn_bundle(NodeBundle {
+                            style: Style {
+                                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                                ..Default::default()
+                            },
+                            color: Color::rgb(0.0, 0.0, 0.0).into(),
+                            ..Default::default()
                     })
-                        // container where to place the Inventory text
-                        .with_children(|parent| {
-                            parent
-                                .spawn_bundle(NodeBundle {
-                                    style: Style {
-                                        size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
-                                        ..Default::default()
-                                    },
-                                    color: Color::rgb(0.0, 0.0, 0.0).into(),
-                                    ..Default::default()
-                                })
-                            // the actual Inventory text
-                            .with_children(|parent| {
-                                parent.spawn_bundle(TextBundle {
-                                    style: Style {
-                                        // Set height to font size * number of text lines
-                                        size: Size::new(Val::Auto, Val::Px(20. * 1.)),
-                                        // Set left margin to auto to push the text to the right
-                                        margin: Rect {
-                                            left: Val::Auto,
-                                            right: Val::Auto,
-                                            bottom: Val::Auto,
-                                            top: Val::Auto,
-                                        },
-                                        ..Default::default()
-                                    },
-                                    text: Text::with_section(
-                                        "(I)nventory".to_string(),
-                                        TextStyle {
-                                            font_size: 20.0,
-                                            font: font.clone(),
-                                            color: Color::rgb(0.99, 0.99, 0.99),
-                                        },
-                                        Default::default(),
-                                    ),
-                                    ..Default::default()
-                                })
-                                .insert(InventoryText);
-                            });
+                    // the actual Dungeon level text
+                    .with_children(|parent| {
+                        parent.spawn_bundle(TextBundle {
+                            style: Style {
+                                // Set height to font size * number of text lines
+                                size: Size::new(Val::Auto, Val::Px(20. * 1.)),
+                                // Set left margin to auto to push the text to the right
+                                margin: Rect {
+                                    left: Val::Auto,
+                                    right: Val::Auto,
+                                    bottom: Val::Auto,
+                                    top: Val::Auto,
+                                },
+                                ..Default::default()
+                            },
+                            text: Text::with_section(
+                                "Dungeon Level: 1".to_string(),
+                                TextStyle {
+                                    font_size: 20.0,
+                                    font: font.clone(),
+                                    color: Color::rgb(0.99, 0.99, 0.99),
+                                },
+                                Default::default(),
+                            ),
+                            ..Default::default()
                         })
-
-                        // container where to place the Equipmem text
-                        .with_children(|parent| {
-                            parent
-                                .spawn_bundle(NodeBundle {
-                                    style: Style {
-                                        size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
-                                        ..Default::default()
-                                    },
-                                    color: Color::rgb(0.0, 0.0, 0.0).into(),
-                                    ..Default::default()
-                                })
-                            // the actual Inventory text
-                            .with_children(|parent| {
-                                parent.spawn_bundle(TextBundle {
-                                    style: Style {
-                                        // Set height to font size * number of text lines
-                                        size: Size::new(Val::Auto, Val::Px(20. * 1.)),
-                                        // Set left margin to auto to push the text to the right
-                                        margin: Rect {
-                                            left: Val::Auto,
-                                            right: Val::Auto,
-                                            bottom: Val::Auto,
-                                            top: Val::Auto,
-                                        },
-                                        ..Default::default()
-                                    },
-                                    text: Text::with_section(
-                                        "(E)quipment".to_string(),
-                                        TextStyle {
-                                            font_size: 20.0,
-                                            font: font.clone(),
-                                            color: Color::rgb(0.99, 0.99, 0.99),
-                                        },
-                                        Default::default(),
-                                    ),
-                                    ..Default::default()
-                                })
-                                .insert(InventoryText);
-                            });
-                        });
+                        .insert(DungeonLevelText);
+                    });
+                });
 
             });
         });
@@ -315,11 +368,23 @@ fn bottom_hud(
 fn update_gamelog(
     gamelog: Res<GameLog>,
     mut text_query: Query<&mut Text, With<LogUI>>
+) { 
+    for mut text in text_query.iter_mut() {
+        for (i, entry) in gamelog.entries.iter().enumerate() {
+            text.sections[i].value = entry.clone();    
+        }
+    }
+}
+
+fn update_dungeonleveltext(
+    player_q: Query<&Player>,
+    mut text_query: Query<&mut Text, Added<DungeonLevelText>>
 ) {
-    let mut text = text_query.single_mut();
-    
-    for (i, entry) in gamelog.entries.iter().enumerate() {
-        text.sections[i].value = entry.clone();    
+    let level = player_q.single().map_level;
+   
+    // update dungeon level text
+    for mut text in text_query.iter_mut() {
+        text.sections[0].value = format!("Dungeon Level: {}", level + 1); 
     }
 }
 
@@ -327,21 +392,22 @@ fn update_hp_text_and_bar(
     mut text_query: Query<&mut Text, With<HPText>>,
     mut bar_query: Query<&mut Style, With<HPBar>>,
     player_query: Query<&Health, With<Player>>,
+    // player_query: Query<&Health, (With<Player>, Or<(Changed<Health>, Changed<HPText>)>)>,
 ) {
 
-    // get player max HP and current hp
-    let player_hp = player_query.single();
-    let (current, max) = (player_hp.current, player_hp.max);
+    for player_hp in player_query.iter() {
+        let (current, max) = (player_hp.current, player_hp.max);
 
-    // update HP text
-    for mut text in text_query.iter_mut() {
-        text.sections[0].value = format!("HP: {} / {}", current, max);
-    }
-
-    // update HP bar
-    let bar_fill = (current as f32 / max as f32) * 100.0;
-    for mut bar in bar_query.iter_mut() {
-        bar.size.width = Val::Percent(bar_fill);
+        // update HP text
+        for mut text in text_query.iter_mut() {
+            text.sections[0].value = format!("HP: {} / {}", current, max);
+        }
+    
+        // update HP bar
+        let bar_fill = (current as f32 / max as f32) * 100.0;
+        for mut bar in bar_query.iter_mut() {
+            bar.size.width = Val::Percent(bar_fill);
+        }
     }
 }
 
@@ -352,23 +418,24 @@ impl Plugin for HudPlugin {
 
             .add_system_set(
                 SystemSet::on_exit(TurnState::StartScreen)
-                    .with_system(bottom_hud).label("bottom_hud")
-                )
+                    .with_system(bottom_hud)
+            )
             .add_system_set(
                 SystemSet::on_exit(TurnState::NextLevel)
-                    .with_system(bottom_hud).label("bottom_hud")
-                )
+                    .with_system(bottom_hud)
+            )
 
             .add_system_set(
                 SystemSet::on_inactive_update(TurnState::AwaitingInput)
                     .with_system(update_hp_text_and_bar)
                     .with_system(update_gamelog)
-                )
+            )
     
             .add_system_set(
                 SystemSet::on_update(TurnState::AwaitingInput)
                     .with_system(update_hp_text_and_bar)
                     .with_system(update_gamelog)
-                );
+                    .with_system(update_dungeonleveltext)
+            );
     }
 }
