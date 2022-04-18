@@ -1,6 +1,5 @@
 #![warn(clippy::pedantic)]
 
-
 mod map_builder;
 mod components;
 mod resources;
@@ -12,6 +11,7 @@ mod ui;
 
 mod prelude {
     pub use bevy::prelude::*;
+    pub use bevy::winit::WinitSettings;
     pub use bracket_lib::prelude::*;
     pub const SCREEN_WIDTH: i32 = 80;
     pub const SCREEN_HEIGHT: i32 = 80;
@@ -43,7 +43,6 @@ fn setup(
     
     // Add a 2D Camera
     let mut cam = OrthographicCameraBundle::new_2d();
-    // cam.orthographic_projection.scale = 0.5;
     cam.transform.scale = Vec3::new(0.5, 0.5, 1.0);
     commands.spawn_bundle(cam)
         .insert(MainCamera);
@@ -59,9 +58,10 @@ fn main() {
             title: "Roguelike Game".to_string(),
             width: SCREEN_WIDTH as f32 * 10.0,
             height: SCREEN_HEIGHT as f32 * 10.0,
-            vsync: true,
             ..Default::default()
         })
+        // Power-saving reactive rendering for applications.
+        .insert_resource(WinitSettings::desktop_app())
         .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
         .add_plugins(DefaultPlugins)
         .add_state(TurnState::StartScreen)

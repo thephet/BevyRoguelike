@@ -47,7 +47,7 @@ pub fn spawn_enemies(
 
     for position in enemies_start {
 
-        let roll = rng.gen_range(1..3);
+        let roll = rng.gen_range(1..5);
         match roll {
             1 => spawn_healing_potion(&mut commands, atlas.atlas.clone(), &position),
             2 => spawn_magic_mapper(&mut commands, atlas.atlas.clone(), &position),
@@ -261,8 +261,8 @@ impl Plugin for SpawnerPlugin {
         .add_system_set(
             SystemSet::on_exit(TurnState::NextLevel)
             .label("post_next_level")
-            .with_system(post_advance_level.label("post_advance_level"))
-            .with_system(spawn_amulet_of_yala.before("post_advance_level"))
+            .with_system(post_advance_level)
+            .with_system(spawn_amulet_of_yala.before(post_advance_level))
             .with_system(spawn_enemies)
         );
     }

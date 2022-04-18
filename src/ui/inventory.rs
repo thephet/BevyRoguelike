@@ -319,9 +319,9 @@ impl Plugin for InventoryPlugin {
         // listening to user input on inventory screen
         .add_system_set(
             SystemSet::on_update(TurnState::InventoryPopup)
-                .with_system(inventory_input.label("inventory_input"))
-                .with_system(use_item.after("inventory_input"))
-                .with_system(update_inventory_text.after("inventory_input"))
+                .with_system(inventory_input)
+                .with_system(use_item.after(inventory_input))
+                .with_system(update_inventory_text.after(inventory_input))
         )
 
         // cleanup when exiting

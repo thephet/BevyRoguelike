@@ -56,18 +56,18 @@ fn tooltip_ui(
 
 // when leaving user input state, hide tooltip
 fn hide_tooltip(
-    mut text_box_query : QuerySet<(
-        QueryState<&mut Visibility, With<ToolTipText>>,
-        QueryState<&mut Visibility, With<ToolTipBox>>
+    mut text_box_query : ParamSet<(
+        Query<&mut Visibility, With<ToolTipText>>,
+        Query<&mut Visibility, With<ToolTipBox>>
     )>,
 ) {
     // update tooltip visiblity
-    for mut visible in text_box_query.q0().iter_mut() {
+    for mut visible in text_box_query.p0().iter_mut() {
         visible.is_visible = false;
     }
 
     // update box visibility
-    for mut visible in text_box_query.q1().iter_mut() {
+    for mut visible in text_box_query.p1().iter_mut() {
         visible.is_visible = false;
     } 
 }
@@ -83,9 +83,9 @@ fn update_tooltip(
     // query to get all the entities with Name component
     q_names: Query<(&Naming, &Position, Option<&Health>)>,
     // // query to get tooltip text and box
-    mut text_box_query : QuerySet<(
-        QueryState<(&mut Text, &mut Visibility), With<ToolTipText>>,
-        QueryState<(&mut Style, &mut Visibility), With<ToolTipBox>>
+    mut text_box_query : ParamSet<(
+        Query<(&mut Text, &mut Visibility), With<ToolTipText>>,
+        Query<(&mut Style, &mut Visibility), With<ToolTipBox>>
     )>,
     // query to get the player field of view
     player_fov_q: Query<&FieldOfView, With<Player>>,
@@ -141,7 +141,7 @@ fn update_tooltip(
                 });
 
             // update tooltip text
-            for (mut text, mut visible) in text_box_query.q0().iter_mut() {
+            for (mut text, mut visible) in text_box_query.p0().iter_mut() {
                 if currenth > 0 {
                     text.sections[0].value = format!("{} HP: {} / {}", s, currenth, maxh);
                 } else {
@@ -151,7 +151,7 @@ fn update_tooltip(
             }
 
             // update box position
-            for (mut boxnode, mut visible) in text_box_query.q1().iter_mut() {
+            for (mut boxnode, mut visible) in text_box_query.p1().iter_mut() {
                 if good_click {
                     boxnode.position.left = Val::Px(pos.x-100.0);
                     boxnode.position.bottom = Val::Px(pos.y);

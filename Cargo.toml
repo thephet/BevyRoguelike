@@ -6,10 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy = { version = "0.6.1", features = ["dynamic"] }
+bevy = { version = "0.7.0", features = ["dynamic"] }
 bracket-lib = "~0.8.1"
 rand = "0.8.5"
-# bevy = "0.6.1"
+# bevy = "0.7.0"
 
 [workspace]
 resolver = "2" # Important! wgpu/Bevy needs this!

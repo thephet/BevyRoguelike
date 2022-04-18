@@ -23,7 +23,7 @@ pub trait MapTheme: Sync + Send {
     fn tile_to_render(&self, tile_type: TileType) -> Option<Glyph>;
 }
 
-const NUM_ROOMS: usize = 2;
+const NUM_ROOMS: usize = 4;
 
 pub struct MapBuilder {
     pub map: Map,
