@@ -2,14 +2,18 @@
 name = "bevyroguelike"
 version = "0.1.0"
 edition = "2021"
+repository = "https://github.com/thephet/BevyRoguelike"
+keywords = ["gamedev", "bevy", "roguelike"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy = { version = "0.7.0", features = ["dynamic"] }
-bracket-lib = "~0.8.1"
-rand = "0.8.5"
-# bevy = "0.7.0"
+bevy = { version = "=0.7.0", features = ["dynamic"] }
+# bevy = "=0.7.0"
+bracket-lib = "=0.8.1"
+rand = "=0.8.5"
+serde = "=1.0.136"
+ron = "=0.7.0"
 
 [workspace]
 resolver = "2" # Important! wgpu/Bevy needs this!
