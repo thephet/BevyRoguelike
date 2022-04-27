@@ -1,4 +1,5 @@
 use crate::prelude::*;
+mod template;
 
 pub fn spawn_player(
     mut commands: Commands,
