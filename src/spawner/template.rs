@@ -58,3 +58,24 @@ impl Templates {
         })
     }
 }
+
+impl Template {
+
+    fn spawn_entity(
+        self,
+        pt: &Point,
+        template: &Template,
+        mut commands: Commands,
+        atlas: Res<CharsetAsset>,
+    ) {
+        let entity = commands.spawn_bundle(SpriteSheetBundle {
+            texture_atlas: atlas.atlas.clone(),
+            sprite: TextureAtlasSprite {
+                custom_size: Some(Vec2::new(1.0, 1.0)), 
+                index: '@' as usize, 
+                ..Default::default()
+            },
+            ..Default::default()
+        });
+    }
+}
