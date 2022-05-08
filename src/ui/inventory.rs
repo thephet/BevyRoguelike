@@ -18,7 +18,6 @@ fn inventory_popup(
     mut commands: Commands,
     font: Res<Handle<Font>>,
 ) {
-
     // background color for the inventory window
     let bkg_color = UiColor(Color::rgb(0.15, 0.15, 0.15));
 

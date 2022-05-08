@@ -12,6 +12,7 @@ pub struct Template {
     pub name: String,
     pub glyph: char,
     pub provides: Option<Vec<(String, i32)>>,
+    pub description: Option<String>,
     pub hp: Option<i32>
 }
 
@@ -36,10 +37,13 @@ impl Templates {
 
     pub fn spawn_entities(
         &self,
+        commands: &mut Commands,
+        atlas: Res<CharsetAsset>,
         level: usize,
-        spawn_points: &[Position]
+        mut mb: &mut ResMut<MapBuilder>,
     ) {
         let mut rng = rand::thread_rng();
+        let spawn_points = mb.enemies_start.clone();
 
         let mut available_entities = Vec::new();
         self.entities.iter()
@@ -50,32 +54,59 @@ impl Templates {
                 }
             });
 
-        spawn_points.iter().for_each(|pt| {
+        spawn_points.iter().for_each(|pos| {
             let target_index = rng.gen_range(0..available_entities.len());
-            if let entity = available_entities[target_index].clone() {
-                self.spawn_entity(pt, entity);
-            }
-        })
+            let entity = available_entities[target_index];
+            self.spawn_entity(pos, entity, commands, atlas.atlas.clone(), &mut mb);
+        });
     }
-}
-
-impl Template {
 
     fn spawn_entity(
-        self,
-        pt: &Point,
+        &self,
+        position: &Position,
         template: &Template,
-        mut commands: Commands,
-        atlas: Res<CharsetAsset>,
+        commands: &mut Commands,
+        atlas: Handle<TextureAtlas>,
+        mb: &mut ResMut<MapBuilder>,
     ) {
-        let entity = commands.spawn_bundle(SpriteSheetBundle {
-            texture_atlas: atlas.atlas.clone(),
+        let mut entity = commands.spawn_bundle(SpriteSheetBundle {
+            texture_atlas: atlas,
             sprite: TextureAtlasSprite {
                 custom_size: Some(Vec2::new(1.0, 1.0)), 
-                index: '@' as usize, 
+                index: template.glyph as usize, 
                 ..Default::default()
             },
+            visibility: Visibility{is_visible:false},
             ..Default::default()
         });
+        entity.insert(TileSize::square(1.0))
+            .insert(Naming(template.name.clone().to_string()))
+            .insert(Position { x: position.x, y: position.y, z: 2 });
+
+        match template.entity_type {
+            EntityType::Item => {
+                let desc = template.description.clone().unwrap(); 
+                entity.insert(Item)
+                    .insert(Description(desc.to_string()));
+            }
+            EntityType::Enemy => {
+                let hp = template.hp.unwrap();
+                entity.insert(Health{current: hp, max: hp})
+                    .insert(ChasingPlayer)
+                    .insert(FieldOfView::new(6))
+                    .insert(Enemy);
+                mb.entity_occupy_tile(entity.id(), *position);
+            }
+        }
+
+        if let Some(effects) = &template.provides {
+            effects.iter().for_each(|(provides, n)| {
+                match provides.as_str() {
+                    "Healing" => { entity.insert(ProvidesHealing{amount: *n}); },
+                    "MagicMap" => { entity.insert(ProvidesDungeonMap{}); },
+                    _ => { println!("Warning: we don't know how to provide {}", provides); }
+                }
+            })
+        }
     }
 }
