@@ -73,7 +73,11 @@ impl Templates {
             texture_atlas: atlas,
             sprite: TextureAtlasSprite {
                 custom_size: Some(Vec2::new(1.0, 1.0)), 
-                index: template.glyph as usize, 
+                index: template.glyph as usize,
+                color: match template.entity_type {
+                    EntityType::Item => Color::GREEN,
+                    EntityType::Enemy => Color::rgb(0.698, 0.094, 0.168),
+                },
                 ..Default::default()
             },
             visibility: Visibility{is_visible:false},

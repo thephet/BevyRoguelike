@@ -6,7 +6,7 @@ Templates(
             name: "Healing Potion", glyph: 'p', levels: [0, 1, 2],
             description: Some("Heals 6 Health Points."),
             provides: Some([ ("Healing", 6) ]),
-            frequency: 10
+            frequency: 2
         ),
 
         Template(
@@ -14,7 +14,7 @@ Templates(
             name: "Dungeon Map", glyph: 'm', levels: [0, 1, 2],
             description: Some("Reveals all the map tiles."),
             provides: Some([ ("MagicMap", 0) ]),
-            frequency: 10
+            frequency: 1
         ),
 
         Template(
