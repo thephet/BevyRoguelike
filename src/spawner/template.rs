@@ -108,10 +108,18 @@ impl Templates {
             effects.iter().for_each(|(provides, n)| {
                 match provides.as_str() {
                     "Healing" => { entity.insert(ProvidesHealing{amount: *n}); },
-                    "MagicMap" => { entity.insert(ProvidesDungeonMap{}); },
+                    "MagicMap" => { entity.insert(ProvidesDungeonMap); },
                     _ => { println!("Warning: we don't know how to provide {}", provides); }
                 }
             })
         }
+
+        if let Some(damage) = template.base_damage {
+            entity.insert(Damage(damage));
+            if template.entity_type == EntityType::Item {
+                entity.insert(Weapon);
+            }
+        }
+
     }
 }

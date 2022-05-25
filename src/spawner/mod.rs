@@ -43,6 +43,7 @@ pub fn spawn_player(
         .insert(Player{map_level: 0})
         .insert(Naming("Player".to_string()))
         .insert(FieldOfView::new(8))
+        .insert(Damage(1))
         .id();
 
     mb.entity_occupy_tile(entity, player_start);
