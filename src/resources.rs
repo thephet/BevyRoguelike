@@ -15,7 +15,7 @@ pub enum TurnState {
     GameOver,
     Victory,
     NextLevel,
-    //EquipmentPopup,
+    EquipmentPopup,
     InventoryPopup,
 }
 

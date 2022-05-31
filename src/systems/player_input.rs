@@ -50,6 +50,10 @@ pub fn player_input(
                 turn_state.push(TurnState::InventoryPopup).unwrap();
                 action = false;
             }
+            KeyCode::E => {
+                turn_state.push(TurnState::EquipmentPopup).unwrap();
+                action = false;
+            }
             _ => wait = true,
         }
 

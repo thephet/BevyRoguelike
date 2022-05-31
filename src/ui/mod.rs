@@ -3,7 +3,7 @@ use crate::prelude::*;
 mod menus;
 mod hud;
 mod tooltips;
-mod inventory;
+mod popup;
 
 #[derive(Component)]
 pub struct TopUINode;
@@ -26,8 +26,7 @@ impl Plugin for UIPlugin {
             .add_startup_system(setup)
             .add_plugin(menus::MenuPlugin)
             .add_plugin(hud::HudPlugin)
-            .add_plugin(inventory::InventoryPlugin)
-            .add_plugin(tooltips::TooltipsPlugin);
-        
+            .add_plugin(popup::PopUpPlugin)
+            .add_plugin(tooltips::TooltipsPlugin);  
     }
 }

@@ -14,9 +14,10 @@ struct HighlightedItem(i32);
 
 const INVENTORY_SLOTS: i32 = 10;
 
-fn inventory_popup(
+fn popup_ui(
     mut commands: Commands,
     font: Res<Handle<Font>>,
+    turn_state: Res<State<TurnState>>,
 ) {
     // background color for the inventory window
     let bkg_color = UiColor(Color::rgb(0.15, 0.15, 0.15));
@@ -65,6 +66,15 @@ fn inventory_popup(
                 ..Default::default()
             })
             .with_children(|parent| {
+                
+                // chose title based on State, either inventory or equipment
+                let mut title = "";
+                if *(turn_state.current()) == TurnState::InventoryPopup {
+                    title = "Inventory"
+                } else if *(turn_state.current()) == TurnState::EquipmentPopup {
+                    title = "Equipment"
+                }
+
                 parent.spawn_bundle(TextBundle {
                     style: Style {
                         size: Size::new(Val::Auto, Val::Px(50. * 1.)),
@@ -77,7 +87,7 @@ fn inventory_popup(
                         ..Default::default()
                     },
                     text: Text::with_section(
-                        "Inventory".to_string(),
+                        title.to_string(),
                         TextStyle {
                             font_size: 50.0,
                             font: font.clone(),
@@ -294,7 +304,6 @@ fn use_item(
         turn_state.set(TurnState::PlayerTurn).unwrap();
     }
 
-    
 }
 
 // function to kill either start screen or game over screen
@@ -307,8 +316,8 @@ fn despawn_menu(
     }
 }
 
-pub struct InventoryPlugin;
-impl Plugin for InventoryPlugin {
+pub struct PopUpPlugin;
+impl Plugin for PopUpPlugin {
     fn build(&self, app: &mut App) {
         app
 
@@ -322,16 +331,30 @@ impl Plugin for InventoryPlugin {
                 .with_system(use_item.after(inventory_input))
                 .with_system(update_inventory_text.after(inventory_input))
         )
+        .add_system_set(
+            SystemSet::on_update(TurnState::EquipmentPopup)
+                .with_system(inventory_input)
+                .with_system(use_item.after(inventory_input))
+                .with_system(update_inventory_text.after(inventory_input))
+        )
 
         // cleanup when exiting
         .add_system_set(
             SystemSet::on_exit(TurnState::InventoryPopup)
                 .with_system(despawn_menu)
         )
+        .add_system_set(
+            SystemSet::on_exit(TurnState::EquipmentPopup)
+                .with_system(despawn_menu)
+        )
         
         .add_system_set(
             SystemSet::on_enter(TurnState::InventoryPopup)
-                .with_system(inventory_popup)
+                .with_system(popup_ui)
+        )
+        .add_system_set(
+            SystemSet::on_enter(TurnState::EquipmentPopup)
+                .with_system(popup_ui)
         );
 
     }
