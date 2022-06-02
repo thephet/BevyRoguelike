@@ -8,7 +8,7 @@ pub fn combat(
     player: Query<Entity, With<Player>>,
     names_query: Query<&Naming>,
     mut health_query: Query<(&mut Health, &Position, &Naming)>,
-    damage_query: Query<(&Damage, Option<&Carried>)>,
+    damage_query: Query<(&Damage, Option<&Carried>, Option<&Equipped>)>,
     
 ) {
     // get the list of victim messages
@@ -19,15 +19,15 @@ pub fn combat(
     // for every message, get the message itself, the attacker and the victim
     victims.iter().for_each(|(message, attacker, victim) | {
         // calculate damage of attack. total damage = base damage + weapon damage
-        let base_damage = if let Ok((d, _)) = damage_query.get(*attacker) {
+        let base_damage = if let Ok((d, _, _)) = damage_query.get(*attacker) {
             d.0
         } else {
             0
         };
 
         let w_damage: i32 = damage_query.iter()
-            .filter(|(_, carried)| carried.is_some())
-            .map(|(dmg, carried)| (dmg, carried.unwrap()))
+            .filter(|(_, c, e)| c.is_some() && e.is_some())
+            .map(|(dmg, carried, _)| (dmg, carried.unwrap()))
             .filter(|(_, carried)| carried.0 == *attacker)
             .map(|(dmg, _)| dmg.0)
             .sum();

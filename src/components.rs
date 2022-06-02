@@ -107,3 +107,6 @@ pub struct Damage(pub i32);
 
 #[derive(Component)]
 pub struct Weapon;
+
+#[derive(Component)]
+pub struct Equipped;

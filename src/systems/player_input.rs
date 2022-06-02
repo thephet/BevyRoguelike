@@ -6,8 +6,7 @@ pub fn player_input(
     mut gamelog: ResMut<GameLog>,
     player_position: Query<(Entity, &Position), With<Player>>,
     enemies: Query<(Entity, &Position), With<Enemy>>,
-    items: Query<(Entity, &Position, Option<&Weapon>), With<Item>>,
-    weapons_query: Query<(Entity, &Carried), With<Weapon>>,
+    items: Query<(Entity, &Position), With<Item>>,
     mut turn_state: ResMut<State<TurnState>>
 ) {
 
@@ -28,21 +27,11 @@ pub fn player_input(
             KeyCode::G => {
                 // Grab item at this position
                 items.iter()
-                    .filter(|(_, item_pos, _)| **item_pos == *pos)
-                    .for_each(|(item_ent, _, weapon)| {
+                    .filter(|(_, item_pos)| **item_pos == *pos)
+                    .for_each(|(item_ent, _)| {
                         // remove render info and add carried component
                         commands.entity(item_ent).remove_bundle::<SpriteSheetBundle>()
                             .insert(Carried(player_ent));
-                        // check if it is a weapon
-                        if let Some(_) = weapon {
-                            // remove all the other weapons the player has
-                            // player can only have 1 weapon
-                            weapons_query.iter()
-                                .filter(|(_, c)| c.0 == player_ent)
-                                .for_each(|(e, _)| {
-                                    commands.entity(e).despawn();
-                                })
-                        }
                     }
                 );
             }

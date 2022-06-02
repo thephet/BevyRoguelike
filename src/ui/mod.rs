@@ -4,6 +4,8 @@ mod menus;
 mod hud;
 mod tooltips;
 mod popup;
+mod inventory;
+mod equipment;
 
 #[derive(Component)]
 pub struct TopUINode;
