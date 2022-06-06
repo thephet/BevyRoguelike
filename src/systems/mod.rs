@@ -15,10 +15,11 @@ struct AwaitingInputPlugin;
 impl Plugin for AwaitingInputPlugin {
     fn build(&self, app: &mut App) {
         app
+            .add_plugin(player_input::PlayerInputPlugin)
             .add_system_set(
                 SystemSet::on_update(TurnState::AwaitingInput)
                 .label("awaiting_input")
-                .with_system(player_input::player_input)
+                //.with_system(player_input::player_input)
                 .with_system(camera::camera_move)
                 .with_system(fov::fov)
                 .with_system(update_entities_visibility::update_entities_visibility)

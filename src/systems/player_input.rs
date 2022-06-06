@@ -84,3 +84,32 @@ pub fn player_input(
 
     }
 }
+
+// If this is the first weapon we grab, also equip it
+pub fn equip_first_weapon(
+    mut commands: Commands,
+    weapons_added: Query<Entity, (With<Weapon>, Added<Carried>)>,
+    total_carried_weapons: Query<Entity, (With<Weapon>, With<Carried>)>,
+) {
+    for entity in weapons_added.iter() {
+        // if we only have 1 weapon, equip it too
+        if total_carried_weapons.iter().count() == 1 {
+            commands.entity(entity).insert(Equipped);
+        }
+    }
+}
+
+pub struct PlayerInputPlugin;
+impl Plugin for PlayerInputPlugin {
+    fn build(&self, app: &mut App) {
+        app
+
+        // listening to user input on inventory screen
+        .add_system_set(
+            SystemSet::on_update(TurnState::AwaitingInput)
+                .with_system(player_input)
+                .with_system(equip_first_weapon.after(player_input))
+        );
+
+    }
+}
