@@ -6,7 +6,7 @@ pub fn player_input(
     mut gamelog: ResMut<GameLog>,
     player_position: Query<(Entity, &Position), With<Player>>,
     enemies: Query<(Entity, &Position), With<Enemy>>,
-    items: Query<(Entity, &Position), With<Item>>,
+    items: Query<(Entity, &Position, &Naming), With<Item>>,
     mut turn_state: ResMut<State<TurnState>>
 ) {
 
@@ -27,11 +27,13 @@ pub fn player_input(
             KeyCode::G => {
                 // Grab item at this position
                 items.iter()
-                    .filter(|(_, item_pos)| **item_pos == *pos)
-                    .for_each(|(item_ent, _)| {
+                    .filter(|(_, item_pos, _)| **item_pos == *pos)
+                    .for_each(|(item_ent, _, name)| {
                         // remove render info and add carried component
                         commands.entity(item_ent).remove_bundle::<SpriteSheetBundle>()
                             .insert(Carried(player_ent));
+                        let message = format!("\n{} grabbed.", name.0);
+                        gamelog.add_entry(message);
                     }
                 );
             }
@@ -99,6 +101,17 @@ pub fn equip_first_weapon(
     }
 }
 
+// If this is the first weapon we grab, also equip it
+pub fn equip_weapon_log(
+    mut gamelog: ResMut<GameLog>,
+    equipped_weapon: Query<(Entity, &Naming), (With<Weapon>, With<Carried>, Added<Equipped>)>,
+) {
+    for (_, name) in equipped_weapon.iter() {
+        let message = format!("\n{} equipped.", name.0);
+        gamelog.add_entry(message);
+    }
+}
+
 pub struct PlayerInputPlugin;
 impl Plugin for PlayerInputPlugin {
     fn build(&self, app: &mut App) {
@@ -109,7 +122,7 @@ impl Plugin for PlayerInputPlugin {
             SystemSet::on_update(TurnState::AwaitingInput)
                 .with_system(player_input)
                 .with_system(equip_first_weapon.after(player_input))
+                .with_system(equip_weapon_log.after(equip_first_weapon))
         );
-
     }
 }
