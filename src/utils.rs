@@ -52,17 +52,3 @@ impl From<Position> for Point {
         Point { x:item.x, y:item.y}
     }
 }
-
-// impl<T: Into<Point>> From<T> for Position {
-//     fn from(item: T) -> Self {
-//         let item = item.into(); //now it's a Point
-//         Position { x:item.x, y:item.y, z:0 }
-//     }  
-// }
-
-// impl<T: Into<Position>> From<T> for Point {
-//     fn from(item: T) -> Self {
-//         let item = item.into(); //now it's a Point
-//         Point { x:item.x, y:item.y }
-//     }  
-// }
