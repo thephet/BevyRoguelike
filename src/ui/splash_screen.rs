@@ -12,8 +12,6 @@ fn splash_screen(
     turn_state: Res<State<TurnState>>,
     top_ui_node_q: Query<Entity, With<TopUINode>>,
 ) {
-
-
     // If we are not in StartScreen we need to remove ALL the other UI stuff around the game
     if *(turn_state.current()) != TurnState::StartScreen {
         let top_ui_node = top_ui_node_q.single();

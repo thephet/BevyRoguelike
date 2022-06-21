@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-mod menus;
+mod splash_screen;
 mod hud;
 mod tooltips;
 mod popup;
@@ -26,7 +26,7 @@ impl Plugin for UIPlugin {
     {
         app
             .add_startup_system(setup)
-            .add_plugin(menus::MenuPlugin)
+            .add_plugin(splash_screen::MenuPlugin)
             .add_plugin(hud::HudPlugin)
             .add_plugin(popup::PopUpPlugin)
             .add_plugin(tooltips::TooltipsPlugin);  
