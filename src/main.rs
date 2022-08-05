@@ -12,6 +12,7 @@ mod ui;
 mod prelude {
     pub use bevy::prelude::*;
     pub use bevy::winit::WinitSettings;
+    pub use bevy::render::texture::ImageSettings;
     pub use bracket_lib::prelude::*;
     pub const SCREEN_WIDTH: i32 = 80;
     pub const SCREEN_HEIGHT: i32 = 80;
@@ -42,12 +43,10 @@ fn setup(
     commands.insert_resource(CharsetAsset { atlas: texture_atlas_handle.clone() });
     
     // Add a 2D Camera
-    let mut cam = OrthographicCameraBundle::new_2d();
+    let mut cam = Camera2dBundle::default();
     cam.transform.scale = Vec3::new(0.5, 0.5, 1.0);
     commands.spawn_bundle(cam)
         .insert(MainCamera);
-    // UI camera
-    commands.spawn_bundle(UiCameraBundle::default());
 }
 
 
@@ -62,6 +61,7 @@ fn main() {
         })
         // Power-saving reactive rendering for applications.
         .insert_resource(WinitSettings::desktop_app())
+        .insert_resource(ImageSettings::default_nearest())
         .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
         .add_plugins(DefaultPlugins)
         .add_state(TurnState::StartScreen)

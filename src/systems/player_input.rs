@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use bevy::app::AppExit;
 
 pub fn player_input(
     mut commands: Commands,
@@ -7,7 +8,8 @@ pub fn player_input(
     player_position: Query<(Entity, &Position), With<Player>>,
     enemies: Query<(Entity, &Position), With<Enemy>>,
     items: Query<(Entity, &Position, &Naming), With<Item>>,
-    mut turn_state: ResMut<State<TurnState>>
+    mut turn_state: ResMut<State<TurnState>>,
+    mut exit: EventWriter<AppExit>
 ) {
 
     let (player_ent, pos) = player_position.single();
@@ -44,6 +46,9 @@ pub fn player_input(
             KeyCode::E => {
                 turn_state.push(TurnState::EquipmentPopup).unwrap();
                 action = false;
+            }
+            KeyCode::Escape => {
+                exit.send(AppExit);
             }
             _ => wait = true,
         }

@@ -49,7 +49,7 @@ fn splash_screen(
         parent.spawn_bundle(TextBundle {
             style: Style {
                 size: Size::new(Val::Auto, Val::Px(140. * 1.)),
-                margin: Rect {
+                margin: UiRect {
                     left: Val::Auto,
                     right: Val::Auto,
                     bottom: Val::Auto,

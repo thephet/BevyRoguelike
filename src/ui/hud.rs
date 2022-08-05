@@ -39,7 +39,7 @@ fn bottom_hud(
         parent.spawn_bundle(NodeBundle {
             style: Style {
                 size: Size::new(Val::Percent(50.0), Val::Percent(100.0)),
-                border: Rect::all(Val::Px(5.0)),
+                border: UiRect::all(Val::Px(5.0)),
                 ..Default::default()
             },
             color: UiColor(Color::rgb(0.65, 0.65, 0.65)),
@@ -62,7 +62,7 @@ fn bottom_hud(
                 parent.spawn_bundle(TextBundle {
                         style: Style {
                             align_self: AlignSelf::FlexEnd,
-                            margin: Rect::all(Val::Px(5.0)),
+                            margin: UiRect::all(Val::Px(5.0)),
                             ..Default::default()
                         },
                         // Use `Text` directly
@@ -117,7 +117,7 @@ fn bottom_hud(
         parent.spawn_bundle(NodeBundle {
             style: Style {
                 size: Size::new(Val::Percent(50.0), Val::Percent(100.0)),
-                border: Rect::all(Val::Px(5.0)),
+                border: UiRect::all(Val::Px(5.0)),
                 ..Default::default()
             },
             color: Color::rgb(0.65, 0.65, 0.65).into(),
@@ -166,7 +166,7 @@ fn bottom_hud(
                                 style: Style {
                                     // Set height to font size * number of text lines
                                     size: Size::new(Val::Auto, Val::Px(20. * 1.)),
-                                    margin: Rect {
+                                    margin: UiRect {
                                         left: Val::Auto,
                                         right: Val::Auto,
                                         bottom: Val::Auto,
@@ -174,14 +174,13 @@ fn bottom_hud(
                                     },
                                     ..Default::default()
                                 },
-                                text: Text::with_section(
+                                text: Text::from_section(
                                     "HP: 17 / 20".to_string(),
                                     TextStyle {
                                         font_size: 20.0,
                                         font: font.clone(),
                                         color: Color::rgb(0.99, 0.99, 0.99),
                                     },
-                                    Default::default(),
                                 ),
                                 ..Default::default()
                             })
@@ -192,8 +191,8 @@ fn bottom_hud(
                         .spawn_bundle(NodeBundle {
                             style: Style {
                                 size: Size::new(Val::Percent(63.0), Val::Px(20. * 1.)),
-                                border: Rect::all(Val::Px(5.0)),
-                                margin: Rect {
+                                border: UiRect::all(Val::Px(5.0)),
+                                margin: UiRect {
                                     left: Val::Auto,
                                     right: Val::Auto,
                                     bottom: Val::Auto,
@@ -246,7 +245,7 @@ fn bottom_hud(
                                     // Set height to font size * number of text lines
                                     size: Size::new(Val::Auto, Val::Px(20. * 1.)),
                                     // Set left margin to auto to push the text to the right
-                                    margin: Rect {
+                                    margin: UiRect {
                                         left: Val::Auto,
                                         right: Val::Auto,
                                         bottom: Val::Auto,
@@ -254,14 +253,13 @@ fn bottom_hud(
                                     },
                                     ..Default::default()
                                 },
-                                text: Text::with_section(
+                                text: Text::from_section(
                                     "(I)nventory".to_string(),
                                     TextStyle {
                                         font_size: 20.0,
                                         font: font.clone(),
                                         color: Color::rgb(0.99, 0.99, 0.99),
                                     },
-                                    Default::default(),
                                 ),
                                 ..Default::default()
                             })
@@ -287,7 +285,7 @@ fn bottom_hud(
                                     // Set height to font size * number of text lines
                                     size: Size::new(Val::Auto, Val::Px(20. * 1.)),
                                     // Set left margin to auto to push the text to the right
-                                    margin: Rect {
+                                    margin: UiRect {
                                         left: Val::Auto,
                                         right: Val::Auto,
                                         bottom: Val::Auto,
@@ -295,14 +293,13 @@ fn bottom_hud(
                                     },
                                     ..Default::default()
                                 },
-                                text: Text::with_section(
+                                text: Text::from_section(
                                     "(E)quipment".to_string(),
                                     TextStyle {
                                         font_size: 20.0,
                                         font: font.clone(),
                                         color: Color::rgb(0.99, 0.99, 0.99),
                                     },
-                                    Default::default(),
                                 ),
                                 ..Default::default()
                             })
@@ -337,7 +334,7 @@ fn bottom_hud(
                                 // Set height to font size * number of text lines
                                 size: Size::new(Val::Auto, Val::Px(20. * 1.)),
                                 // Set left margin to auto to push the text to the right
-                                margin: Rect {
+                                margin: UiRect {
                                     left: Val::Auto,
                                     right: Val::Auto,
                                     bottom: Val::Auto,
@@ -345,14 +342,13 @@ fn bottom_hud(
                                 },
                                 ..Default::default()
                             },
-                            text: Text::with_section(
+                            text: Text::from_section(
                                 "Dungeon Level: 1".to_string(),
                                 TextStyle {
                                     font_size: 20.0,
                                     font: font.clone(),
                                     color: Color::rgb(0.99, 0.99, 0.99),
                                 },
-                                Default::default(),
                             ),
                             ..Default::default()
                         })

@@ -34,17 +34,16 @@ fn tooltip_ui(
             visibility: Visibility { is_visible: false},
             style: Style {
                 size: Size::new(Val::Auto, Val::Px(20. * 1.)),
-                margin: Rect::all(Val::Auto),
+                margin: UiRect::all(Val::Auto),
                 ..Default::default()
             },
-            text: Text::with_section(
+            text: Text::from_section(
                 "Goblin. HP: 2 / 2",
                 TextStyle {
                     font: font.clone(),
                     font_size: 20.0,
                     color: Color::WHITE,
                 },
-                Default::default(),
             ),
             ..Default::default()
         })

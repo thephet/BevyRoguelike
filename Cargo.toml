@@ -8,12 +8,12 @@ keywords = ["gamedev", "bevy", "roguelike"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy = { version = "=0.7.0", features = ["dynamic"] }
-# bevy = "=0.7.0"
+bevy = { version = "=0.8.0", features = ["dynamic"] }
+# bevy = "=0.8.0"
 bracket-lib = "=0.8.1"
 rand = "=0.8.5"
-serde = "=1.0.136"
-ron = "=0.7.0"
+serde = "=1.0.142"
+ron = "=0.7.1"
 
 [workspace]
 resolver = "2" # Important! wgpu/Bevy needs this!

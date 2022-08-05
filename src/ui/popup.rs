@@ -29,12 +29,12 @@ fn popup_ui(
         style: Style {
             size: Size::new(Val::Percent(50.), Val::Percent(50.)),
             position_type: PositionType::Absolute,
-            position: Rect {
+            position: UiRect {
                 left: Val::Percent(25.0),
                 bottom: Val::Percent(30.0),
                 ..Default::default()
             },
-            border: Rect::all(Val::Px(5.0)),
+            border: UiRect::all(Val::Px(5.0)),
             ..Default::default()
         },
         color: UiColor(Color::rgb(0.65, 0.65, 0.65)),
@@ -80,7 +80,7 @@ fn popup_ui(
                 parent.spawn_bundle(TextBundle {
                     style: Style {
                         size: Size::new(Val::Auto, Val::Px(50. * 1.)),
-                        margin: Rect {
+                        margin: UiRect {
                             left: Val::Auto,
                             right: Val::Auto,
                             top: Val::Auto,
@@ -88,14 +88,13 @@ fn popup_ui(
                         },
                         ..Default::default()
                     },
-                    text: Text::with_section(
+                    text: Text::from_section(
                         title.to_string(),
                         TextStyle {
                             font_size: 50.0,
                             font: font.clone(),
                             color: Color::GOLD,
                         },
-                        Default::default(),
                     ),
                     ..Default::default()
                 });
@@ -126,7 +125,7 @@ fn popup_ui(
                 parent.spawn_bundle(TextBundle {
                     style: Style {
                         size: Size::new(Val::Auto, Val::Px(20. * (INVENTORY_SLOTS+1) as f32)),
-                        margin: Rect {
+                        margin: UiRect {
                             left: Val::Auto,
                             right: Val::Auto,
                             top: Val::Auto,
@@ -149,7 +148,7 @@ fn popup_ui(
                 style: Style {
                     size: Size::new(Val::Percent(100.0), Val::Auto),
                     flex_direction: FlexDirection::ColumnReverse,
-                    margin: Rect {
+                    margin: UiRect {
                         left: Val::Auto,
                         right: Val::Auto,
                         top: Val::Auto,
@@ -164,7 +163,7 @@ fn popup_ui(
                 parent.spawn_bundle(TextBundle {
                     style: Style {
                         size: Size::new(Val::Auto, Val::Px(20.)),
-                        margin: Rect {
+                        margin: UiRect {
                             left: Val::Auto,
                             right: Val::Auto,
                             top: Val::Auto,
@@ -172,14 +171,13 @@ fn popup_ui(
                         },
                         ..Default::default()
                     },
-                    text: Text::with_section(
+                    text: Text::from_section(
                         " ".to_string(),
                         TextStyle {
                             font_size: 20.0,
                             font: font.clone(),
                             color: Color::WHITE,
                         },
-                        Default::default(),
                     ),
                     ..Default::default()
                 })

@@ -23,8 +23,7 @@ pub fn chasing(
         1024.0
     );
 
-    movers.iter()
-    .for_each(| (entity, pos, fov) | {
+    movers.iter().for_each(| (entity, pos, fov) | {
         // if monster cannot see player, then just return and do nothing
         if !fov.visible_tiles.contains( &((*player_pos).into()) ) {
             return;

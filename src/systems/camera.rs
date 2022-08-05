@@ -11,7 +11,6 @@ pub fn camera_move(
     for player_position in player_query.iter() {
         let mut camera_transform = camera_query.single_mut();
         // get camera transform and window
-        //let mut camera_transform = camera_query.single_mut().unwrap();
         let window = windows.get_primary().unwrap();
         // calculate new coordinates and update
         let cam_x = convert_pos(player_position.x as f32, window.width() as f32, SCREEN_WIDTH as f32);

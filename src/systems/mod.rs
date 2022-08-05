@@ -19,7 +19,6 @@ impl Plugin for AwaitingInputPlugin {
             .add_system_set(
                 SystemSet::on_update(TurnState::AwaitingInput)
                 .label("awaiting_input")
-                //.with_system(player_input::player_input)
                 .with_system(camera::camera_move)
                 .with_system(fov::fov)
                 .with_system(update_entities_visibility::update_entities_visibility)
@@ -32,7 +31,7 @@ impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app
             .add_system_set(
-                SystemSet::on_enter(TurnState::PlayerTurn)
+                SystemSet::on_update(TurnState::PlayerTurn)
                 .label("player")
                 .with_system(use_items::use_items)
                 .with_system(combat::combat)
@@ -49,7 +48,7 @@ impl Plugin for MonsterPlugin {
         app
             //.add_stage_after(CoreStage::Update, "enemies_state", SystemStage::parallel())
             .add_system_set(
-                SystemSet::on_enter(TurnState::MonsterTurn)
+                SystemSet::on_update(TurnState::MonsterTurn)
                 .label("enemies")
                 .with_system(chasing::chasing.after("player_end").label("chasing"))
                 .with_system(combat::combat.after("chasing").label("combat"))
