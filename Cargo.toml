@@ -12,7 +12,7 @@ bevy = { version = "=0.8.1", features = ["dynamic"] }
 # bevy = "=0.8.1"
 bracket-lib = "=0.8.7"
 rand = "=0.8.5"
-serde = "=1.0.145"
+serde = "=1.0.147"
 ron = "=0.8.0"
 
 [workspace]
