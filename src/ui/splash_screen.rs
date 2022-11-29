@@ -46,7 +46,7 @@ fn splash_screen(
         }
 
         // Spawn menu text
-        parent.spawn_bundle(TextBundle {
+        parent.spawn(TextBundle {
             style: Style {
                 size: Size::new(Val::Auto, Val::Px(140. * 1.)),
                 margin: UiRect {

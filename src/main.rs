@@ -44,8 +44,7 @@ fn setup(
     // Add a 2D Camera
     let mut cam = Camera2dBundle::default();
     cam.transform.scale = Vec3::new(0.5, 0.5, 1.0);
-    commands.spawn_bundle(cam)
-        .insert(MainCamera);
+    commands.spawn((MainCamera, cam));
 }
 
 

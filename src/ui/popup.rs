@@ -26,7 +26,7 @@ fn popup_ui(
     let bkg_color = BackgroundColor(Color::rgb(0.15, 0.15, 0.15));
 
     commands
-    .spawn_bundle(NodeBundle {
+    .spawn((NodeBundle {
         style: Style {
             size: Size::new(Val::Percent(50.), Val::Percent(50.)),
             position_type: PositionType::Absolute,
@@ -40,12 +40,11 @@ fn popup_ui(
         },
         background_color: BackgroundColor(Color::rgb(0.65, 0.65, 0.65)),
         ..Default::default()
-    })
-    .insert(InventoryUI)
+    }, InventoryUI))
     
     // now inner rectangle
     .with_children(|parent| {
-        parent.spawn_bundle(NodeBundle {
+        parent.spawn(NodeBundle {
             style: Style {
                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                 flex_direction: FlexDirection::ColumnReverse,
@@ -59,7 +58,7 @@ fn popup_ui(
         .with_children(|parent| 
         {
             // inventory title
-            parent.spawn_bundle(NodeBundle {
+            parent.spawn(NodeBundle {
                 style: Style {
                     size: Size::new(Val::Percent(100.0), Val::Px(100. * 1.)),
                     flex_direction: FlexDirection::ColumnReverse,
@@ -78,7 +77,7 @@ fn popup_ui(
                     title = "Equipment"
                 }
 
-                parent.spawn_bundle(TextBundle {
+                parent.spawn(TextBundle {
                     style: Style {
                         size: Size::new(Val::Auto, Val::Px(50. * 1.)),
                         margin: UiRect {
@@ -101,7 +100,7 @@ fn popup_ui(
                 });
             });
 
-            parent.spawn_bundle(NodeBundle {
+            parent.spawn(NodeBundle {
                 style: Style {
                     size: Size::new(Val::Percent(100.0), Val::Px(20. * INVENTORY_SLOTS as f32)),
                     flex_direction: FlexDirection::ColumnReverse,
@@ -123,7 +122,7 @@ fn popup_ui(
                         },
                     });
                 }
-                parent.spawn_bundle(TextBundle {
+                parent.spawn((TextBundle {
                     style: Style {
                         size: Size::new(Val::Auto, Val::Px(20. * (INVENTORY_SLOTS+1) as f32)),
                         margin: UiRect {
@@ -140,12 +139,11 @@ fn popup_ui(
                         ..Default::default()
                     },
                     ..Default::default()
-                })
-                .insert(InventoryText);
+                }, InventoryText));
             });
 
             // hint section
-            parent.spawn_bundle(NodeBundle {
+            parent.spawn(NodeBundle {
                 style: Style {
                     size: Size::new(Val::Percent(100.0), Val::Auto),
                     flex_direction: FlexDirection::ColumnReverse,
@@ -161,7 +159,7 @@ fn popup_ui(
                 ..Default::default()
             })
             .with_children(|parent| {
-                parent.spawn_bundle(TextBundle {
+                parent.spawn((TextBundle {
                     style: Style {
                         size: Size::new(Val::Auto, Val::Px(20.)),
                         margin: UiRect {
@@ -181,8 +179,7 @@ fn popup_ui(
                         },
                     ),
                     ..Default::default()
-                })
-                .insert(DescriptionText);
+                }, DescriptionText));
             });
 
         });

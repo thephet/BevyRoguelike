@@ -28,24 +28,24 @@ pub fn spawn_player(
     let player_start = mb.player_start;
 
     let entity = commands
-        .spawn_bundle(SpriteSheetBundle {
+        .spawn((SpriteSheetBundle {
             texture_atlas: atlas.atlas.clone(),
             sprite: TextureAtlasSprite {
-                custom_size: Some(Vec2::new(1.0, 1.0)), 
-                index: '@' as usize, 
+                custom_size: Some(Vec2::new(1.0, 1.0)),
+                index: '@' as usize,
                 ..Default::default()
             },
             ..Default::default()
-        })
-        .insert(Position { x: player_start.x, y: player_start.y, z: 2 })
-        .insert(TileSize::square(1.0))
-        .insert(Health{current: 10, max: 20})
-        .insert(Player{map_level: 0})
-        .insert(Naming("Player".to_string()))
-        .insert(FieldOfView::new(8))
-        .insert(Damage(1))
+        },
+                Player{map_level: 0},
+                Naming("Player".to_string()),
+                Position { x: player_start.x, y: player_start.y, z: 2 },
+                TileSize::square(1.0),
+                Health{current: 10, max: 20},
+                FieldOfView::new(8),
+                Damage(1)
+        ))
         .id();
-
     mb.entity_occupy_tile(entity, player_start);
 }
 
@@ -68,22 +68,23 @@ fn spawn_amulet_of_yala(
     if level == 2 {
         let amulet_start = mb.amulet_start;
         commands
-        .spawn_bundle(SpriteSheetBundle {
+        .spawn((SpriteSheetBundle {
             texture_atlas: atlas.atlas.clone(),
             sprite: TextureAtlasSprite {
                 color: Color::GOLD,
-                custom_size: Some(Vec2::new(1.0, 1.0)), 
-                index: 6, 
+                custom_size: Some(Vec2::new(1.0, 1.0)),
+                index: 6,
                 ..Default::default()
             },
             visibility: Visibility{is_visible:false},
             ..Default::default()
-        })
-        .insert(Naming("Amulet of Yala".to_string()))
-        .insert(Position { x: amulet_start.x, y: amulet_start.y, z: 2 })
-        .insert(TileSize::square(1.0))
-        .insert(Item)
-        .insert(AmuletOfYala);
+        },
+                Item,
+                TileSize::square(1.0),
+                Position { x: amulet_start.x, y: amulet_start.y, z: 2 },
+                Naming("Amulet of Yala".to_string()),
+                AmuletOfYala
+        ));
     }
 }
 

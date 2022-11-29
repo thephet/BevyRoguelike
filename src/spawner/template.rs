@@ -70,10 +70,10 @@ impl Templates {
         atlas: Handle<TextureAtlas>,
         mb: &mut ResMut<MapBuilder>,
     ) {
-        let mut entity = commands.spawn_bundle(SpriteSheetBundle {
+        let mut entity = commands.spawn((SpriteSheetBundle {
             texture_atlas: atlas,
             sprite: TextureAtlasSprite {
-                custom_size: Some(Vec2::new(1.0, 1.0)), 
+                custom_size: Some(Vec2::new(1.0, 1.0)),
                 index: template.glyph as usize,
                 color: match template.entity_type {
                     EntityType::Item => Color::GREEN,
@@ -81,12 +81,13 @@ impl Templates {
                 },
                 ..Default::default()
             },
-            visibility: Visibility{is_visible:false},
+            visibility: Visibility { is_visible: false },
             ..Default::default()
-        });
-        entity.insert(TileSize::square(1.0))
-            .insert(Naming(template.name.clone().to_string()))
-            .insert(Position { x: position.x, y: position.y, z: 2 });
+        },
+            TileSize::square(1.0),
+            Naming(template.name.clone().to_string()),
+            Position { x: position.x, y: position.y, z: 2 }
+        ));
 
         match template.entity_type {
             EntityType::Item => {
