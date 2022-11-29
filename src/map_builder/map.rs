@@ -149,9 +149,7 @@ pub fn spawn_map_tiles(
                     {
                         // if exit, add entity with exit component, so it's easy to find later
                         if tiletype == TileType::Exit {
-                            commands.spawn()
-                                .insert(Position { x: x, y: y, z: 1 })
-                                .insert(ExitTile);
+                            commands.spawn((Position { x, y, z: 1 }, ExitTile));
                         }
                         if let Some(bkg_color) = glyph.bkg_color {
                             commands

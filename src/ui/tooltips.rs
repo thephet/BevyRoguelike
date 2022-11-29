@@ -8,7 +8,7 @@ struct ToolTipBox;
 
 fn tooltip_ui(
     mut commands: Commands,
-    font: Res<Handle<Font>>,
+    font_manager: Res<FontManager>,
 ) {
     let gamelog = GameLog::new();
     commands.insert_resource(gamelog);
@@ -25,7 +25,7 @@ fn tooltip_ui(
             position_type: PositionType::Absolute,
             ..Default::default()
         },
-        color: UiColor(Color::rgb(0.0, 0.0, 0.0)),
+        background_color: BackgroundColor(Color::rgb(0.0, 0.0, 0.0)),
         ..Default::default()
     })
     .with_children(|parent| {
@@ -40,7 +40,7 @@ fn tooltip_ui(
             text: Text::from_section(
                 "Goblin. HP: 2 / 2",
                 TextStyle {
-                    font: font.clone(),
+                    font: font_manager.font.clone(),
                     font_size: 20.0,
                     color: Color::WHITE,
                 },

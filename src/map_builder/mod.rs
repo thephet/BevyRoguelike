@@ -25,6 +25,7 @@ pub trait MapTheme: Sync + Send {
 
 const NUM_ROOMS: usize = 5;
 
+#[derive(Resource)]
 pub struct MapBuilder {
     pub map: Map,
     walls: Vec<Rect>,

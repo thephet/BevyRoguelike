@@ -8,7 +8,7 @@ struct GameOverUI;
 
 fn splash_screen(
     mut commands: Commands,
-    font: Res<Handle<Font>>,
+    font_manager: Res<FontManager>,
     turn_state: Res<State<TurnState>>,
     top_ui_node_q: Query<Entity, With<TopUINode>>,
 ) {
@@ -19,13 +19,13 @@ fn splash_screen(
     }
 
     commands
-    .spawn_bundle(NodeBundle {
+    .spawn(NodeBundle {
         style: Style {
             size: Size::new(Val::Percent(100.), Val::Percent(100.)),
             flex_direction: FlexDirection::ColumnReverse,
             ..Default::default()
         },
-        color: UiColor(Color::rgb(0.0, 0.0, 0.0)),
+        background_color: BackgroundColor(Color::rgb(0.0, 0.0, 0.0)),
         ..Default::default()
     })
     .insert(MenuUI)
@@ -64,7 +64,7 @@ fn splash_screen(
                     TextSection {
                         value: title.to_string(),
                         style: TextStyle {
-                            font: font.clone(),
+                            font: font_manager.font.clone(),
                             font_size: 100.0,
                             color: title_color,
                         },
@@ -72,7 +72,7 @@ fn splash_screen(
                     TextSection {
                         value: "\nPress any key to start game.".to_string(),
                         style: TextStyle {
-                            font: font.clone(),
+                            font: font_manager.font.clone(),
                             font_size: 40.0,
                             color: Color::WHITE,
                         },

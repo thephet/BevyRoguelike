@@ -3,7 +3,7 @@
 mod map_builder;
 mod components;
 mod resources;
-mod renderutils;
+mod render_utils;
 mod spawner;
 mod systems;
 mod utils;
@@ -12,7 +12,6 @@ mod ui;
 mod prelude {
     pub use bevy::prelude::*;
     pub use bevy::winit::WinitSettings;
-    pub use bevy::render::texture::ImageSettings;
     pub use bracket_lib::prelude::*;
     pub const SCREEN_WIDTH: i32 = 80;
     pub const SCREEN_HEIGHT: i32 = 80;
@@ -21,7 +20,7 @@ mod prelude {
     pub use crate::map_builder::*;
     pub use crate::components::*;
     pub use crate::resources::*;
-    pub use crate::renderutils::*;
+    pub use crate::render_utils::*;
     pub use crate::spawner::*;
     pub use crate::systems::*;
     pub use crate::utils::*;
@@ -37,7 +36,7 @@ fn setup(
 ) {
     // Setup the sprite sheet
     let texture_handle = asset_server.load("terminal8x8_transparent.png");
-    let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(8.0, 8.0), 16, 16);
+    let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(8.0, 8.0), 16, 16, None, None);
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
     // add sprite atlas as resource
     commands.insert_resource(CharsetAsset { atlas: texture_atlas_handle.clone() });
@@ -53,17 +52,19 @@ fn setup(
 fn main() {
 
     App::new()
-        .insert_resource(WindowDescriptor {
-            title: "Roguelike Game".to_string(),
-            width: SCREEN_WIDTH as f32 * 10.0,
-            height: SCREEN_HEIGHT as f32 * 10.0,
-            ..Default::default()
-        })
-        // Power-saving reactive rendering for applications.
+        .add_plugins(DefaultPlugins
+            .set(ImagePlugin::default_nearest())
+            .set(WindowPlugin {
+                window: WindowDescriptor {
+                    title: "Roguelike Game".to_string(),
+                    width: SCREEN_WIDTH as f32 * 10.0,
+                    height: SCREEN_HEIGHT as f32 * 10.0,
+                    ..Default::default()
+                },
+                ..Default::default()
+            }))
         .insert_resource(WinitSettings::desktop_app())
-        .insert_resource(ImageSettings::default_nearest())
         .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
-        .add_plugins(DefaultPlugins)
         .add_state(TurnState::StartScreen)
         .add_startup_system(setup)
         .add_plugin(MapPlugin)

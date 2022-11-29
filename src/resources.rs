@@ -1,12 +1,13 @@
 use crate::prelude::*;
 
 // resource type
+#[derive(Resource)]
 pub struct CharsetAsset {
     pub atlas: Handle<TextureAtlas>,
 }
 
 // not a resource in bevy but hands on defines it as resource. We will use Bevy State
-#[derive(Clone, Eq, PartialEq, Hash, Debug )]
+#[derive(Resource, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum TurnState {
     StartScreen,
     AwaitingInput,
@@ -19,6 +20,7 @@ pub enum TurnState {
     InventoryPopup,
 }
 
+#[derive(Resource)]
 pub struct GameLog {
     pub entries : Vec<String>
 }

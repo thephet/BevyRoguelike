@@ -18,18 +18,18 @@ struct DungeonLevelText;
 
 fn bottom_hud(
     mut commands: Commands,
-    font: Res<Handle<Font>>,
+    font_manager: Res<FontManager>,
 ) {
 
     commands
     // root node, just a black rectangle where the UI will be
-    .spawn_bundle(NodeBundle {
+    .spawn(NodeBundle {
         style: Style {
             size: Size::new(Val::Percent(100.0), Val::Px(100.0)),
             //justify_content: JustifyContent::SpaceBetween,
             ..Default::default()
         },
-        color: UiColor(Color::rgb(0.0, 0.0, 0.0)),
+        background_color: BackgroundColor(Color::rgb(0.0, 0.0, 0.0)),
         ..Default::default()
     })
     .insert(TopUINode)
@@ -42,7 +42,7 @@ fn bottom_hud(
                 border: UiRect::all(Val::Px(5.0)),
                 ..Default::default()
             },
-            color: UiColor(Color::rgb(0.65, 0.65, 0.65)),
+            background_color: BackgroundColor(Color::rgb(0.65, 0.65, 0.65)),
             ..Default::default()
         })
         // now inner rectangle
@@ -53,7 +53,7 @@ fn bottom_hud(
                     //align_items: AlignItems::Stretch,
                     ..Default::default()
                 },
-                color: UiColor(Color::rgb(0.0, 0.0, 0.0)),
+                background_color: BackgroundColor(Color::rgb(0.0, 0.0, 0.0)),
                 ..Default::default()
             })
 
@@ -72,7 +72,7 @@ fn bottom_hud(
                                 TextSection {
                                     value: "Log...".to_string(),
                                     style: TextStyle {
-                                        font: font.clone(),
+                                        font: font_manager.font.clone(),
                                         font_size: 20.0,
                                         color: Color::YELLOW,
                                     },
@@ -80,7 +80,7 @@ fn bottom_hud(
                                 TextSection {
                                     value: "\nUse the arrow keys to move.".to_string(),
                                     style: TextStyle {
-                                        font: font.clone(),
+                                        font: font_manager.font.clone(),
                                         font_size: 20.0,
                                         color: Color::YELLOW,
                                     },
@@ -88,7 +88,7 @@ fn bottom_hud(
                                 TextSection {
                                     value: "\nBump into the enemies to attack them.".to_string(),
                                     style: TextStyle {
-                                        font: font.clone(),
+                                        font: font_manager.font.clone(),
                                         font_size: 20.0,
                                         color: Color::YELLOW,
                                     },
@@ -96,7 +96,7 @@ fn bottom_hud(
                                 TextSection {
                                     value: "\nFind the amulet to win the game.".to_string(),
                                     style: TextStyle {
-                                        font: font.clone(),
+                                        font: font_manager.font.clone(),
                                         font_size: 20.0,
                                         color: Color::YELLOW,
                                     },
@@ -120,7 +120,7 @@ fn bottom_hud(
                 border: UiRect::all(Val::Px(5.0)),
                 ..Default::default()
             },
-            color: Color::rgb(0.65, 0.65, 0.65).into(),
+            background_color: Color::rgb(0.65, 0.65, 0.65).into(),
             ..Default::default()
         })
         // now inner rectangle
@@ -132,7 +132,7 @@ fn bottom_hud(
                     flex_direction: FlexDirection::ColumnReverse,
                     ..Default::default()
                 },
-                color: Color::rgb(0.0, 0.0, 0.0).into(),
+                background_color: Color::rgb(0.0, 0.0, 0.0).into(),
                 ..Default::default()
             })
             // top level with HP information
@@ -144,7 +144,7 @@ fn bottom_hud(
                         flex_direction: FlexDirection::Row,
                         ..Default::default()
                     },
-                    color: Color::rgb(0.0, 0.0, 0.0).into(),
+                    background_color: Color::rgb(0.0, 0.0, 0.0).into(),
                     ..Default::default()
                 })
                 // container where to place the HP text
@@ -157,7 +157,7 @@ fn bottom_hud(
                                 flex_direction: FlexDirection::ColumnReverse,
                                 ..Default::default()
                             },
-                            color: Color::rgb(0.0, 0.0, 0.0).into(),
+                            background_color: Color::rgb(0.0, 0.0, 0.0).into(),
                             ..Default::default()
                         })
                         // the actual HP text
@@ -178,7 +178,7 @@ fn bottom_hud(
                                     "HP: 17 / 20".to_string(),
                                     TextStyle {
                                         font_size: 20.0,
-                                        font: font.clone(),
+                                        font: font_manager.font.clone(),
                                         color: Color::rgb(0.99, 0.99, 0.99),
                                     },
                                 ),
@@ -200,7 +200,7 @@ fn bottom_hud(
                                 },
                                 ..Default::default()
                             },
-                            color: Color::rgb(0.5, 0.1, 0.1).into(),
+                            background_color: Color::rgb(0.5, 0.1, 0.1).into(),
                             ..Default::default()
                         })
                         // inside HP bar
@@ -210,7 +210,7 @@ fn bottom_hud(
                                     size: Size::new(Val::Percent(50.0), Val::Percent(100.0)),
                                     ..Default::default()
                                 },
-                                color: Color::rgb(0.99, 0.1, 0.1).into(),
+                                background_color: Color::rgb(0.99, 0.1, 0.1).into(),
                                 ..Default::default()
                             })
                             .insert(HPBar);
@@ -224,7 +224,7 @@ fn bottom_hud(
                         flex_direction: FlexDirection::Row,
                         ..Default::default()
                     },
-                    color: Color::rgb(0.0, 0.0, 0.0).into(),
+                    background_color: Color::rgb(0.0, 0.0, 0.0).into(),
                     ..Default::default()
                 })
                     // container where to place the Inventory text
@@ -235,7 +235,7 @@ fn bottom_hud(
                                     size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                                     ..Default::default()
                                 },
-                                color: Color::rgb(0.0, 0.0, 0.0).into(),
+                                background_color: Color::rgb(0.0, 0.0, 0.0).into(),
                                 ..Default::default()
                             })
                         // the actual Inventory text
@@ -257,7 +257,7 @@ fn bottom_hud(
                                     "(I)nventory".to_string(),
                                     TextStyle {
                                         font_size: 20.0,
-                                        font: font.clone(),
+                                        font: font_manager.font.clone(),
                                         color: Color::rgb(0.99, 0.99, 0.99),
                                     },
                                 ),
@@ -275,7 +275,7 @@ fn bottom_hud(
                                     size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                                     ..Default::default()
                                 },
-                                color: Color::rgb(0.0, 0.0, 0.0).into(),
+                                background_color: Color::rgb(0.0, 0.0, 0.0).into(),
                                 ..Default::default()
                             })
                         // the actual Inventory text
@@ -297,7 +297,7 @@ fn bottom_hud(
                                     "(E)quipment".to_string(),
                                     TextStyle {
                                         font_size: 20.0,
-                                        font: font.clone(),
+                                        font: font_manager.font.clone(),
                                         color: Color::rgb(0.99, 0.99, 0.99),
                                     },
                                 ),
@@ -314,7 +314,7 @@ fn bottom_hud(
                         flex_direction: FlexDirection::Row,
                         ..Default::default()
                     },
-                    color: Color::rgb(0.0, 0.0, 0.0).into(),
+                    background_color: Color::rgb(0.0, 0.0, 0.0).into(),
                     ..Default::default()
                 })
                 // container where to place the Dungeon level text
@@ -324,7 +324,7 @@ fn bottom_hud(
                                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                                 ..Default::default()
                             },
-                            color: Color::rgb(0.0, 0.0, 0.0).into(),
+                        background_color: Color::rgb(0.0, 0.0, 0.0).into(),
                             ..Default::default()
                     })
                     // the actual Dungeon level text
@@ -346,7 +346,7 @@ fn bottom_hud(
                                 "Dungeon Level: 1".to_string(),
                                 TextStyle {
                                     font_size: 20.0,
-                                    font: font.clone(),
+                                    font: font_manager.font.clone(),
                                     color: Color::rgb(0.99, 0.99, 0.99),
                                 },
                             ),

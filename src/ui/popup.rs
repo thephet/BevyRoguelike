@@ -12,17 +12,18 @@ pub struct InventoryText;
 pub struct DescriptionText;
 
 pub struct ChosenItemEvent(pub i32);
+#[derive(Resource)]
 pub struct HighlightedItem(pub i32);
 
 pub const INVENTORY_SLOTS: i32 = 10;
 
 fn popup_ui(
     mut commands: Commands,
-    font: Res<Handle<Font>>,
+    font_manager: Res<FontManager>,
     turn_state: Res<State<TurnState>>,
 ) {
     // background color for the inventory window
-    let bkg_color = UiColor(Color::rgb(0.15, 0.15, 0.15));
+    let bkg_color = BackgroundColor(Color::rgb(0.15, 0.15, 0.15));
 
     commands
     .spawn_bundle(NodeBundle {
@@ -37,7 +38,7 @@ fn popup_ui(
             border: UiRect::all(Val::Px(5.0)),
             ..Default::default()
         },
-        color: UiColor(Color::rgb(0.65, 0.65, 0.65)),
+        background_color: BackgroundColor(Color::rgb(0.65, 0.65, 0.65)),
         ..Default::default()
     })
     .insert(InventoryUI)
@@ -50,7 +51,7 @@ fn popup_ui(
                 flex_direction: FlexDirection::ColumnReverse,
                 ..Default::default()
             },
-            color: bkg_color,
+            background_color: bkg_color,
             ..Default::default()
         })
 
@@ -64,7 +65,7 @@ fn popup_ui(
                     flex_direction: FlexDirection::ColumnReverse,
                     ..Default::default()
                 },
-                color: bkg_color,
+                background_color: bkg_color,
                 ..Default::default()
             })
             .with_children(|parent| {
@@ -92,7 +93,7 @@ fn popup_ui(
                         title.to_string(),
                         TextStyle {
                             font_size: 50.0,
-                            font: font.clone(),
+                            font: font_manager.font.clone(),
                             color: Color::GOLD,
                         },
                     ),
@@ -106,7 +107,7 @@ fn popup_ui(
                     flex_direction: FlexDirection::ColumnReverse,
                     ..Default::default()
                 },
-                color: bkg_color,
+                background_color: bkg_color,
                 ..Default::default()
             })
             .with_children(|parent| {
@@ -116,7 +117,7 @@ fn popup_ui(
                     sections.push(TextSection {
                         value: "\n ".to_string(),
                         style: TextStyle {
-                            font: font.clone(),
+                            font: font_manager.font.clone(),
                             font_size: 20.0,
                             color: Color::WHITE,
                         },
@@ -156,7 +157,7 @@ fn popup_ui(
                     },
                     ..Default::default()
                 },
-                color: bkg_color,
+                background_color: bkg_color,
                 ..Default::default()
             })
             .with_children(|parent| {
@@ -175,7 +176,7 @@ fn popup_ui(
                         " ".to_string(),
                         TextStyle {
                             font_size: 20.0,
-                            font: font.clone(),
+                            font: font_manager.font.clone(),
                             color: Color::WHITE,
                         },
                     ),
