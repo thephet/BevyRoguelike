@@ -75,8 +75,7 @@ fn use_item(
     // if the item exists, send a message to activate it
     if let Some(item_entity) = item_entity 
     {
-        commands.spawn()
-            .insert( ActivateItem{used_by: player_ent, item: item_entity});
+        commands.spawn(ActivateItem{used_by: player_ent, item: item_entity});
         // set also highlighted item to 0, since previous item wont exist on list
         highlighted_item.0 = 0;
 

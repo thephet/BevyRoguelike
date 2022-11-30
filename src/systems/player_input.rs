@@ -4,7 +4,7 @@ use bevy::app::AppExit;
 pub fn player_input(
     mut commands: Commands,
     mut keyboard_input: ResMut<Input<KeyCode>>,
-    mut gamelog: ResMut<GameLog>,
+    mut game_log: ResMut<GameLog>,
     player_position: Query<(Entity, &Position), With<Player>>,
     enemies: Query<(Entity, &Position), With<Enemy>>,
     items: Query<(Entity, &Position, &Naming), With<Item>>,
@@ -32,10 +32,10 @@ pub fn player_input(
                     .filter(|(_, item_pos, _)| **item_pos == *pos)
                     .for_each(|(item_ent, _, name)| {
                         // remove render info and add carried component
-                        commands.entity(item_ent).remove_bundle::<SpriteSheetBundle>()
+                        commands.entity(item_ent).remove::<SpriteSheetBundle>()
                             .insert(Carried(player_ent));
                         let message = format!("\n{} grabbed.", name.0);
-                        gamelog.add_entry(message);
+                        game_log.add_entry(message);
                     }
                 );
             }
@@ -66,19 +66,17 @@ pub fn player_input(
                 .for_each(|(victim, _) | {
                     hit_something = true;
 
-                    commands.spawn()
-                        .insert( WantsToAttack{attacker: player_ent, victim: victim});
+                    commands.spawn(WantsToAttack{attacker: player_ent, victim });
                 });
 
             // if it did not hit then it is just a movement
             if !hit_something {
-                commands.spawn()
-                    .insert( WantsToMove{entity: player_ent, destination: new_position});
+                commands.spawn(WantsToMove{entity: player_ent, destination: new_position});
             } 
         } 
         // else means the user clicked an action which did not move the player.
         else if wait {
-            gamelog.add_entry("\nPlayer waits.".to_string());
+            game_log.add_entry("\nPlayer waits.".to_string());
         }
 
         // reset keyboard, bevys bug when changing states

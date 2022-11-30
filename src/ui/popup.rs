@@ -12,20 +12,21 @@ pub struct InventoryText;
 pub struct DescriptionText;
 
 pub struct ChosenItemEvent(pub i32);
+#[derive(Resource)]
 pub struct HighlightedItem(pub i32);
 
 pub const INVENTORY_SLOTS: i32 = 10;
 
 fn popup_ui(
     mut commands: Commands,
-    font: Res<Handle<Font>>,
+    font_manager: Res<FontManager>,
     turn_state: Res<State<TurnState>>,
 ) {
     // background color for the inventory window
-    let bkg_color = UiColor(Color::rgb(0.15, 0.15, 0.15));
+    let bkg_color = BackgroundColor(Color::rgb(0.15, 0.15, 0.15));
 
     commands
-    .spawn_bundle(NodeBundle {
+    .spawn((NodeBundle {
         style: Style {
             size: Size::new(Val::Percent(50.), Val::Percent(50.)),
             position_type: PositionType::Absolute,
@@ -37,20 +38,19 @@ fn popup_ui(
             border: UiRect::all(Val::Px(5.0)),
             ..Default::default()
         },
-        color: UiColor(Color::rgb(0.65, 0.65, 0.65)),
+        background_color: BackgroundColor(Color::rgb(0.65, 0.65, 0.65)),
         ..Default::default()
-    })
-    .insert(InventoryUI)
+    }, InventoryUI))
     
     // now inner rectangle
     .with_children(|parent| {
-        parent.spawn_bundle(NodeBundle {
+        parent.spawn(NodeBundle {
             style: Style {
                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                 flex_direction: FlexDirection::ColumnReverse,
                 ..Default::default()
             },
-            color: bkg_color,
+            background_color: bkg_color,
             ..Default::default()
         })
 
@@ -58,13 +58,13 @@ fn popup_ui(
         .with_children(|parent| 
         {
             // inventory title
-            parent.spawn_bundle(NodeBundle {
+            parent.spawn(NodeBundle {
                 style: Style {
                     size: Size::new(Val::Percent(100.0), Val::Px(100. * 1.)),
                     flex_direction: FlexDirection::ColumnReverse,
                     ..Default::default()
                 },
-                color: bkg_color,
+                background_color: bkg_color,
                 ..Default::default()
             })
             .with_children(|parent| {
@@ -77,7 +77,7 @@ fn popup_ui(
                     title = "Equipment"
                 }
 
-                parent.spawn_bundle(TextBundle {
+                parent.spawn(TextBundle {
                     style: Style {
                         size: Size::new(Val::Auto, Val::Px(50. * 1.)),
                         margin: UiRect {
@@ -92,7 +92,7 @@ fn popup_ui(
                         title.to_string(),
                         TextStyle {
                             font_size: 50.0,
-                            font: font.clone(),
+                            font: font_manager.font.clone(),
                             color: Color::GOLD,
                         },
                     ),
@@ -100,13 +100,13 @@ fn popup_ui(
                 });
             });
 
-            parent.spawn_bundle(NodeBundle {
+            parent.spawn(NodeBundle {
                 style: Style {
                     size: Size::new(Val::Percent(100.0), Val::Px(20. * INVENTORY_SLOTS as f32)),
                     flex_direction: FlexDirection::ColumnReverse,
                     ..Default::default()
                 },
-                color: bkg_color,
+                background_color: bkg_color,
                 ..Default::default()
             })
             .with_children(|parent| {
@@ -116,13 +116,13 @@ fn popup_ui(
                     sections.push(TextSection {
                         value: "\n ".to_string(),
                         style: TextStyle {
-                            font: font.clone(),
+                            font: font_manager.font.clone(),
                             font_size: 20.0,
                             color: Color::WHITE,
                         },
                     });
                 }
-                parent.spawn_bundle(TextBundle {
+                parent.spawn((TextBundle {
                     style: Style {
                         size: Size::new(Val::Auto, Val::Px(20. * (INVENTORY_SLOTS+1) as f32)),
                         margin: UiRect {
@@ -139,12 +139,11 @@ fn popup_ui(
                         ..Default::default()
                     },
                     ..Default::default()
-                })
-                .insert(InventoryText);
+                }, InventoryText));
             });
 
             // hint section
-            parent.spawn_bundle(NodeBundle {
+            parent.spawn(NodeBundle {
                 style: Style {
                     size: Size::new(Val::Percent(100.0), Val::Auto),
                     flex_direction: FlexDirection::ColumnReverse,
@@ -156,11 +155,11 @@ fn popup_ui(
                     },
                     ..Default::default()
                 },
-                color: bkg_color,
+                background_color: bkg_color,
                 ..Default::default()
             })
             .with_children(|parent| {
-                parent.spawn_bundle(TextBundle {
+                parent.spawn((TextBundle {
                     style: Style {
                         size: Size::new(Val::Auto, Val::Px(20.)),
                         margin: UiRect {
@@ -175,13 +174,12 @@ fn popup_ui(
                         " ".to_string(),
                         TextStyle {
                             font_size: 20.0,
-                            font: font.clone(),
+                            font: font_manager.font.clone(),
                             color: Color::WHITE,
                         },
                     ),
                     ..Default::default()
-                })
-                .insert(DescriptionText);
+                }, DescriptionText));
             });
 
         });

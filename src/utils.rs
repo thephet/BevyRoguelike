@@ -42,8 +42,8 @@ impl From<Point> for Position {
 }
 
 impl From<(Point, i32)> for Position {
-    fn from ((point, newz): (Point, i32)) -> Self {
-        Position { x:point.x, y:point.y, z:newz }
+    fn from ((point, new_z): (Point, i32)) -> Self {
+        Position { x:point.x, y:point.y, z: new_z }
     }
 }
 

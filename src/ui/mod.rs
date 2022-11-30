@@ -10,13 +10,18 @@ mod equipment;
 #[derive(Component)]
 pub struct TopUINode;
 
+#[derive(Resource)]
+pub(crate) struct FontManager {
+    pub font: Handle<Font>,
+}
 
 fn setup (
     asset_server: ResMut<AssetServer>,
     mut commands: Commands,
 ) {
     let font: Handle<Font> = asset_server.load("fonts/dos.ttf");
-    commands.insert_resource(font);
+    let manager = FontManager { font };
+    commands.insert_resource(manager);
 }
 
 

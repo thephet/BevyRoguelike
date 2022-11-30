@@ -8,14 +8,14 @@ struct ToolTipBox;
 
 fn tooltip_ui(
     mut commands: Commands,
-    font: Res<Handle<Font>>,
+    font_manager: Res<FontManager>,
 ) {
-    let gamelog = GameLog::new();
-    commands.insert_resource(gamelog);
+    let game_log= GameLog::new();
+    commands.insert_resource(game_log);
 
     commands
     // root node, just a black rectangle where the text will be
-    .spawn_bundle(NodeBundle {
+    .spawn((NodeBundle {
         // by default we set visible to false so it starts hidden
         visibility: Visibility { is_visible: false},
         style: Style {
@@ -25,12 +25,12 @@ fn tooltip_ui(
             position_type: PositionType::Absolute,
             ..Default::default()
         },
-        color: UiColor(Color::rgb(0.0, 0.0, 0.0)),
+        background_color: BackgroundColor(Color::rgb(0.0, 0.0, 0.0)),
         ..Default::default()
-    })
+    }, ToolTipBox))
     .with_children(|parent| {
         // text
-        parent.spawn_bundle(TextBundle {
+        parent.spawn((TextBundle {
             visibility: Visibility { is_visible: false},
             style: Style {
                 size: Size::new(Val::Auto, Val::Px(20. * 1.)),
@@ -40,16 +40,14 @@ fn tooltip_ui(
             text: Text::from_section(
                 "Goblin. HP: 2 / 2",
                 TextStyle {
-                    font: font.clone(),
+                    font: font_manager.font.clone(),
                     font_size: 20.0,
                     color: Color::WHITE,
                 },
             ),
             ..Default::default()
-        })
-        .insert(ToolTipText);
-    })
-    .insert(ToolTipBox);
+        }, ToolTipText));
+    });
 }
 
 
@@ -60,7 +58,7 @@ fn hide_tooltip(
         Query<&mut Visibility, With<ToolTipBox>>
     )>,
 ) {
-    // update tooltip visiblity
+    // update tooltip visibility
     for mut visible in text_box_query.p0().iter_mut() {
         visible.is_visible = false;
     }

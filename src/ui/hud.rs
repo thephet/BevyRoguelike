@@ -18,48 +18,46 @@ struct DungeonLevelText;
 
 fn bottom_hud(
     mut commands: Commands,
-    font: Res<Handle<Font>>,
+    font_manager: Res<FontManager>,
 ) {
 
     commands
     // root node, just a black rectangle where the UI will be
-    .spawn_bundle(NodeBundle {
+    .spawn((NodeBundle {
         style: Style {
             size: Size::new(Val::Percent(100.0), Val::Px(100.0)),
             //justify_content: JustifyContent::SpaceBetween,
             ..Default::default()
         },
-        color: UiColor(Color::rgb(0.0, 0.0, 0.0)),
+        background_color: BackgroundColor(Color::rgb(0.0, 0.0, 0.0)),
         ..Default::default()
-    })
-    .insert(TopUINode)
+    }, TopUINode))
     // left vertical fill (content).
     .with_children(|parent| {
         // First the border rectangle
-        parent.spawn_bundle(NodeBundle {
+        parent.spawn(NodeBundle {
             style: Style {
                 size: Size::new(Val::Percent(50.0), Val::Percent(100.0)),
                 border: UiRect::all(Val::Px(5.0)),
                 ..Default::default()
             },
-            color: UiColor(Color::rgb(0.65, 0.65, 0.65)),
+            background_color: BackgroundColor(Color::rgb(0.65, 0.65, 0.65)),
             ..Default::default()
         })
         // now inner rectangle
         .with_children(|parent| {
-            parent.spawn_bundle(NodeBundle {
+            parent.spawn(NodeBundle {
                 style: Style {
                     size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                     //align_items: AlignItems::Stretch,
                     ..Default::default()
                 },
-                color: UiColor(Color::rgb(0.0, 0.0, 0.0)),
+                background_color: BackgroundColor(Color::rgb(0.0, 0.0, 0.0)),
                 ..Default::default()
             })
-
             // text
             .with_children(|parent| {
-                parent.spawn_bundle(TextBundle {
+                parent.spawn((TextBundle {
                         style: Style {
                             align_self: AlignSelf::FlexEnd,
                             margin: UiRect::all(Val::Px(5.0)),
@@ -72,7 +70,7 @@ fn bottom_hud(
                                 TextSection {
                                     value: "Log...".to_string(),
                                     style: TextStyle {
-                                        font: font.clone(),
+                                        font: font_manager.font.clone(),
                                         font_size: 20.0,
                                         color: Color::YELLOW,
                                     },
@@ -80,7 +78,7 @@ fn bottom_hud(
                                 TextSection {
                                     value: "\nUse the arrow keys to move.".to_string(),
                                     style: TextStyle {
-                                        font: font.clone(),
+                                        font: font_manager.font.clone(),
                                         font_size: 20.0,
                                         color: Color::YELLOW,
                                     },
@@ -88,7 +86,7 @@ fn bottom_hud(
                                 TextSection {
                                     value: "\nBump into the enemies to attack them.".to_string(),
                                     style: TextStyle {
-                                        font: font.clone(),
+                                        font: font_manager.font.clone(),
                                         font_size: 20.0,
                                         color: Color::YELLOW,
                                     },
@@ -96,7 +94,7 @@ fn bottom_hud(
                                 TextSection {
                                     value: "\nFind the amulet to win the game.".to_string(),
                                     style: TextStyle {
-                                        font: font.clone(),
+                                        font: font_manager.font.clone(),
                                         font_size: 20.0,
                                         color: Color::YELLOW,
                                     },
@@ -108,61 +106,59 @@ fn bottom_hud(
                             },
                         },
                         ..Default::default()
-                    })
-                    .insert(LogUI);
+                    }, LogUI));
             });
         });
-
         // right segment of the UI, first border
-        parent.spawn_bundle(NodeBundle {
+        parent.spawn(NodeBundle {
             style: Style {
                 size: Size::new(Val::Percent(50.0), Val::Percent(100.0)),
                 border: UiRect::all(Val::Px(5.0)),
                 ..Default::default()
             },
-            color: Color::rgb(0.65, 0.65, 0.65).into(),
+            background_color: Color::rgb(0.65, 0.65, 0.65).into(),
             ..Default::default()
         })
         // now inner rectangle
         .with_children(|parent| {
-            parent.spawn_bundle(NodeBundle {
+            parent.spawn(NodeBundle {
                 style: Style {
                     size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                     align_items: AlignItems::FlexEnd,
                     flex_direction: FlexDirection::ColumnReverse,
                     ..Default::default()
                 },
-                color: Color::rgb(0.0, 0.0, 0.0).into(),
+                background_color: Color::rgb(0.0, 0.0, 0.0).into(),
                 ..Default::default()
             })
             // top level with HP information
             // here we will place both the HP text and the HP bar
             .with_children(|parent| {
-                parent.spawn_bundle(NodeBundle {
+                parent.spawn(NodeBundle {
                     style: Style {
                         size: Size::new(Val::Percent(100.0), Val::Percent(33.0)),
                         flex_direction: FlexDirection::Row,
                         ..Default::default()
                     },
-                    color: Color::rgb(0.0, 0.0, 0.0).into(),
+                    background_color: Color::rgb(0.0, 0.0, 0.0).into(),
                     ..Default::default()
                 })
                 // container where to place the HP text
                 .with_children(|parent| {
                     parent
-                        .spawn_bundle(NodeBundle {
+                        .spawn(NodeBundle {
                             style: Style {
                                 size: Size::new(Val::Percent(35.0), Val::Percent(100.0)),
                                 // Place content up to down
                                 flex_direction: FlexDirection::ColumnReverse,
                                 ..Default::default()
                             },
-                            color: Color::rgb(0.0, 0.0, 0.0).into(),
+                            background_color: Color::rgb(0.0, 0.0, 0.0).into(),
                             ..Default::default()
                         })
                         // the actual HP text
                         .with_children(|parent| {
-                            parent.spawn_bundle(TextBundle {
+                            parent.spawn((TextBundle {
                                 style: Style {
                                     // Set height to font size * number of text lines
                                     size: Size::new(Val::Auto, Val::Px(20. * 1.)),
@@ -178,17 +174,16 @@ fn bottom_hud(
                                     "HP: 17 / 20".to_string(),
                                     TextStyle {
                                         font_size: 20.0,
-                                        font: font.clone(),
+                                        font: font_manager.font.clone(),
                                         color: Color::rgb(0.99, 0.99, 0.99),
                                     },
                                 ),
                                 ..Default::default()
-                            })
-                            .insert(HPText);
+                            }, HPText));
                         });
                     // outside HP bar
                     parent
-                        .spawn_bundle(NodeBundle {
+                        .spawn(NodeBundle {
                             style: Style {
                                 size: Size::new(Val::Percent(63.0), Val::Px(20. * 1.)),
                                 border: UiRect::all(Val::Px(5.0)),
@@ -200,47 +195,46 @@ fn bottom_hud(
                                 },
                                 ..Default::default()
                             },
-                            color: Color::rgb(0.5, 0.1, 0.1).into(),
+                            background_color: Color::rgb(0.5, 0.1, 0.1).into(),
                             ..Default::default()
                         })
                         // inside HP bar
                         .with_children(|parent| {
-                            parent.spawn_bundle(NodeBundle {
+                            parent.spawn((NodeBundle {
                                 style: Style {
                                     size: Size::new(Val::Percent(50.0), Val::Percent(100.0)),
                                     ..Default::default()
                                 },
-                                color: Color::rgb(0.99, 0.1, 0.1).into(),
+                                background_color: Color::rgb(0.99, 0.1, 0.1).into(),
                                 ..Default::default()
-                            })
-                            .insert(HPBar);
+                            }, HPBar));
                         });
                 });
 
                 // Node for the Inventory text
-                parent.spawn_bundle(NodeBundle {
+                parent.spawn(NodeBundle {
                     style: Style {
                         size: Size::new(Val::Percent(100.0), Val::Percent(33.0)),
                         flex_direction: FlexDirection::Row,
                         ..Default::default()
                     },
-                    color: Color::rgb(0.0, 0.0, 0.0).into(),
+                    background_color: Color::rgb(0.0, 0.0, 0.0).into(),
                     ..Default::default()
                 })
                     // container where to place the Inventory text
                     .with_children(|parent| {
                         parent
-                            .spawn_bundle(NodeBundle {
+                            .spawn(NodeBundle {
                                 style: Style {
                                     size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                                     ..Default::default()
                                 },
-                                color: Color::rgb(0.0, 0.0, 0.0).into(),
+                                background_color: Color::rgb(0.0, 0.0, 0.0).into(),
                                 ..Default::default()
                             })
                         // the actual Inventory text
                         .with_children(|parent| {
-                            parent.spawn_bundle(TextBundle {
+                            parent.spawn((TextBundle {
                                 style: Style {
                                     // Set height to font size * number of text lines
                                     size: Size::new(Val::Auto, Val::Px(20. * 1.)),
@@ -257,30 +251,29 @@ fn bottom_hud(
                                     "(I)nventory".to_string(),
                                     TextStyle {
                                         font_size: 20.0,
-                                        font: font.clone(),
+                                        font: font_manager.font.clone(),
                                         color: Color::rgb(0.99, 0.99, 0.99),
                                     },
                                 ),
                                 ..Default::default()
-                            })
-                            .insert(InventoryText);
+                            }, InventoryText));
                         });
                     })
 
                     // container where to place the Equipment text
                     .with_children(|parent| {
                         parent
-                            .spawn_bundle(NodeBundle {
+                            .spawn(NodeBundle {
                                 style: Style {
                                     size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                                     ..Default::default()
                                 },
-                                color: Color::rgb(0.0, 0.0, 0.0).into(),
+                                background_color: Color::rgb(0.0, 0.0, 0.0).into(),
                                 ..Default::default()
                             })
                         // the actual Inventory text
                         .with_children(|parent| {
-                            parent.spawn_bundle(TextBundle {
+                            parent.spawn((TextBundle {
                                 style: Style {
                                     // Set height to font size * number of text lines
                                     size: Size::new(Val::Auto, Val::Px(20. * 1.)),
@@ -297,39 +290,38 @@ fn bottom_hud(
                                     "(E)quipment".to_string(),
                                     TextStyle {
                                         font_size: 20.0,
-                                        font: font.clone(),
+                                        font: font_manager.font.clone(),
                                         color: Color::rgb(0.99, 0.99, 0.99),
                                     },
                                 ),
                                 ..Default::default()
-                            })
-                            .insert(InventoryText);
+                            }, InventoryText));
                         });
                     });
 
                 // Node for the Dungeon Level text
-                parent.spawn_bundle(NodeBundle {
+                parent.spawn(NodeBundle {
                     style: Style {
                         size: Size::new(Val::Percent(100.0), Val::Percent(33.0)),
                         flex_direction: FlexDirection::Row,
                         ..Default::default()
                     },
-                    color: Color::rgb(0.0, 0.0, 0.0).into(),
+                    background_color: Color::rgb(0.0, 0.0, 0.0).into(),
                     ..Default::default()
                 })
                 // container where to place the Dungeon level text
                 .with_children(|parent| {
-                    parent.spawn_bundle(NodeBundle {
+                    parent.spawn(NodeBundle {
                             style: Style {
                                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                                 ..Default::default()
                             },
-                            color: Color::rgb(0.0, 0.0, 0.0).into(),
+                        background_color: Color::rgb(0.0, 0.0, 0.0).into(),
                             ..Default::default()
                     })
                     // the actual Dungeon level text
                     .with_children(|parent| {
-                        parent.spawn_bundle(TextBundle {
+                        parent.spawn((TextBundle {
                             style: Style {
                                 // Set height to font size * number of text lines
                                 size: Size::new(Val::Auto, Val::Px(20. * 1.)),
@@ -346,13 +338,12 @@ fn bottom_hud(
                                 "Dungeon Level: 1".to_string(),
                                 TextStyle {
                                     font_size: 20.0,
-                                    font: font.clone(),
+                                    font: font_manager.font.clone(),
                                     color: Color::rgb(0.99, 0.99, 0.99),
                                 },
                             ),
                             ..Default::default()
-                        })
-                        .insert(DungeonLevelText);
+                        }, DungeonLevelText));
                     });
                 });
 
@@ -361,12 +352,12 @@ fn bottom_hud(
     });
 }
 
-fn update_gamelog(
-    gamelog: Res<GameLog>,
+fn update_game_log(
+    game_log: Res<GameLog>,
     mut text_query: Query<&mut Text, With<LogUI>>
 ) { 
     for mut text in text_query.iter_mut() {
-        for (i, entry) in gamelog.entries.iter().enumerate() {
+        for (i, entry) in game_log.entries.iter().enumerate() {
             text.sections[i].value = entry.clone();    
         }
     }
@@ -424,13 +415,13 @@ impl Plugin for HudPlugin {
             .add_system_set(
                 SystemSet::on_inactive_update(TurnState::AwaitingInput)
                     .with_system(update_hp_text_and_bar)
-                    .with_system(update_gamelog)
+                    .with_system(update_game_log)
             )
     
             .add_system_set(
                 SystemSet::on_update(TurnState::AwaitingInput)
                     .with_system(update_hp_text_and_bar)
-                    .with_system(update_gamelog)
+                    .with_system(update_game_log)
                     .with_system(update_dungeonleveltext)
             );
     }

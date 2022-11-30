@@ -50,15 +50,14 @@ pub fn chasing(
                     // if the victim is the player
                     if let Ok( (player_victim, _) ) = player.get(victim) {
                         // send an attack message
-                        commands.spawn().insert( WantsToAttack{attacker: entity, victim: player_victim});
+                        commands.spawn(WantsToAttack{attacker: entity, victim: player_victim});
                     }
                     attacked = true;
                 });
 
                 if !attacked {
                     // move to new position         
-                    commands.spawn()
-                        .insert( WantsToMove{entity: entity, destination: destination.into()});
+                    commands.spawn(WantsToMove{entity, destination: destination.into()});
                 }
         }
     });
