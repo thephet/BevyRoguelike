@@ -47,7 +47,7 @@ fn popup_ui(
         parent.spawn(NodeBundle {
             style: Style {
                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
-                flex_direction: FlexDirection::ColumnReverse,
+                flex_direction: FlexDirection::Column,
                 ..Default::default()
             },
             background_color: bkg_color,
@@ -61,7 +61,7 @@ fn popup_ui(
             parent.spawn(NodeBundle {
                 style: Style {
                     size: Size::new(Val::Percent(100.0), Val::Px(100. * 1.)),
-                    flex_direction: FlexDirection::ColumnReverse,
+                    flex_direction: FlexDirection::Column,
                     ..Default::default()
                 },
                 background_color: bkg_color,
@@ -103,7 +103,7 @@ fn popup_ui(
             parent.spawn(NodeBundle {
                 style: Style {
                     size: Size::new(Val::Percent(100.0), Val::Px(20. * INVENTORY_SLOTS as f32)),
-                    flex_direction: FlexDirection::ColumnReverse,
+                    flex_direction: FlexDirection::Column,
                     ..Default::default()
                 },
                 background_color: bkg_color,
@@ -146,7 +146,6 @@ fn popup_ui(
             parent.spawn(NodeBundle {
                 style: Style {
                     size: Size::new(Val::Percent(100.0), Val::Auto),
-                    flex_direction: FlexDirection::ColumnReverse,
                     margin: UiRect {
                         left: Val::Auto,
                         right: Val::Auto,

@@ -22,7 +22,6 @@ fn splash_screen(
     .spawn(NodeBundle {
         style: Style {
             size: Size::new(Val::Percent(100.), Val::Percent(100.)),
-            flex_direction: FlexDirection::ColumnReverse,
             ..Default::default()
         },
         background_color: BackgroundColor(Color::rgb(0.0, 0.0, 0.0)),

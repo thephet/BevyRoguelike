@@ -20,8 +20,6 @@ fn tooltip_ui(
         visibility: Visibility { is_visible: false},
         style: Style {
             size: Size::new(Val::Px(200.0), Val::Px(30.0)),
-            flex_direction: FlexDirection::ColumnReverse,
-            align_self: AlignSelf::FlexEnd,
             position_type: PositionType::Absolute,
             ..Default::default()
         },

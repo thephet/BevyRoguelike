@@ -26,7 +26,12 @@ fn bottom_hud(
     .spawn((NodeBundle {
         style: Style {
             size: Size::new(Val::Percent(100.0), Val::Px(100.0)),
-            //justify_content: JustifyContent::SpaceBetween,
+            position_type: PositionType::Absolute,
+            position: UiRect {
+                left: Val::Px(0.0),
+                bottom: Val::Px(0.0),
+                ..default()
+            },
             ..Default::default()
         },
         background_color: BackgroundColor(Color::rgb(0.0, 0.0, 0.0)),
@@ -59,7 +64,6 @@ fn bottom_hud(
             .with_children(|parent| {
                 parent.spawn((TextBundle {
                         style: Style {
-                            align_self: AlignSelf::FlexEnd,
                             margin: UiRect::all(Val::Px(5.0)),
                             ..Default::default()
                         },
@@ -124,8 +128,7 @@ fn bottom_hud(
             parent.spawn(NodeBundle {
                 style: Style {
                     size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
-                    align_items: AlignItems::FlexEnd,
-                    flex_direction: FlexDirection::ColumnReverse,
+                    flex_direction: FlexDirection::Column,
                     ..Default::default()
                 },
                 background_color: Color::rgb(0.0, 0.0, 0.0).into(),
@@ -149,8 +152,6 @@ fn bottom_hud(
                         .spawn(NodeBundle {
                             style: Style {
                                 size: Size::new(Val::Percent(35.0), Val::Percent(100.0)),
-                                // Place content up to down
-                                flex_direction: FlexDirection::ColumnReverse,
                                 ..Default::default()
                             },
                             background_color: Color::rgb(0.0, 0.0, 0.0).into(),
