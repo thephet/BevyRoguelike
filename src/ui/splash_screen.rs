@@ -13,7 +13,7 @@ fn splash_screen(
     top_ui_node_q: Query<Entity, With<TopUINode>>,
 ) {
     // If we are not in StartScreen we need to remove ALL the other UI stuff around the game
-    if *(turn_state.current()) != TurnState::StartScreen {
+    if turn_state.0 != TurnState::StartScreen {
         let top_ui_node = top_ui_node_q.single();
         commands.entity(top_ui_node).despawn_recursive();
     }
@@ -33,14 +33,14 @@ fn splash_screen(
         // chose title based on State
         let mut title = "";
         let mut title_color = Color::GOLD;
-        if *(turn_state.current()) == TurnState::StartScreen {
+        if turn_state.0 == TurnState::StartScreen {
             title = "Rogue Quest";
-        } else if *(turn_state.current()) == TurnState::GameOver {
+        } else if turn_state.0 == TurnState::GameOver {
             title = "Game Over";
             title_color = Color::RED;
-        } else if *(turn_state.current()) == TurnState::Victory {
+        } else if turn_state.0 == TurnState::Victory {
             title = "You win!";
-        } else if *(turn_state.current()) == TurnState::NextLevel {
+        } else if turn_state.0 == TurnState::NextLevel {
             title = "Level Completed";
         }
 
@@ -77,10 +77,8 @@ fn splash_screen(
                         },
                     },
                 ],
-                alignment: TextAlignment {
-                    horizontal: HorizontalAlign::Center,
-                    vertical: VerticalAlign::Center,
-                },
+                alignment: TextAlignment::Center,
+                ..default()
             },
             ..Default::default()
         });
@@ -103,20 +101,22 @@ fn despawn_splashscreen(
 
 pub fn start_screen_input(
     mut keyboard_input: ResMut<Input<KeyCode>>,
-    mut turn_state: ResMut<State<TurnState>>
+    turn_state: ResMut<State<TurnState>>,
+    mut next_state: ResMut<NextState<TurnState>>
 ) {
 
     let key = keyboard_input.get_pressed().next().cloned();
+    println!("{:?}", key);
     if let Some(key) = key {
         // reset keyboard, bevys bug when changing states
         keyboard_input.reset(key);
         // update state
-        if (*turn_state.current() == TurnState::StartScreen) || 
-            (*turn_state.current() == TurnState::NextLevel) 
+        if (turn_state.0 == TurnState::StartScreen) || 
+            (turn_state.0 == TurnState::NextLevel) 
         {
-            turn_state.set(TurnState::AwaitingInput).unwrap();
+            next_state.set(TurnState::AwaitingInput);
         } else {
-            turn_state.set(TurnState::StartScreen).unwrap();
+            next_state.set(TurnState::StartScreen);
         }
         
     }
@@ -127,67 +127,32 @@ impl Plugin for MenuPlugin {
     fn build(&self, app: &mut App) {
         app
             // setup when entering the start screen
-            .add_system_set(
-                SystemSet::on_enter(TurnState::StartScreen)
-                    .with_system(splash_screen)
-            )
+            .add_system(splash_screen.in_schedule(OnEnter(TurnState::StartScreen)))
             // setup when on the start screen
-            .add_system_set(
-                SystemSet::on_update(TurnState::StartScreen)
-                    .with_system(start_screen_input)
-            )
+            .add_system(start_screen_input.in_set(OnUpdate(TurnState::StartScreen)))
             // cleanup when exiting the start screen
-            .add_system_set(
-                SystemSet::on_exit(TurnState::StartScreen)
-                    .with_system(despawn_splashscreen)
-            )
+            .add_system(despawn_splashscreen.in_schedule(OnExit(TurnState::StartScreen)))
 
             // setup when entering the gameover screen
-            .add_system_set(
-                SystemSet::on_enter(TurnState::GameOver)
-                    .with_system(splash_screen)
-            )
+            .add_system(splash_screen.in_schedule(OnEnter(TurnState::GameOver)))
             // setup when on the gameover screen
-            .add_system_set(
-                SystemSet::on_update(TurnState::GameOver)
-                    .with_system(start_screen_input)
-            )
+            .add_system(start_screen_input.in_set(OnUpdate(TurnState::GameOver)))
             // cleanup when exiting the gameover screen
-            .add_system_set(
-                SystemSet::on_exit(TurnState::GameOver)
-                    .with_system(despawn_splashscreen)
-            )
+            .add_system(despawn_splashscreen.in_schedule(OnExit(TurnState::GameOver)))
+
 
             // setup when entering the victory screen
-            .add_system_set(
-                SystemSet::on_enter(TurnState::Victory)
-                    .with_system(splash_screen)
-            )
+            .add_system(splash_screen.in_schedule(OnEnter(TurnState::Victory)))
             // setup when on the victory screen
-            .add_system_set(
-                SystemSet::on_update(TurnState::Victory)
-                    .with_system(start_screen_input)
-            )
+            .add_system(start_screen_input.in_set(OnUpdate(TurnState::Victory)))
             // cleanup when exiting the victory screen
-            .add_system_set(
-                SystemSet::on_exit(TurnState::Victory)
-                    .with_system(despawn_splashscreen)
-            )
+            .add_system(despawn_splashscreen.in_schedule(OnExit(TurnState::Victory)))
 
             // setup when entering the next level screen
-            .add_system_set(
-                SystemSet::on_enter(TurnState::NextLevel)
-                    .with_system(splash_screen)
-            )
+            .add_system(splash_screen.in_schedule(OnEnter(TurnState::NextLevel)))
             // setup when on the next level screen
-            .add_system_set(
-                SystemSet::on_update(TurnState::NextLevel)
-                    .with_system(start_screen_input)
-            )
+            .add_system(start_screen_input.in_set(OnUpdate(TurnState::NextLevel)))
             // cleanup when exiting the next level screen
-            .add_system_set(
-                SystemSet::on_exit(TurnState::NextLevel)
-                    .with_system(despawn_splashscreen)
-            );
+            .add_system(despawn_splashscreen.in_schedule(OnExit(TurnState::NextLevel)));
     }
 }

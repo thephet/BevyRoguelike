@@ -31,7 +31,7 @@ pub fn use_items(
         // if it is a map item
         if let Ok(_) = mapping_query.get(activated_item.item) {
             // reveal all tiles
-            maptiles_query.iter_mut().for_each(|(_, mut vis)| vis.is_visible = true);
+            maptiles_query.iter_mut().for_each(|(_, mut vis)| *vis = Visibility::Visible);
             // update gamelog
             let message = format!("\nMap revealed.");
             gamelog.add_entry(message);

@@ -16,12 +16,13 @@ impl Plugin for AwaitingInputPlugin {
     fn build(&self, app: &mut App) {
         app
             .add_plugin(player_input::PlayerInputPlugin)
-            .add_system_set(
-                SystemSet::on_update(TurnState::AwaitingInput)
-                .label("awaiting_input")
-                .with_system(camera::camera_move)
-                .with_system(fov::fov)
-                .with_system(update_entities_visibility::update_entities_visibility)
+
+            .add_systems(
+                (
+                    camera::camera_move,
+                    fov::fov,
+                    update_entities_visibility::update_entities_visibility
+                ).in_set(OnUpdate(TurnState::AwaitingInput))
             );
     }
 }
@@ -30,15 +31,16 @@ struct PlayerPlugin;
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_system_set(
-                SystemSet::on_update(TurnState::PlayerTurn)
-                .label("player")
-                .with_system(use_items::use_items)
-                .with_system(combat::combat)
-                .with_system(movement::movement)
-                .with_system(fov::fov)
-                .with_system(end_turn::end_turn.label("player_end"))
-            );
+
+        .add_systems(
+            (
+                use_items::use_items,
+                combat::combat,
+                movement::movement,
+                fov::fov,
+                end_turn::end_turn
+            ).in_set(OnUpdate(TurnState::PlayerTurn))
+        );
     }
 }
 
@@ -46,16 +48,16 @@ struct MonsterPlugin;
 impl Plugin for MonsterPlugin {
     fn build(&self, app: &mut App) {
         app
-            //.add_stage_after(CoreStage::Update, "enemies_state", SystemStage::parallel())
-            .add_system_set(
-                SystemSet::on_update(TurnState::MonsterTurn)
-                .label("enemies")
-                .with_system(chasing::chasing.after("player_end").label("chasing"))
-                .with_system(combat::combat.after("chasing").label("combat"))
-                .with_system(movement::movement.after("combat").label("enemies_move"))
-                .with_system(fov::fov.after("enemies_move").label("enemies_fov"))
-                .with_system(end_turn::end_turn.after("enemies_fov"))
-            );
+
+        .add_systems(
+            (
+                chasing::chasing,
+                combat::combat,
+                movement::movement,
+                fov::fov,
+                end_turn::end_turn
+            ).in_set(OnUpdate(TurnState::PlayerTurn))
+        );
     }
 }
 

@@ -81,7 +81,7 @@ impl Templates {
                 },
                 ..Default::default()
             },
-            visibility: Visibility { is_visible: false },
+            visibility: Visibility::Hidden,
             ..Default::default()
         },
             TileSize::square(1.0),

@@ -76,7 +76,7 @@ fn spawn_amulet_of_yala(
                 index: 6,
                 ..Default::default()
             },
-            visibility: Visibility{is_visible:false},
+            visibility: Visibility::Hidden,
             ..Default::default()
         },
                 Item,
@@ -135,33 +135,19 @@ pub struct SpawnerPlugin;
 impl Plugin for SpawnerPlugin {
     fn build(&self, app: &mut App) {
         app
-        .add_system_set(
-            SystemSet::on_exit(TurnState::StartScreen)
-            .label("spawn_characters")
-            .with_system(spawn_player)
-            .with_system(spawn_level)
-        )
-        .add_system_set(
-            SystemSet::on_enter(TurnState::GameOver)
-            .label("despawn_all_gameover")
-            .with_system(despawn_all_with_position)
-        )
-        .add_system_set(
-            SystemSet::on_enter(TurnState::Victory)
-            .label("despawn_all_victory")
-            .with_system(despawn_all_with_position)
-        )        
-        .add_system_set(
-            SystemSet::on_enter(TurnState::NextLevel)
-            .label("pre_next_level")
-            .with_system(pre_advance_level)
-        )
-        .add_system_set(
-            SystemSet::on_exit(TurnState::NextLevel)
-            .label("post_next_level")
-            .with_system(post_advance_level)
-            .with_system(spawn_amulet_of_yala.before(post_advance_level))
-            .with_system(spawn_level.after(post_advance_level))
-        );
+        .add_systems((spawn_player, spawn_level).in_schedule(OnExit(TurnState::StartScreen)))
+        .add_system(despawn_all_with_position.in_schedule(OnEnter(TurnState::GameOver)))
+        .add_system(despawn_all_with_position.in_schedule(OnEnter(TurnState::Victory)))
+        .add_system(pre_advance_level.in_schedule(OnEnter(TurnState::NextLevel)))
+        .add_systems((post_advance_level,spawn_amulet_of_yala,spawn_level).in_schedule(OnEnter(TurnState::NextLevel)));
+
+
+        // .add_system_set(
+        //     SystemSet::on_exit(TurnState::NextLevel)
+        //     .label("post_next_level")
+        //     .with_system(post_advance_level)
+        //     .with_system(spawn_amulet_of_yala.before(post_advance_level))
+        //     .with_system(spawn_level.after(post_advance_level))
+        // );
     }
 }

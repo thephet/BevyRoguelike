@@ -12,6 +12,7 @@ mod ui;
 mod prelude {
     pub use bevy::prelude::*;
     pub use bevy::winit::WinitSettings;
+    pub use bevy::window::PrimaryWindow;
     pub use bracket_lib::prelude::*;
     pub const SCREEN_WIDTH: i32 = 80;
     pub const SCREEN_HEIGHT: i32 = 80;
@@ -54,27 +55,22 @@ fn main() {
         .add_plugins(DefaultPlugins
             .set(ImagePlugin::default_nearest())
             .set(WindowPlugin {
-                window: WindowDescriptor {
+                primary_window: Some(Window {
                     title: "Roguelike Game".to_string(),
-                    width: SCREEN_WIDTH as f32 * 10.0,
-                    height: SCREEN_HEIGHT as f32 * 10.0,
+                    resolution: (SCREEN_WIDTH as f32 * 10.0, SCREEN_HEIGHT as f32 * 10.0).into(),
                     ..Default::default()
-                },
+                }),
                 ..Default::default()
             }))
-        .insert_resource(WinitSettings::desktop_app())
+        .add_state::<TurnState>()
+        .add_state::<PopUpState>()
+        //.insert_resource(WinitSettings::desktop_app())
         .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
-        .add_state(TurnState::StartScreen)
         .add_startup_system(setup)
         .add_plugin(MapPlugin)
         .add_plugin(SpawnerPlugin)
         .add_plugin(SystemsPlugin)
         .add_plugin(UIPlugin)
-        .add_system_set_to_stage(
-            CoreStage::PostUpdate,
-            SystemSet::new()
-                .with_system(position_translation)
-                .with_system(size_scaling),
-        )
+        .add_systems((position_translation, size_scaling).in_base_set(CoreSet::PostUpdate))
         .run();
 }

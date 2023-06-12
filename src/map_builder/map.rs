@@ -137,7 +137,7 @@ pub fn spawn_map_tiles(
                                 custom_size: Some(Vec2::new(1.0, 1.0)),
                                 ..Default::default()
                             },
-                            visibility: Visibility{is_visible:false},
+                            visibility: Visibility::Hidden,
                             ..Default::default()
                         })
                         .insert(MapTile)
@@ -163,7 +163,7 @@ pub fn spawn_map_tiles(
                                     custom_size: Some(Vec2::new(1.0, 1.0)),
                                     ..Default::default()
                                 },
-                                visibility: Visibility{is_visible:false},
+                                visibility: Visibility::Hidden,
                                 ..Default::default()
                             }));
                         }
@@ -181,7 +181,7 @@ pub fn spawn_map_tiles(
                                     index: glyph.index,
                                     ..Default::default()
                                 },
-                                visibility: Visibility{is_visible:false},
+                                visibility: Visibility::Hidden,
                                 ..Default::default()
                             }));
                     }

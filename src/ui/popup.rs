@@ -71,9 +71,9 @@ fn popup_ui(
                 
                 // chose title based on State, either inventory or equipment
                 let mut title = "";
-                if *(turn_state.current()) == TurnState::InventoryPopup {
+                if turn_state.0 == TurnState::InventoryPopup {
                     title = "Inventory"
-                } else if *(turn_state.current()) == TurnState::EquipmentPopup {
+                } else if turn_state.0 == TurnState::EquipmentPopup {
                     title = "Equipment"
                 }
 
@@ -189,16 +189,17 @@ fn player_input(
     mut chosen_item: EventWriter<ChosenItemEvent>,
     mut highlighted_item: ResMut<HighlightedItem>,
     mut keyboard_input: ResMut<Input<KeyCode>>,
-    mut turn_state: ResMut<State<TurnState>>,
+    popup_currentstate: ResMut<State<PopUpState>>,
+    mut popup_nextstate: ResMut<NextState<PopUpState>>,
     player_items: Query<(Entity, &Carried), Without<Weapon>>,
     player_weapons: Query<(Entity, &Carried), With<Weapon>>,
 ) {
 
     // chose carried items based on State, either inventory or equipment
     let mut carried_items: usize = 0;
-    if *(turn_state.current()) == TurnState::InventoryPopup {
+    if popup_currentstate.0 == PopUpState::InventoryPopup {
         carried_items = player_items.iter().count();
-    } else if *(turn_state.current()) == TurnState::EquipmentPopup {
+    } else if popup_currentstate.0 == PopUpState::EquipmentPopup {
         carried_items = player_weapons.iter().count();
     }
 
@@ -210,7 +211,7 @@ fn player_input(
         match key {
             KeyCode::Escape => { // close inventory window
                 // update state
-                turn_state.pop().unwrap();
+                popup_nextstate.set(PopUpState::None);
             }
             KeyCode::Return => { // activate selected item and close inventory window
                 chosen_item.send(ChosenItemEvent(highlighted_item.0));
@@ -249,33 +250,15 @@ impl Plugin for PopUpPlugin {
         .add_plugin(equipment::EquipmentPlugin)
 
         // listening to user input on inventory screen
-        .add_system_set(
-            SystemSet::on_update(TurnState::InventoryPopup)
-                .with_system(player_input)
-        )
-        .add_system_set(
-            SystemSet::on_update(TurnState::EquipmentPopup)
-                .with_system(player_input)
-        )
+        .add_system(player_input.in_set(OnUpdate(TurnState::InventoryPopup)))
+        .add_system(player_input.in_set(OnUpdate(TurnState::EquipmentPopup)))
 
         // cleanup when exiting
-        .add_system_set(
-            SystemSet::on_exit(TurnState::InventoryPopup)
-                .with_system(despawn_menu)
-        )
-        .add_system_set(
-            SystemSet::on_exit(TurnState::EquipmentPopup)
-                .with_system(despawn_menu)
-        )
-        
-        .add_system_set(
-            SystemSet::on_enter(TurnState::InventoryPopup)
-                .with_system(popup_ui)
-        )
-        .add_system_set(
-            SystemSet::on_enter(TurnState::EquipmentPopup)
-                .with_system(popup_ui)
-        );
+        .add_system(despawn_menu.in_schedule(OnExit(TurnState::InventoryPopup)))
+        .add_system(despawn_menu.in_schedule(OnExit(TurnState::EquipmentPopup)))
+
+        .add_system(popup_ui.in_schedule(OnEnter(TurnState::InventoryPopup)))
+        .add_system(popup_ui.in_schedule(OnEnter(TurnState::EquipmentPopup)));
 
     }
 }

@@ -17,7 +17,7 @@ fn tooltip_ui(
     // root node, just a black rectangle where the text will be
     .spawn((NodeBundle {
         // by default we set visible to false so it starts hidden
-        visibility: Visibility { is_visible: false},
+        visibility: Visibility::Hidden,
         style: Style {
             size: Size::new(Val::Px(200.0), Val::Px(30.0)),
             position_type: PositionType::Absolute,
@@ -29,7 +29,7 @@ fn tooltip_ui(
     .with_children(|parent| {
         // text
         parent.spawn((TextBundle {
-            visibility: Visibility { is_visible: false},
+            visibility: Visibility::Hidden,
             style: Style {
                 size: Size::new(Val::Auto, Val::Px(20. * 1.)),
                 margin: UiRect::all(Val::Auto),
@@ -58,19 +58,19 @@ fn hide_tooltip(
 ) {
     // update tooltip visibility
     for mut visible in text_box_query.p0().iter_mut() {
-        visible.is_visible = false;
+        *visible = Visibility::Hidden;
     }
 
     // update box visibility
     for mut visible in text_box_query.p1().iter_mut() {
-        visible.is_visible = false;
+        *visible = Visibility::Hidden;
     } 
 }
 
 // when user left clicks, update tooltip and make it visible
 fn update_tooltip(
     // need to get window dimensions
-    wnds: Res<Windows>,
+    wnds: Query<&Window, With<PrimaryWindow>>,
     // to get the mouse clicks
     buttons: Res<Input<MouseButton>>,
     // query to get camera transform
@@ -88,7 +88,7 @@ fn update_tooltip(
     // if the user left clicks
     if buttons.just_pressed(MouseButton::Left) {
         // get the primary window
-        let wnd = wnds.get_primary().unwrap();
+        let wnd = wnds.get_single().unwrap();
 
         // check if the cursor is in the primary window
         if let Some(pos) = wnd.cursor_position() {
@@ -142,7 +142,7 @@ fn update_tooltip(
                 } else {
                     text.sections[0].value = format!("{}", s);
                 }
-                visible.is_visible = true;
+                *visible = Visibility::Visible;
             }
 
             // update box position
@@ -150,9 +150,9 @@ fn update_tooltip(
                 if good_click {
                     boxnode.position.left = Val::Px(pos.x-100.0);
                     boxnode.position.bottom = Val::Px(pos.y);
-                    visible.is_visible = true;
+                    *visible = Visibility::Visible;
                 } else {
-                    visible.is_visible = false;
+                    *visible = Visibility::Hidden;
                 }
                 
             }
@@ -164,19 +164,9 @@ pub struct TooltipsPlugin;
 impl Plugin for TooltipsPlugin {
     fn build(&self, app: &mut App) {
         app
-        .add_system_set(
-            SystemSet::on_exit(TurnState::StartScreen)
-                .with_system(tooltip_ui)
-        )
 
-       .add_system_set(
-            SystemSet::on_update(TurnState::AwaitingInput)
-                .with_system(update_tooltip)
-        )
-        
-       .add_system_set(
-           SystemSet::on_exit(TurnState::AwaitingInput)
-                .with_system(hide_tooltip)
-       );
+        .add_system(tooltip_ui.in_schedule(OnExit(TurnState::StartScreen)))
+        .add_system(update_tooltip.in_set(OnUpdate(TurnState::AwaitingInput)))        
+        .add_system(hide_tooltip.in_schedule(OnExit(TurnState::AwaitingInput)));
     }
 }

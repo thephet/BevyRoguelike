@@ -25,7 +25,7 @@ pub fn update_entities_visibility(
         if let Some(_) = map_tile {
             if player_fov.visible_tiles.contains(&((*pos).into())) {
                 // make it visible
-                vis.is_visible = true;
+                *vis = Visibility::Visible;
                 // increase the color alpha to 1, to both sprites or atlas_sprite
                 if let Some(mut sprite) = sprite {
                     sprite.color.set_a(1.0);
@@ -33,7 +33,7 @@ pub fn update_entities_visibility(
                 if let Some(mut atlas_sprite) = atlas_sprite {
                     atlas_sprite.color.set_a(1.0);
                 }
-            } else if vis.is_visible == true { // if visible true but not in fov, tint
+            } else if *vis == Visibility::Visible { // if visible true but not in fov, tint
                 // decrease the color alpha, to both sprites or atlas_sprite
                 if let Some(mut sprite) = sprite {
                     sprite.color.set_a(0.1);
@@ -46,8 +46,8 @@ pub fn update_entities_visibility(
             // if this thing is on the player fov, make it visible
             if player_fov.visible_tiles.contains(&((*pos).into())) {
                 // if it was not visible before, make it appear and describe in gamelog
-                if vis.is_visible == false {
-                    vis.is_visible = true;
+                if *vis == Visibility::Hidden {
+                    *vis = Visibility::Visible;
                     // if enemy, get name update gamelog
                     if let Ok(name) = names_enemies_q.get(ent) {
                         let message = format!("\n{} appears.", name.0);
@@ -61,7 +61,7 @@ pub fn update_entities_visibility(
                 }
                 
             } else { // otherwise make it invisible
-                vis.is_visible = false;
+                *vis = Visibility::Hidden;
             }
         }
     }

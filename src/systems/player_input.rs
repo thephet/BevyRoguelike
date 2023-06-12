@@ -8,7 +8,8 @@ pub fn player_input(
     player_position: Query<(Entity, &Position), With<Player>>,
     enemies: Query<(Entity, &Position), With<Enemy>>,
     items: Query<(Entity, &Position, &Naming), With<Item>>,
-    mut turn_state: ResMut<State<TurnState>>,
+    mut next_state: ResMut<NextState<TurnState>>,
+    mut popup_state: ResMut<NextState<PopUpState>>,
     mut exit: EventWriter<AppExit>
 ) {
 
@@ -40,11 +41,11 @@ pub fn player_input(
                 );
             }
             KeyCode::I => {
-                turn_state.push(TurnState::InventoryPopup).unwrap();
+                popup_state.set(PopUpState::InventoryPopup);
                 action = false;
             }
             KeyCode::E => {
-                turn_state.push(TurnState::EquipmentPopup).unwrap();
+                popup_state.set(PopUpState::EquipmentPopup);
                 action = false;
             }
             KeyCode::Escape => {
@@ -84,7 +85,7 @@ pub fn player_input(
 
         if action {
             // update state
-            turn_state.set(TurnState::PlayerTurn).unwrap();
+            next_state.set(TurnState::PlayerTurn);
         }
 
     }
@@ -121,11 +122,6 @@ impl Plugin for PlayerInputPlugin {
         app
 
         // listening to user input on inventory screen
-        .add_system_set(
-            SystemSet::on_update(TurnState::AwaitingInput)
-                .with_system(player_input)
-                .with_system(equip_first_weapon.after(player_input))
-                .with_system(equip_weapon_log.after(equip_first_weapon))
-        );
+        .add_systems((player_input,equip_first_weapon,equip_weapon_log).in_set(OnUpdate(TurnState::AwaitingInput)));
     }
 }

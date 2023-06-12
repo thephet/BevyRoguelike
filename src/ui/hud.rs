@@ -104,10 +104,8 @@ fn bottom_hud(
                                     },
                                 },
                             ],
-                            alignment: TextAlignment {
-                                horizontal: HorizontalAlign::Left,
-                                vertical: VerticalAlign::Center,
-                            },
+                            alignment: TextAlignment::Left,
+                            ..Default::default()
                         },
                         ..Default::default()
                     }, LogUI));
@@ -404,26 +402,12 @@ impl Plugin for HudPlugin {
     fn build(&self, app: &mut App) {
         app 
 
-            .add_system_set(
-                SystemSet::on_exit(TurnState::StartScreen)
-                    .with_system(bottom_hud)
-            )
-            .add_system_set(
-                SystemSet::on_exit(TurnState::NextLevel)
-                    .with_system(bottom_hud)
-            )
+            .add_system(bottom_hud.in_schedule(OnExit(TurnState::StartScreen)))
+            .add_system(bottom_hud.in_schedule(OnExit(TurnState::NextLevel)))
 
-            .add_system_set(
-                SystemSet::on_inactive_update(TurnState::AwaitingInput)
-                    .with_system(update_hp_text_and_bar)
-                    .with_system(update_game_log)
-            )
-    
-            .add_system_set(
-                SystemSet::on_update(TurnState::AwaitingInput)
-                    .with_system(update_hp_text_and_bar)
-                    .with_system(update_game_log)
-                    .with_system(update_dungeonleveltext)
+            .add_systems(
+                (update_hp_text_and_bar, update_game_log, update_dungeonleveltext)
+                .in_set(OnUpdate(TurnState::AwaitingInput))
             );
     }
 }

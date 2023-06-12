@@ -6,9 +6,9 @@ pub struct CharsetAsset {
     pub atlas: Handle<TextureAtlas>,
 }
 
-// not a resource in bevy but hands on defines it as resource. We will use Bevy State
-#[derive(Resource, Clone, Eq, PartialEq, Hash, Debug)]
+#[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, States)]
 pub enum TurnState {
+    #[default]
     StartScreen,
     AwaitingInput,
     PlayerTurn,
@@ -16,6 +16,14 @@ pub enum TurnState {
     GameOver,
     Victory,
     NextLevel,
+    EquipmentPopup,
+    InventoryPopup,
+}
+
+#[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, States)]
+pub enum PopUpState {
+    #[default]
+    None,
     EquipmentPopup,
     InventoryPopup,
 }
