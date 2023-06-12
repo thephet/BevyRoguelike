@@ -20,6 +20,7 @@ pub fn player_input(
     let mut new_position = pos.clone();
 
     let key = keyboard_input.get_pressed().next().cloned();
+
     if let Some(key) = key {
 
         match key {
@@ -105,7 +106,7 @@ pub fn equip_first_weapon(
     }
 }
 
-// If this is the first weapon we grab, also equip it
+// Update log (If this is the first weapon we grab, also equip it)
 pub fn equip_weapon_log(
     mut gamelog: ResMut<GameLog>,
     equipped_weapon: Query<(Entity, &Naming), (With<Weapon>, With<Carried>, Added<Equipped>)>,
@@ -122,6 +123,13 @@ impl Plugin for PlayerInputPlugin {
         app
 
         // listening to user input on inventory screen
-        .add_systems((player_input,equip_first_weapon,equip_weapon_log).in_set(OnUpdate(TurnState::AwaitingInput)));
+        .add_systems(
+            (
+                player_input,
+                equip_first_weapon,
+                equip_weapon_log)
+                .in_set(OnUpdate(TurnState::AwaitingInput)
+            )
+        );
     }
 }

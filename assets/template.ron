@@ -6,7 +6,7 @@ Templates(
             name: "Healing Potion", glyph: 'P', levels: [0, 1, 2],
             description: Some("Heals 6 Health Points."),
             provides: Some([ ("Healing", 6) ]),
-            frequency: 1
+            frequency: 0
         ),
         Template(
             entity_type: Item,
@@ -34,7 +34,7 @@ Templates(
             entity_type: Item,
             name: "Shiny Sword", glyph: '|', levels: [0, 1, 2],
             description: Some("Shiny sword does 2 damage."),
-            frequency: 1,
+            frequency: 0,
             base_damage: Some(2)
         ),
 
@@ -49,7 +49,7 @@ Templates(
             entity_type: Enemy,
             name: "Orc", glyph: 'o', levels: [0, 1, 2],
             hp: Some(2),
-            frequency: 1,
+            frequency: 0,
             base_damage: Some(1)
         ),
         Template(

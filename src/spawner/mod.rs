@@ -135,11 +135,25 @@ pub struct SpawnerPlugin;
 impl Plugin for SpawnerPlugin {
     fn build(&self, app: &mut App) {
         app
-        .add_systems((spawn_player, spawn_level).in_schedule(OnExit(TurnState::StartScreen)))
+        .add_systems
+        (
+            (spawn_player, spawn_level)
+            .in_schedule(OnExit(TurnState::StartScreen))
+        )
+        
         .add_system(despawn_all_with_position.in_schedule(OnEnter(TurnState::GameOver)))
         .add_system(despawn_all_with_position.in_schedule(OnEnter(TurnState::Victory)))
+        
         .add_system(pre_advance_level.in_schedule(OnEnter(TurnState::NextLevel)))
-        .add_systems((post_advance_level,spawn_amulet_of_yala,spawn_level).in_schedule(OnEnter(TurnState::NextLevel)));
+        .add_systems(
+            (
+                post_advance_level,
+                spawn_amulet_of_yala,
+                spawn_level)
+                .in_schedule(OnExit(TurnState::NextLevel
+                )
+            )
+        );
 
 
         // .add_system_set(

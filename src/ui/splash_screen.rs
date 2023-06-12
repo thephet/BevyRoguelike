@@ -106,7 +106,7 @@ pub fn start_screen_input(
 ) {
 
     let key = keyboard_input.get_pressed().next().cloned();
-    println!("{:?}", key);
+
     if let Some(key) = key {
         // reset keyboard, bevys bug when changing states
         keyboard_input.reset(key);

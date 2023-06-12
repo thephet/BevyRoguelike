@@ -56,7 +56,7 @@ impl Plugin for MonsterPlugin {
                 movement::movement,
                 fov::fov,
                 end_turn::end_turn
-            ).in_set(OnUpdate(TurnState::PlayerTurn))
+            ).in_set(OnUpdate(TurnState::MonsterTurn))
         );
     }
 }
