@@ -54,7 +54,8 @@ fn use_item(
     mut chosen_item: EventReader<popup::ChosenItemEvent>,
     player_query: Query<Entity, With<Player>>,
     items_query: Query<(Entity, &Carried)>,
-    mut next_state: ResMut<NextState<TurnState>>,
+    mut turn_state: ResMut<NextState<TurnState>>,
+    mut popup_state: ResMut<NextState<PopUpState>>,
 ) {
     // if user selected an item, then it will have a number over 0, otherwise -1
     let mut selected_item = -1;
@@ -79,8 +80,9 @@ fn use_item(
         // set also highlighted item to 0, since previous item wont exist on list
         highlighted_item.0 = 0;
 
-        // after using an item, move turn state
-        next_state.set(TurnState::PlayerTurn);
+        // after using an item, move turn state and disable popup
+        turn_state.set(TurnState::PlayerTurn);
+        popup_state.set(PopUpState::None);
     }
 
 }
@@ -93,7 +95,7 @@ impl Plugin for InventoryPlugin {
         // listening to user input on inventory screen
         .add_systems(
             (use_item, update_inventory_text)
-            .in_set(OnUpdate(TurnState::InventoryPopup))
+            .in_set(OnUpdate(PopUpState::InventoryPopup))
         );
 
     }

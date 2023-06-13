@@ -20,7 +20,7 @@ pub const INVENTORY_SLOTS: i32 = 10;
 fn popup_ui(
     mut commands: Commands,
     font_manager: Res<FontManager>,
-    turn_state: Res<State<TurnState>>,
+    popup_state: Res<State<PopUpState>>,
 ) {
     // background color for the inventory window
     let bkg_color = BackgroundColor(Color::rgb(0.15, 0.15, 0.15));
@@ -71,9 +71,9 @@ fn popup_ui(
                 
                 // chose title based on State, either inventory or equipment
                 let mut title = "";
-                if turn_state.0 == TurnState::InventoryPopup {
+                if popup_state.0 == PopUpState::InventoryPopup {
                     title = "Inventory"
-                } else if turn_state.0 == TurnState::EquipmentPopup {
+                } else if popup_state.0 == PopUpState::EquipmentPopup {
                     title = "Equipment"
                 }
 
@@ -191,6 +191,7 @@ fn player_input(
     mut keyboard_input: ResMut<Input<KeyCode>>,
     popup_currentstate: ResMut<State<PopUpState>>,
     mut popup_nextstate: ResMut<NextState<PopUpState>>,
+    mut turn_nextstate: ResMut<NextState<TurnState>>,
     player_items: Query<(Entity, &Carried), Without<Weapon>>,
     player_weapons: Query<(Entity, &Carried), With<Weapon>>,
 ) {
@@ -212,6 +213,7 @@ fn player_input(
             KeyCode::Escape => { // close inventory window
                 // update state
                 popup_nextstate.set(PopUpState::None);
+                turn_nextstate.set(TurnState::AwaitingInput);
             }
             KeyCode::Return => { // activate selected item and close inventory window
                 chosen_item.send(ChosenItemEvent(highlighted_item.0));
@@ -250,15 +252,15 @@ impl Plugin for PopUpPlugin {
         .add_plugin(equipment::EquipmentPlugin)
 
         // listening to user input on inventory screen
-        .add_system(player_input.in_set(OnUpdate(TurnState::InventoryPopup)))
-        .add_system(player_input.in_set(OnUpdate(TurnState::EquipmentPopup)))
+        .add_system(player_input.in_set(OnUpdate(PopUpState::InventoryPopup)))
+        .add_system(player_input.in_set(OnUpdate(PopUpState::EquipmentPopup)))
 
         // cleanup when exiting
-        .add_system(despawn_menu.in_schedule(OnExit(TurnState::InventoryPopup)))
-        .add_system(despawn_menu.in_schedule(OnExit(TurnState::EquipmentPopup)))
+        .add_system(despawn_menu.in_schedule(OnExit(PopUpState::InventoryPopup)))
+        .add_system(despawn_menu.in_schedule(OnExit(PopUpState::EquipmentPopup)))
 
-        .add_system(popup_ui.in_schedule(OnEnter(TurnState::InventoryPopup)))
-        .add_system(popup_ui.in_schedule(OnEnter(TurnState::EquipmentPopup)));
+        .add_system(popup_ui.in_schedule(OnEnter(PopUpState::InventoryPopup)))
+        .add_system(popup_ui.in_schedule(OnEnter(PopUpState::EquipmentPopup)));
 
     }
 }

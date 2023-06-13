@@ -11,13 +11,12 @@ pub enum TurnState {
     #[default]
     StartScreen,
     AwaitingInput,
+    InMenus,
     PlayerTurn,
     MonsterTurn,
     GameOver,
     Victory,
     NextLevel,
-    EquipmentPopup,
-    InventoryPopup,
 }
 
 #[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, States)]

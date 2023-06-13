@@ -13,7 +13,7 @@ Templates(
             name: "Weak Healing Potion", glyph: 'p', levels: [0, 1, 2],
             description: Some("Heals 2 Health Points."),
             provides: Some([ ("Healing", 2) ]),
-            frequency: 0
+            frequency: 1
         ),
         Template(
             entity_type: Item,

@@ -64,7 +64,8 @@ fn equip_weapon(
     player_query: Query<Entity, With<Player>>,
     items_query: Query<(Entity, &Carried), With<Weapon>>,
     equipped_query: Query<(Entity, &Equipped)>,
-    mut next_state: ResMut<NextState<TurnState>>,
+    mut turn_state: ResMut<NextState<TurnState>>,
+    mut popup_state: ResMut<NextState<PopUpState>>,
 ) {
     // if user selected an item, then it will have a number over 0, otherwise -1
     let mut selected_item = -1;
@@ -95,8 +96,9 @@ fn equip_weapon(
         // set also highlighted item to 0
         highlighted_item.0 = 0;
 
-        // after using an item, move turn state
-        next_state.set(TurnState::PlayerTurn);
+        // after using an item, move turn state and disable popup
+        turn_state.set(TurnState::PlayerTurn);
+        popup_state.set(PopUpState::None);
     }
 
 }
@@ -109,7 +111,7 @@ impl Plugin for EquipmentPlugin {
         // listening to user input on inventory screen
         .add_systems(
             (equip_weapon, update_equipment_text)
-            .in_set(OnUpdate(TurnState::EquipmentPopup))
+            .in_set(OnUpdate(PopUpState::EquipmentPopup))
         );
 
     }

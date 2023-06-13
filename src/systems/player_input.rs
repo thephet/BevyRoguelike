@@ -43,10 +43,12 @@ pub fn player_input(
             }
             KeyCode::I => {
                 popup_state.set(PopUpState::InventoryPopup);
+                next_state.set(TurnState::InMenus);
                 action = false;
             }
             KeyCode::E => {
                 popup_state.set(PopUpState::EquipmentPopup);
+                next_state.set(TurnState::InMenus);
                 action = false;
             }
             KeyCode::Escape => {
