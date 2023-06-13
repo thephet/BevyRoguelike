@@ -147,21 +147,11 @@ impl Plugin for SpawnerPlugin {
         .add_system(pre_advance_level.in_schedule(OnEnter(TurnState::NextLevel)))
         .add_systems(
             (
-                post_advance_level,
                 spawn_amulet_of_yala,
-                spawn_level)
-                .in_schedule(OnExit(TurnState::NextLevel
-                )
-            )
+                post_advance_level,
+                spawn_level
+            ).chain()
+            .in_schedule(OnExit(TurnState::NextLevel))
         );
-
-
-        // .add_system_set(
-        //     SystemSet::on_exit(TurnState::NextLevel)
-        //     .label("post_next_level")
-        //     .with_system(post_advance_level)
-        //     .with_system(spawn_amulet_of_yala.before(post_advance_level))
-        //     .with_system(spawn_level.after(post_advance_level))
-        // );
     }
 }

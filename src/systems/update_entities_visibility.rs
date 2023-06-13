@@ -11,7 +11,7 @@ pub fn update_entities_visibility(
     // get the player fov
     let player_fov = player_fov_q.single();
 
-    // for every etity with position
+    // for every entity with position
     for (
         ent,
         pos, 
@@ -33,7 +33,8 @@ pub fn update_entities_visibility(
                 if let Some(mut atlas_sprite) = atlas_sprite {
                     atlas_sprite.color.set_a(1.0);
                 }
-            } else if *vis == Visibility::Visible { // if visible true but not in fov, tint
+            } 
+            else if *vis == Visibility::Visible { // if visible true but not in fov, tint
                 // decrease the color alpha, to both sprites or atlas_sprite
                 if let Some(mut sprite) = sprite {
                     sprite.color.set_a(0.1);

@@ -19,9 +19,9 @@ impl Plugin for AwaitingInputPlugin {
 
             .add_systems(
                 (
-                    camera::camera_move,
                     fov::fov,
-                    update_entities_visibility::update_entities_visibility
+                    update_entities_visibility::update_entities_visibility,
+                    camera::camera_move,
                 ).in_set(OnUpdate(TurnState::AwaitingInput))
             );
     }
@@ -38,8 +38,11 @@ impl Plugin for PlayerPlugin {
                 combat::combat,
                 movement::movement,
                 fov::fov,
+                update_entities_visibility::update_entities_visibility,
+                camera::camera_move,
                 end_turn::end_turn
-            ).in_set(OnUpdate(TurnState::PlayerTurn))
+            ).chain()
+            .in_set(OnUpdate(TurnState::PlayerTurn))
         );
     }
 }
@@ -56,7 +59,8 @@ impl Plugin for MonsterPlugin {
                 movement::movement,
                 fov::fov,
                 end_turn::end_turn
-            ).in_set(OnUpdate(TurnState::MonsterTurn))
+            ).chain()
+            .in_set(OnUpdate(TurnState::MonsterTurn))
         );
     }
 }
