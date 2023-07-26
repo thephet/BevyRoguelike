@@ -94,8 +94,9 @@ impl Plugin for InventoryPlugin {
 
         // listening to user input on inventory screen
         .add_systems(
+            Update,
             (use_item, update_inventory_text)
-            .in_set(OnUpdate(PopUpState::InventoryPopup))
+            .run_if(in_state(PopUpState::InventoryPopup))
         );
 
     }

@@ -110,8 +110,9 @@ impl Plugin for EquipmentPlugin {
 
         // listening to user input on inventory screen
         .add_systems(
+            Update,
             (equip_weapon, update_equipment_text)
-            .in_set(OnUpdate(PopUpState::EquipmentPopup))
+            .run_if(in_state(PopUpState::EquipmentPopup))
         );
 
     }

@@ -126,12 +126,12 @@ impl Plugin for PlayerInputPlugin {
 
         // listening to user input on inventory screen
         .add_systems(
+            Update,
             (
                 player_input,
                 equip_first_weapon,
                 equip_weapon_log)
-                .in_set(OnUpdate(TurnState::AwaitingInput)
-            )
-        );
+                .run_if(in_state(TurnState::AwaitingInput))
+            );
     }
 }

@@ -25,13 +25,11 @@ fn bottom_hud(
     // root node, just a black rectangle where the UI will be
     .spawn((NodeBundle {
         style: Style {
-            size: Size::new(Val::Percent(100.0), Val::Px(100.0)),
+            width: Val::Percent(100.0),
+            height: Val::Px(100.0),
             position_type: PositionType::Absolute,
-            position: UiRect {
-                left: Val::Px(0.0),
-                bottom: Val::Px(0.0),
-                ..default()
-            },
+            left: Val::Px(0.0),
+            bottom: Val::Px(0.0),
             ..Default::default()
         },
         background_color: BackgroundColor(Color::rgb(0.0, 0.0, 0.0)),
@@ -42,7 +40,8 @@ fn bottom_hud(
         // First the border rectangle
         parent.spawn(NodeBundle {
             style: Style {
-                size: Size::new(Val::Percent(50.0), Val::Percent(100.0)),
+                width: Val::Percent(50.0),
+                height: Val::Percent(100.0),
                 border: UiRect::all(Val::Px(5.0)),
                 ..Default::default()
             },
@@ -53,7 +52,8 @@ fn bottom_hud(
         .with_children(|parent| {
             parent.spawn(NodeBundle {
                 style: Style {
-                    size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                    width: Val::Percent(100.0),
+                    height: Val::Percent(100.0),
                     //align_items: AlignItems::Stretch,
                     ..Default::default()
                 },
@@ -114,7 +114,8 @@ fn bottom_hud(
         // right segment of the UI, first border
         parent.spawn(NodeBundle {
             style: Style {
-                size: Size::new(Val::Percent(50.0), Val::Percent(100.0)),
+                width: Val::Percent(50.0),
+                height: Val::Percent(100.0),
                 border: UiRect::all(Val::Px(5.0)),
                 ..Default::default()
             },
@@ -125,7 +126,8 @@ fn bottom_hud(
         .with_children(|parent| {
             parent.spawn(NodeBundle {
                 style: Style {
-                    size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                    width: Val::Percent(100.0),
+                    height: Val::Percent(100.0),
                     flex_direction: FlexDirection::Column,
                     ..Default::default()
                 },
@@ -137,7 +139,8 @@ fn bottom_hud(
             .with_children(|parent| {
                 parent.spawn(NodeBundle {
                     style: Style {
-                        size: Size::new(Val::Percent(100.0), Val::Percent(33.0)),
+                        width: Val::Percent(100.0),
+                        height: Val::Percent(33.0),
                         flex_direction: FlexDirection::Row,
                         ..Default::default()
                     },
@@ -149,7 +152,8 @@ fn bottom_hud(
                     parent
                         .spawn(NodeBundle {
                             style: Style {
-                                size: Size::new(Val::Percent(35.0), Val::Percent(100.0)),
+                                width: Val::Percent(35.0),
+                                height: Val::Percent(100.0),
                                 ..Default::default()
                             },
                             background_color: Color::rgb(0.0, 0.0, 0.0).into(),
@@ -159,8 +163,8 @@ fn bottom_hud(
                         .with_children(|parent| {
                             parent.spawn((TextBundle {
                                 style: Style {
+                                    height: Val::Px(20. * 1.),
                                     // Set height to font size * number of text lines
-                                    size: Size::new(Val::Auto, Val::Px(20. * 1.)),
                                     margin: UiRect {
                                         left: Val::Auto,
                                         right: Val::Auto,
@@ -184,7 +188,8 @@ fn bottom_hud(
                     parent
                         .spawn(NodeBundle {
                             style: Style {
-                                size: Size::new(Val::Percent(63.0), Val::Px(20. * 1.)),
+                                width: Val::Percent(63.0),
+                                height: Val::Px(20. * 1.),
                                 border: UiRect::all(Val::Px(5.0)),
                                 margin: UiRect {
                                     left: Val::Auto,
@@ -201,7 +206,8 @@ fn bottom_hud(
                         .with_children(|parent| {
                             parent.spawn((NodeBundle {
                                 style: Style {
-                                    size: Size::new(Val::Percent(50.0), Val::Percent(100.0)),
+                                    width: Val::Percent(50.0),
+                                    height: Val::Percent(100.0),
                                     ..Default::default()
                                 },
                                 background_color: Color::rgb(0.99, 0.1, 0.1).into(),
@@ -213,7 +219,8 @@ fn bottom_hud(
                 // Node for the Inventory text
                 parent.spawn(NodeBundle {
                     style: Style {
-                        size: Size::new(Val::Percent(100.0), Val::Percent(33.0)),
+                        width: Val::Percent(100.0),
+                        height: Val::Percent(33.0),
                         flex_direction: FlexDirection::Row,
                         ..Default::default()
                     },
@@ -225,7 +232,8 @@ fn bottom_hud(
                         parent
                             .spawn(NodeBundle {
                                 style: Style {
-                                    size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                                    width: Val::Percent(100.0),
+                                    height: Val::Percent(100.0),
                                     ..Default::default()
                                 },
                                 background_color: Color::rgb(0.0, 0.0, 0.0).into(),
@@ -236,7 +244,7 @@ fn bottom_hud(
                             parent.spawn((TextBundle {
                                 style: Style {
                                     // Set height to font size * number of text lines
-                                    size: Size::new(Val::Auto, Val::Px(20. * 1.)),
+                                    height: Val::Px(20. * 1.),
                                     // Set left margin to auto to push the text to the right
                                     margin: UiRect {
                                         left: Val::Auto,
@@ -264,7 +272,8 @@ fn bottom_hud(
                         parent
                             .spawn(NodeBundle {
                                 style: Style {
-                                    size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                                    width: Val::Percent(100.0),
+                                    height: Val::Percent(100.0),
                                     ..Default::default()
                                 },
                                 background_color: Color::rgb(0.0, 0.0, 0.0).into(),
@@ -275,7 +284,7 @@ fn bottom_hud(
                             parent.spawn((TextBundle {
                                 style: Style {
                                     // Set height to font size * number of text lines
-                                    size: Size::new(Val::Auto, Val::Px(20. * 1.)),
+                                    height: Val::Px(20. * 1.),
                                     // Set left margin to auto to push the text to the right
                                     margin: UiRect {
                                         left: Val::Auto,
@@ -301,7 +310,8 @@ fn bottom_hud(
                 // Node for the Dungeon Level text
                 parent.spawn(NodeBundle {
                     style: Style {
-                        size: Size::new(Val::Percent(100.0), Val::Percent(33.0)),
+                        width: Val::Percent(100.0),
+                        height: Val::Percent(33.0),
                         flex_direction: FlexDirection::Row,
                         ..Default::default()
                     },
@@ -312,7 +322,8 @@ fn bottom_hud(
                 .with_children(|parent| {
                     parent.spawn(NodeBundle {
                             style: Style {
-                                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                                width: Val::Percent(100.0),
+                                height: Val::Percent(100.0),
                                 ..Default::default()
                             },
                         background_color: Color::rgb(0.0, 0.0, 0.0).into(),
@@ -323,7 +334,7 @@ fn bottom_hud(
                         parent.spawn((TextBundle {
                             style: Style {
                                 // Set height to font size * number of text lines
-                                size: Size::new(Val::Auto, Val::Px(20. * 1.)),
+                                height: Val::Px(20. * 1.),
                                 // Set left margin to auto to push the text to the right
                                 margin: UiRect {
                                     left: Val::Auto,
@@ -392,7 +403,7 @@ fn update_hp_text_and_bar(
         // update HP bar
         let bar_fill = (current as f32 / max as f32) * 100.0;
         for mut bar in bar_query.iter_mut() {
-            bar.size.width = Val::Percent(bar_fill);
+            bar.width = Val::Percent(bar_fill);
         }
     }
 }
@@ -402,12 +413,13 @@ impl Plugin for HudPlugin {
     fn build(&self, app: &mut App) {
         app 
 
-            .add_system(bottom_hud.in_schedule(OnExit(TurnState::StartScreen)))
-            .add_system(bottom_hud.in_schedule(OnExit(TurnState::NextLevel)))
+            .add_systems(OnExit(TurnState::StartScreen), bottom_hud)
+            .add_systems(OnExit(TurnState::NextLevel), bottom_hud)
 
             .add_systems(
+                Update,
                 (update_hp_text_and_bar, update_game_log, update_dungeonleveltext)
-                .in_set(OnUpdate(TurnState::AwaitingInput))
+                .run_if(in_state(TurnState::AwaitingInput))
             );
     }
 }

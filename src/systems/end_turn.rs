@@ -9,7 +9,8 @@ pub fn end_turn(
 ) {
 
     let (player_hp, player_pos) = player_hp_q.single();
-    let current_state = turn_state.0.clone();
+    //let current_state: TurnState = *turn_state.get().clone();
+    let current_state: TurnState = turn_state.clone();
 
     // amulet position if spawned, otherwise set it as -1, -1
     let amulet_default = Position::new_from2d(-1, -1);
@@ -20,7 +21,7 @@ pub fn end_turn(
     let exit_pos = exit_q.iter().nth(0).unwrap_or(&exit_default);
 
     // calculate new turn
-    let mut new_state = match turn_state.0 {
+    let mut new_state = match *turn_state.get() {
         TurnState::AwaitingInput => return,
         TurnState::PlayerTurn => TurnState::MonsterTurn,
         TurnState::MonsterTurn => TurnState::AwaitingInput,

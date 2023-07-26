@@ -15,14 +15,15 @@ struct AwaitingInputPlugin;
 impl Plugin for AwaitingInputPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_plugin(player_input::PlayerInputPlugin)
+            .add_plugins(player_input::PlayerInputPlugin)
 
             .add_systems(
+                Update,
                 (
                     fov::fov,
                     update_entities_visibility::update_entities_visibility,
                     camera::camera_move,
-                ).in_set(OnUpdate(TurnState::AwaitingInput))
+                ).run_if(in_state(TurnState::AwaitingInput))
             );
     }
 }
@@ -33,6 +34,7 @@ impl Plugin for PlayerPlugin {
         app
 
         .add_systems(
+            Update,
             (
                 use_items::use_items,
                 combat::combat,
@@ -42,7 +44,7 @@ impl Plugin for PlayerPlugin {
                 camera::camera_move,
                 end_turn::end_turn
             ).chain()
-            .in_set(OnUpdate(TurnState::PlayerTurn))
+            .run_if(in_state(TurnState::PlayerTurn))
         );
     }
 }
@@ -53,6 +55,7 @@ impl Plugin for MonsterPlugin {
         app
 
         .add_systems(
+            Update,
             (
                 chasing::chasing,
                 combat::combat,
@@ -60,7 +63,7 @@ impl Plugin for MonsterPlugin {
                 fov::fov,
                 end_turn::end_turn
             ).chain()
-            .in_set(OnUpdate(TurnState::MonsterTurn))
+            .run_if(in_state(TurnState::MonsterTurn))
         );
     }
 }
@@ -69,8 +72,8 @@ pub struct SystemsPlugin;
 impl Plugin for SystemsPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_plugin(AwaitingInputPlugin)
-            .add_plugin(PlayerPlugin)
-            .add_plugin(MonsterPlugin);
+            .add_plugins(AwaitingInputPlugin)
+            .add_plugins(PlayerPlugin)
+            .add_plugins(MonsterPlugin);
     }
 }

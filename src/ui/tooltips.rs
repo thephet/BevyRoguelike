@@ -19,7 +19,8 @@ fn tooltip_ui(
         // by default we set visible to false so it starts hidden
         visibility: Visibility::Hidden,
         style: Style {
-            size: Size::new(Val::Px(200.0), Val::Px(30.0)),
+            width: Val::Px(200.0),
+            height: Val::Px(30.0),
             position_type: PositionType::Absolute,
             ..Default::default()
         },
@@ -31,7 +32,7 @@ fn tooltip_ui(
         parent.spawn((TextBundle {
             visibility: Visibility::Hidden,
             style: Style {
-                size: Size::new(Val::Auto, Val::Px(20. * 1.)),
+                height: Val::Px(20. * 1.),
                 margin: UiRect::all(Val::Auto),
                 ..Default::default()
             },
@@ -148,8 +149,8 @@ fn update_tooltip(
             // update box position
             for (mut boxnode, mut visible) in text_box_query.p1().iter_mut() {
                 if good_click {
-                    boxnode.position.left = Val::Px(pos.x-100.0);
-                    boxnode.position.bottom = Val::Px(pos.y);
+                    boxnode.left = Val::Px(pos.x-100.0);
+                    boxnode.bottom = Val::Px(pos.y);
                     *visible = Visibility::Visible;
                 } else {
                     *visible = Visibility::Hidden;
@@ -165,8 +166,8 @@ impl Plugin for TooltipsPlugin {
     fn build(&self, app: &mut App) {
         app
 
-        .add_system(tooltip_ui.in_schedule(OnExit(TurnState::StartScreen)))
-        .add_system(update_tooltip.in_set(OnUpdate(TurnState::AwaitingInput)))        
-        .add_system(hide_tooltip.in_schedule(OnExit(TurnState::AwaitingInput)));
+        .add_systems(OnExit(TurnState::StartScreen), tooltip_ui)
+        .add_systems(Update, update_tooltip.run_if(in_state(TurnState::AwaitingInput)))        
+        .add_systems(OnExit(TurnState::AwaitingInput), hide_tooltip);
     }
 }

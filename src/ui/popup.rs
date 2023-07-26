@@ -11,7 +11,9 @@ pub struct InventoryText;
 #[derive(Component)]
 pub struct DescriptionText;
 
+#[derive(Event)]
 pub struct ChosenItemEvent(pub i32);
+
 #[derive(Resource)]
 pub struct HighlightedItem(pub i32);
 
@@ -28,13 +30,11 @@ fn popup_ui(
     commands
     .spawn((NodeBundle {
         style: Style {
-            size: Size::new(Val::Percent(50.), Val::Percent(50.)),
+            width: Val::Percent(50.),
+            height: Val::Percent(50.),
             position_type: PositionType::Absolute,
-            position: UiRect {
-                left: Val::Percent(25.0),
-                bottom: Val::Percent(30.0),
-                ..Default::default()
-            },
+            left: Val::Percent(25.0),
+            bottom: Val::Percent(30.0),
             border: UiRect::all(Val::Px(5.0)),
             ..Default::default()
         },
@@ -46,7 +46,8 @@ fn popup_ui(
     .with_children(|parent| {
         parent.spawn(NodeBundle {
             style: Style {
-                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                width: Val::Percent(100.0),
+                height: Val::Percent(100.0),
                 flex_direction: FlexDirection::Column,
                 ..Default::default()
             },
@@ -60,7 +61,8 @@ fn popup_ui(
             // inventory title
             parent.spawn(NodeBundle {
                 style: Style {
-                    size: Size::new(Val::Percent(100.0), Val::Px(100. * 1.)),
+                    width: Val::Percent(100.0),
+                    height: Val::Percent(100.0),
                     flex_direction: FlexDirection::Column,
                     ..Default::default()
                 },
@@ -71,15 +73,15 @@ fn popup_ui(
                 
                 // chose title based on State, either inventory or equipment
                 let mut title = "";
-                if popup_state.0 == PopUpState::InventoryPopup {
+                if *popup_state.get() == PopUpState::InventoryPopup {
                     title = "Inventory"
-                } else if popup_state.0 == PopUpState::EquipmentPopup {
+                } else if *popup_state.get() == PopUpState::EquipmentPopup {
                     title = "Equipment"
                 }
 
                 parent.spawn(TextBundle {
                     style: Style {
-                        size: Size::new(Val::Auto, Val::Px(50. * 1.)),
+                        height: Val::Px(50. * 1.),
                         margin: UiRect {
                             left: Val::Auto,
                             right: Val::Auto,
@@ -102,7 +104,8 @@ fn popup_ui(
 
             parent.spawn(NodeBundle {
                 style: Style {
-                    size: Size::new(Val::Percent(100.0), Val::Px(20. * INVENTORY_SLOTS as f32)),
+                    width: Val::Percent(100.0),
+                    height: Val::Px(20. * INVENTORY_SLOTS as f32),
                     flex_direction: FlexDirection::Column,
                     ..Default::default()
                 },
@@ -124,7 +127,7 @@ fn popup_ui(
                 }
                 parent.spawn((TextBundle {
                     style: Style {
-                        size: Size::new(Val::Auto, Val::Px(20. * (INVENTORY_SLOTS+1) as f32)),
+                        height: Val::Px(20. * (INVENTORY_SLOTS+1) as f32),
                         margin: UiRect {
                             left: Val::Auto,
                             right: Val::Auto,
@@ -145,7 +148,7 @@ fn popup_ui(
             // hint section
             parent.spawn(NodeBundle {
                 style: Style {
-                    size: Size::new(Val::Percent(100.0), Val::Auto),
+                    width: Val::Percent(100.0),
                     margin: UiRect {
                         left: Val::Auto,
                         right: Val::Auto,
@@ -160,7 +163,7 @@ fn popup_ui(
             .with_children(|parent| {
                 parent.spawn((TextBundle {
                     style: Style {
-                        size: Size::new(Val::Auto, Val::Px(20.)),
+                        height: Val::Px(20.),
                         margin: UiRect {
                             left: Val::Auto,
                             right: Val::Auto,
@@ -198,9 +201,9 @@ fn player_input(
 
     // chose carried items based on State, either inventory or equipment
     let mut carried_items: usize = 0;
-    if popup_currentstate.0 == PopUpState::InventoryPopup {
+    if *popup_currentstate.get() == PopUpState::InventoryPopup {
         carried_items = player_items.iter().count();
-    } else if popup_currentstate.0 == PopUpState::EquipmentPopup {
+    } else if *popup_currentstate.get() == PopUpState::EquipmentPopup {
         carried_items = player_weapons.iter().count();
     }
 
@@ -248,19 +251,20 @@ impl Plugin for PopUpPlugin {
         .add_event::<ChosenItemEvent>()
         .insert_resource(HighlightedItem(0))
 
-        .add_plugin(inventory::InventoryPlugin)
-        .add_plugin(equipment::EquipmentPlugin)
+        .add_plugins(inventory::InventoryPlugin)
+        .add_plugins(equipment::EquipmentPlugin)
 
         // listening to user input on inventory screen
-        .add_system(player_input.in_set(OnUpdate(PopUpState::InventoryPopup)))
-        .add_system(player_input.in_set(OnUpdate(PopUpState::EquipmentPopup)))
-
+        .add_systems(Update, player_input.run_if(in_state(PopUpState::InventoryPopup)))
+        .add_systems(Update, player_input.run_if(in_state(PopUpState::EquipmentPopup)))
+        
         // cleanup when exiting
-        .add_system(despawn_menu.in_schedule(OnExit(PopUpState::InventoryPopup)))
-        .add_system(despawn_menu.in_schedule(OnExit(PopUpState::EquipmentPopup)))
+        .add_systems(OnExit(PopUpState::InventoryPopup), despawn_menu)
+        .add_systems(OnExit(PopUpState::EquipmentPopup), despawn_menu)
 
-        .add_system(popup_ui.in_schedule(OnEnter(PopUpState::InventoryPopup)))
-        .add_system(popup_ui.in_schedule(OnEnter(PopUpState::EquipmentPopup)));
+        // creating when entering
+        .add_systems(OnEnter(PopUpState::InventoryPopup), popup_ui)
+        .add_systems(OnEnter(PopUpState::EquipmentPopup), popup_ui);
 
     }
 }

@@ -137,21 +137,21 @@ impl Plugin for SpawnerPlugin {
         app
         .add_systems
         (
+            OnExit(TurnState::StartScreen),
             (spawn_player, spawn_level)
-            .in_schedule(OnExit(TurnState::StartScreen))
         )
         
-        .add_system(despawn_all_with_position.in_schedule(OnEnter(TurnState::GameOver)))
-        .add_system(despawn_all_with_position.in_schedule(OnEnter(TurnState::Victory)))
+        .add_systems(OnEnter(TurnState::GameOver), despawn_all_with_position)
+        .add_systems(OnEnter(TurnState::Victory), despawn_all_with_position)
         
-        .add_system(pre_advance_level.in_schedule(OnEnter(TurnState::NextLevel)))
+        .add_systems(OnEnter(TurnState::NextLevel), pre_advance_level)
         .add_systems(
+            OnExit(TurnState::NextLevel),
             (
                 spawn_amulet_of_yala,
                 post_advance_level,
                 spawn_level
             ).chain()
-            .in_schedule(OnExit(TurnState::NextLevel))
         );
     }
 }

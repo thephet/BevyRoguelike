@@ -66,11 +66,11 @@ fn main() {
         .add_state::<PopUpState>()
         //.insert_resource(WinitSettings::desktop_app())
         .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
-        .add_startup_system(setup)
-        .add_plugin(MapPlugin)
-        .add_plugin(SpawnerPlugin)
-        .add_plugin(SystemsPlugin)
-        .add_plugin(UIPlugin)
-        .add_systems((position_translation, size_scaling).in_base_set(CoreSet::PostUpdate))
+        .add_systems(Startup, setup)
+        .add_plugins(MapPlugin)
+        .add_plugins(SpawnerPlugin)
+        .add_plugins(SystemsPlugin)
+        .add_plugins(UIPlugin)
+        .add_systems(PostUpdate, (position_translation, size_scaling))
         .run();
 }

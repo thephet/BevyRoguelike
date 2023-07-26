@@ -30,10 +30,10 @@ impl Plugin for UIPlugin {
     fn build(&self, app: &mut App)
     {
         app
-            .add_startup_system(setup)
-            .add_plugin(splash_screen::MenuPlugin)
-            .add_plugin(hud::HudPlugin)
-            .add_plugin(popup::PopUpPlugin)
-            .add_plugin(tooltips::TooltipsPlugin);  
+            .add_systems(Startup, setup)
+            .add_plugins(splash_screen::MenuPlugin)
+            .add_plugins(hud::HudPlugin)
+            .add_plugins(popup::PopUpPlugin)
+            .add_plugins(tooltips::TooltipsPlugin);  
     }
 }

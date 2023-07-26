@@ -313,11 +313,11 @@ impl Plugin for MapPlugin
     {
         app
         // when starting a new game
-        .add_system(build_map.in_schedule(OnEnter(TurnState::StartScreen)))
-        .add_system(spawn_map_tiles.in_schedule(OnExit(TurnState::StartScreen)))
+        .add_systems(OnEnter(TurnState::StartScreen), build_map)
+        .add_systems(OnExit(TurnState::StartScreen), spawn_map_tiles)
 
         // when advancing level 
-        .add_system(build_map.in_schedule(OnEnter(TurnState::NextLevel)))
-        .add_system(spawn_map_tiles.in_schedule(OnExit(TurnState::NextLevel)));
+        .add_systems(OnEnter(TurnState::NextLevel), build_map)
+        .add_systems(OnExit(TurnState::NextLevel), spawn_map_tiles);
     }
 }
