@@ -54,7 +54,7 @@ fn bottom_hud(
                 style: Style {
                     width: Val::Percent(100.0),
                     height: Val::Percent(100.0),
-                    //align_items: AlignItems::Stretch,
+                    // align_items: AlignItems::Stretch,
                     ..Default::default()
                 },
                 background_color: BackgroundColor(Color::rgb(0.0, 0.0, 0.0)),
@@ -75,12 +75,12 @@ fn bottom_hud(
                                     value: "Log...".to_string(),
                                     style: TextStyle {
                                         font: font_manager.font.clone(),
-                                        font_size: 20.0,
+                                        font_size: 19.0, // BEVY bug, return to 20 in 0.11.1
                                         color: Color::YELLOW,
                                     },
                                 },
                                 TextSection {
-                                    value: "\nUse the arrow keys to move.".to_string(),
+                                    value: "Use the arrow keys to move.".to_string(),
                                     style: TextStyle {
                                         font: font_manager.font.clone(),
                                         font_size: 20.0,
@@ -88,7 +88,7 @@ fn bottom_hud(
                                     },
                                 },
                                 TextSection {
-                                    value: "\nBump into the enemies to attack them.".to_string(),
+                                    value: "Bump into the enemies to attack them.".to_string(),
                                     style: TextStyle {
                                         font: font_manager.font.clone(),
                                         font_size: 20.0,
@@ -96,7 +96,7 @@ fn bottom_hud(
                                     },
                                 },
                                 TextSection {
-                                    value: "\nFind the amulet to win the game.".to_string(),
+                                    value: "Find the amulet to win the game.".to_string(),
                                     style: TextStyle {
                                         font: font_manager.font.clone(),
                                         font_size: 20.0,
@@ -368,7 +368,7 @@ fn update_game_log(
 ) { 
     for mut text in text_query.iter_mut() {
         for (i, entry) in game_log.entries.iter().enumerate() {
-            text.sections[i].value = entry.clone();    
+            text.sections[i].value = entry.clone();   
         }
     }
 }
