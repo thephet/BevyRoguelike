@@ -1,5 +1,8 @@
 # Bevy Roguelike game
 
+<span style="color:blue">Now fully updated to Bevy 0.11.</span>.
+
+
 <p float="left">
   <img src="https://raw.githubusercontent.com/thephet/BevyRoguelike/main/screenshots/title_screen.png" width="24%" />
   <img src="https://raw.githubusercontent.com/thephet/BevyRoguelike/main/screenshots/dungeon.png" width="24%" /> 
