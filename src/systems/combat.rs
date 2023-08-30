@@ -39,7 +39,7 @@ pub fn combat(
             hp.current -= final_damage;
             // add action to gamelog, first get name of attacker, then build message
             let attacker_char = names_query.get(*attacker).unwrap();
-            let message = format!("\n{} attacks {} ({} damage).", attacker_char.0, name.0, final_damage);
+            let message = format!("{} attacks {} ({} damage).\n", attacker_char.0, name.0, final_damage);
             gamelog.add_entry(message);
 
             // less than 1 HP remove it

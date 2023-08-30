@@ -37,10 +37,10 @@ impl GameLog {
     pub fn new() -> Self {
 
         let mut log: Vec<String> = Vec::with_capacity(4);
-        log.push("Log...".to_string());
-        log.push("\nUse the arrow keys to move.".to_string());
-        log.push("\nBump into the enemies to attack them.".to_string());
-        log.push("\nFind the amulet to win the game.".to_string());
+        log.push("Log...\n".to_string());
+        log.push("Use the arrow keys to move.\n".to_string());
+        log.push("Bump into the enemies to attack them.\n".to_string());
+        log.push("Find the amulet to win the game.\n".to_string());
 
         let entries_log = GameLog{
             entries: log

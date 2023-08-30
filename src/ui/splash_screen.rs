@@ -106,11 +106,9 @@ pub fn start_screen_input(
     mut next_state: ResMut<NextState<TurnState>>
 ) {
 
-    let key = keyboard_input.get_pressed().next().cloned();
+    let key = keyboard_input.get_just_pressed().next().cloned();
 
-    if let Some(key) = key {
-        // reset keyboard, bevys bug when changing states
-        keyboard_input.reset(key);
+    if let Some(_key) = key {
         // update state
         if (*turn_state.get() == TurnState::StartScreen) || 
             (*turn_state.get() == TurnState::NextLevel) 
@@ -121,6 +119,8 @@ pub fn start_screen_input(
         }
         
     }
+    
+    keyboard_input.reset_all();
 }
 
 pub struct MenuPlugin;

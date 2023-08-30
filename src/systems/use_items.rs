@@ -23,7 +23,7 @@ pub fn use_items(
                 health.current = i32::min( health.max, health.current+healing.amount);
                 // update gamelog
                 let target_char = names_query.get(activated_item.used_by).unwrap();
-                let message = format!("\n{} heals {} HP.", target_char.0, healing.amount);
+                let message = format!("{} heals {} HP.\n", target_char.0, healing.amount);
                 gamelog.add_entry(message);
             }
         }
@@ -33,7 +33,7 @@ pub fn use_items(
             // reveal all tiles
             maptiles_query.iter_mut().for_each(|(_, mut vis)| *vis = Visibility::Visible);
             // update gamelog
-            let message = format!("\nMap revealed.");
+            let message = format!("Map revealed.\n");
             gamelog.add_entry(message);
         }
 

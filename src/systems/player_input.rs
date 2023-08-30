@@ -23,6 +23,8 @@ pub fn player_input(
 
     if let Some(key) = key {
 
+        // print!("{:?}", key);
+
         match key {
             KeyCode::Left => new_position.x -= 1,
             KeyCode::Right => new_position.x += 1,
@@ -36,7 +38,7 @@ pub fn player_input(
                         // remove render info and add carried component
                         commands.entity(item_ent).remove::<SpriteSheetBundle>()
                             .insert(Carried(player_ent));
-                        let message = format!("\n{} grabbed.", name.0);
+                        let message = format!("{} grabbed.\n", name.0);
                         game_log.add_entry(message);
                     }
                 );
@@ -80,16 +82,15 @@ pub fn player_input(
         } 
         // else means the user clicked an action which did not move the player.
         else if wait {
-            game_log.add_entry("\nPlayer waits.".to_string());
+            game_log.add_entry("Player waits.\n".to_string());
         }
-
-        // reset keyboard, bevys bug when changing states
-        keyboard_input.reset(key);
 
         if action {
             // update state
             next_state.set(TurnState::PlayerTurn);
         }
+
+        keyboard_input.reset_all();
 
     }
 }
@@ -114,7 +115,7 @@ pub fn equip_weapon_log(
     equipped_weapon: Query<(Entity, &Naming), (With<Weapon>, With<Carried>, Added<Equipped>)>,
 ) {
     for (_, name) in equipped_weapon.iter() {
-        let message = format!("\n{} equipped.", name.0);
+        let message = format!("{} equipped.\n", name.0);
         gamelog.add_entry(message);
     }
 }

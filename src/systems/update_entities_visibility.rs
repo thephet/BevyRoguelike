@@ -51,12 +51,12 @@ pub fn update_entities_visibility(
                     *vis = Visibility::Visible;
                     // if enemy, get name update gamelog
                     if let Ok(name) = names_enemies_q.get(ent) {
-                        let message = format!("\n{} appears.", name.0);
+                        let message = format!("{} appears.\n", name.0);
                         gamelog.add_entry(message);
                     }
                     // if item, provide hint
                     if let Ok(name) = names_items_q.get(ent) {
-                        let message = format!("\n{}. Press G to grab.", name.0);
+                        let message = format!("{}. Press G to grab.\n", name.0);
                         gamelog.add_entry(message);
                     }
                 }

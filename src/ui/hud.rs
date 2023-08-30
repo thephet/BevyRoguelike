@@ -72,15 +72,7 @@ fn bottom_hud(
                             // Construct a `Vec` of `TextSection`s
                             sections: vec![
                                 TextSection {
-                                    value: "Log...".to_string(),
-                                    style: TextStyle {
-                                        font: font_manager.font.clone(),
-                                        font_size: 19.0, // BEVY bug, return to 20 in 0.11.1
-                                        color: Color::YELLOW,
-                                    },
-                                },
-                                TextSection {
-                                    value: "Use the arrow keys to move.".to_string(),
+                                    value: "Log...\n".to_string(),
                                     style: TextStyle {
                                         font: font_manager.font.clone(),
                                         font_size: 20.0,
@@ -88,7 +80,7 @@ fn bottom_hud(
                                     },
                                 },
                                 TextSection {
-                                    value: "Bump into the enemies to attack them.".to_string(),
+                                    value: "Use the arrow keys to move.\n".to_string(),
                                     style: TextStyle {
                                         font: font_manager.font.clone(),
                                         font_size: 20.0,
@@ -96,7 +88,15 @@ fn bottom_hud(
                                     },
                                 },
                                 TextSection {
-                                    value: "Find the amulet to win the game.".to_string(),
+                                    value: "Bump into the enemies to attack them.\n".to_string(),
+                                    style: TextStyle {
+                                        font: font_manager.font.clone(),
+                                        font_size: 20.0,
+                                        color: Color::YELLOW,
+                                    },
+                                },
+                                TextSection {
+                                    value: "Find the amulet to win the game.\n".to_string(),
                                     style: TextStyle {
                                         font: font_manager.font.clone(),
                                         font_size: 20.0,
