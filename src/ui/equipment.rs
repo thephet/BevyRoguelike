@@ -69,7 +69,7 @@ fn equip_weapon(
 ) {
     // if user selected an item, then it will have a number over 0, otherwise -1
     let mut selected_item = -1;
-    for se in chosen_item.iter() {
+    for se in chosen_item.read() {
         selected_item = se.0 as i32;
     }
 
