@@ -75,7 +75,7 @@ fn update_tooltip(
     // to get the mouse clicks
     buttons: Res<Input<MouseButton>>,
     // query to get camera transform
-    q_camera: Query<&Transform, With<MainCamera>>,
+    q_camera: Query<(&Camera, &GlobalTransform), With<MainCamera>>,
     // query to get all the entities with Name component
     q_names: Query<(&Naming, &Position, Option<&Health>)>,
     // // query to get tooltip text and box
@@ -93,25 +93,19 @@ fn update_tooltip(
 
         // check if the cursor is in the primary window
         if let Some(pos) = wnd.cursor_position() {
-            // get the size of the window
-            let size = Vec2::new(wnd.width() as f32, wnd.height() as f32);
-
-            // the default orthographic projection is in pixels from the center;
-            // just undo the translation
-            let p = pos - size / 2.0;
 
             // assuming there is exactly one main camera entity, so this is OK
-            let camera_transform = q_camera.single();
+            let (camera, camera_transform) = q_camera.single();
 
             let tile_size_x = wnd.width() / SCREEN_WIDTH as f32;
             let tile_size_y = wnd.height() / SCREEN_HEIGHT as f32;
 
             // apply the camera transform
-            let pos_wld = camera_transform.compute_matrix() * p.extend(0.0).extend(1.0);
+            let point_wld = camera.viewport_to_world_2d(camera_transform, pos).unwrap();
 
             // transform world coordinates to our grid
-            let grid_x = (pos_wld.x / tile_size_x) + (SCREEN_WIDTH / 2) as f32;
-            let grid_y = (pos_wld.y / tile_size_y) + (SCREEN_HEIGHT / 2) as f32 - (UI_HEIGHT/2) as f32;
+            let grid_x = (point_wld.x / tile_size_x) + (SCREEN_WIDTH / 2) as f32;
+            let grid_y = (point_wld.y / tile_size_y) + (SCREEN_HEIGHT / 2) as f32 - (UI_HEIGHT / 2) as f32;
             let grid_position = Position{x: grid_x as i32, y: grid_y as i32, z:0};
 
             // now we go through all the entities with name to see which one is the nearest
@@ -150,7 +144,7 @@ fn update_tooltip(
             for (mut boxnode, mut visible) in text_box_query.p1().iter_mut() {
                 if good_click {
                     boxnode.left = Val::Px(pos.x-100.0);
-                    boxnode.bottom = Val::Px(pos.y);
+                    boxnode.top = Val::Px(pos.y-40.0);
                     *visible = Visibility::Visible;
                 } else {
                     *visible = Visibility::Hidden;
