@@ -1,5 +1,5 @@
 use crate::prelude::*;
-use bracket_lib::prelude::Rect;
+use bracket_geometry::prelude::Rect;
 
 mod map;
 pub use map::*;

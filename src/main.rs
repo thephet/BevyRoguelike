@@ -11,9 +11,9 @@ mod ui;
 
 mod prelude {
     pub use bevy::prelude::*;
-    pub use bevy::winit::WinitSettings;
     pub use bevy::window::PrimaryWindow;
-    pub use bracket_lib::prelude::*;
+    pub use bracket_geometry::prelude::*;
+    pub use bracket_pathfinding::prelude::*;
     pub const SCREEN_WIDTH: i32 = 80;
     pub const SCREEN_HEIGHT: i32 = 80;
     pub const UI_HEIGHT: i32 = 10;
@@ -64,7 +64,6 @@ fn main() {
             }))
         .add_state::<TurnState>()
         .add_state::<PopUpState>()
-        //.insert_resource(WinitSettings::desktop_app())
         .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
         .add_systems(Startup, setup)
         .add_plugins(MapPlugin)

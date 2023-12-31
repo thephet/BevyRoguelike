@@ -10,7 +10,8 @@ keywords = ["gamedev", "bevy", "roguelike"]
 [dependencies]
 bevy = { version = "0.12", features = ["dynamic_linking"] }
 # bevy = "=0.12"
-bracket-lib = "0.8"
+bracket-geometry = "0.8"
+bracket-pathfinding = "0.8"
 rand = "0.8"
 serde = "1"
 ron = "0.8"
