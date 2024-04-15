@@ -73,7 +73,7 @@ fn update_tooltip(
     // need to get window dimensions
     wnds: Query<&Window, With<PrimaryWindow>>,
     // to get the mouse clicks
-    buttons: Res<Input<MouseButton>>,
+    buttons: Res<ButtonInput<MouseButton>>,
     // query to get camera transform
     q_camera: Query<(&Camera, &GlobalTransform), With<MainCamera>>,
     // query to get all the entities with Name component

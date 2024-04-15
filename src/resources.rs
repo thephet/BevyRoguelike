@@ -3,7 +3,8 @@ use crate::prelude::*;
 // resource type
 #[derive(Resource)]
 pub struct CharsetAsset {
-    pub atlas: Handle<TextureAtlas>,
+    pub atlas: Handle<TextureAtlasLayout>,
+    pub texture: Handle<Image>,
 }
 
 #[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, States)]

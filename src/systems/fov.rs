@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use bracket_lib::pathfinding::field_of_view_set;
 
 pub fn fov(
     mb: Res<MapBuilder>,

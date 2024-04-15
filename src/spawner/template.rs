@@ -58,7 +58,13 @@ impl Templates {
         spawn_points.iter().for_each(|pos| {
             let target_index = rng.gen_range(0..available_entities.len());
             let entity = available_entities[target_index];
-            self.spawn_entity(pos, entity, commands, atlas.atlas.clone(), &mut mb);
+            self.spawn_entity(
+                pos, 
+                entity, 
+                commands, 
+                atlas.atlas.clone(), 
+                atlas.texture.clone(),
+                &mut mb);
         });
     }
 
@@ -67,20 +73,25 @@ impl Templates {
         position: &Position,
         template: &Template,
         commands: &mut Commands,
-        atlas: Handle<TextureAtlas>,
+        atlas: Handle<TextureAtlasLayout>,
+        texture: Handle<Image>,
         mb: &mut ResMut<MapBuilder>,
     ) {
         let mut entity = commands.spawn((SpriteSheetBundle {
-            texture_atlas: atlas,
-            sprite: TextureAtlasSprite {
-                custom_size: Some(Vec2::new(1.0, 1.0)),
-                index: template.glyph as usize,
+            sprite: Sprite {
                 color: match template.entity_type {
                     EntityType::Item => Color::GREEN,
                     EntityType::Enemy => Color::rgb(0.698, 0.094, 0.168),
-                },
+                    },
+                custom_size: Some(Vec2::new(1.0, 1.0)),
+                
                 ..Default::default()
             },
+            atlas: TextureAtlas {
+                layout: atlas,
+                index: template.glyph as usize,
+            },
+            texture: texture,
             visibility: Visibility::Hidden,
             ..Default::default()
         },

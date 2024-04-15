@@ -104,7 +104,7 @@ fn bottom_hud(
                                     },
                                 },
                             ],
-                            alignment: TextAlignment::Left,
+                            justify: JustifyText::Left,
                             ..Default::default()
                         },
                         ..Default::default()

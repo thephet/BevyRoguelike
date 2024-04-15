@@ -3,7 +3,7 @@ use bevy::app::AppExit;
 
 pub fn player_input(
     mut commands: Commands,
-    mut keyboard_input: ResMut<Input<KeyCode>>,
+    mut keyboard_input: ResMut<ButtonInput<KeyCode>>,
     mut game_log: ResMut<GameLog>,
     player_position: Query<(Entity, &Position), With<Player>>,
     enemies: Query<(Entity, &Position), With<Enemy>>,
@@ -26,11 +26,11 @@ pub fn player_input(
         // print!("{:?}", key);
 
         match key {
-            KeyCode::Left => new_position.x -= 1,
-            KeyCode::Right => new_position.x += 1,
-            KeyCode::Down => new_position.y -= 1,
-            KeyCode::Up => new_position.y += 1,
-            KeyCode::G => {
+            KeyCode::ArrowLeft => new_position.x -= 1,
+            KeyCode::ArrowRight => new_position.x += 1,
+            KeyCode::ArrowDown => new_position.y -= 1,
+            KeyCode::ArrowUp => new_position.y += 1,
+            KeyCode::KeyG => {
                 // Grab item at this position
                 items.iter()
                     .filter(|(_, item_pos, _)| **item_pos == *pos)
@@ -43,12 +43,12 @@ pub fn player_input(
                     }
                 );
             }
-            KeyCode::I => {
+            KeyCode::KeyI => {
                 popup_state.set(PopUpState::InventoryPopup);
                 next_state.set(TurnState::InMenus);
                 action = false;
             }
-            KeyCode::E => {
+            KeyCode::KeyE => {
                 popup_state.set(PopUpState::EquipmentPopup);
                 next_state.set(TurnState::InMenus);
                 action = false;

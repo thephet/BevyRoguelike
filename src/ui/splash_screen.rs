@@ -78,7 +78,7 @@ fn splash_screen(
                         },
                     },
                 ],
-                alignment: TextAlignment::Center,
+                justify: JustifyText::Center,
                 ..default()
             },
             ..Default::default()
@@ -101,7 +101,7 @@ fn despawn_splashscreen(
 }
 
 pub fn start_screen_input(
-    mut keyboard_input: ResMut<Input<KeyCode>>,
+    mut keyboard_input: ResMut<ButtonInput<KeyCode>>,
     turn_state: ResMut<State<TurnState>>,
     mut next_state: ResMut<NextState<TurnState>>
 ) {

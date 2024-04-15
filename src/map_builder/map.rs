@@ -1,5 +1,9 @@
 use crate::prelude::*;
 
+use bracket_lib::pathfinding::BaseMap;
+use bracket_lib::pathfinding::SmallVec;
+
+
 const NUM_TILES: usize = (SCREEN_WIDTH * SCREEN_HEIGHT) as usize;
 
 #[derive(Copy, Clone, PartialEq)]
@@ -120,6 +124,7 @@ pub fn spawn_map_tiles(
     mb: Res<MapBuilder>,
     atlas: Res<CharsetAsset>,
 ) {
+
     for y in 0..SCREEN_HEIGHT {
         for x in 0..SCREEN_WIDTH {
             let idx = map_idx(x, y);
@@ -174,16 +179,22 @@ pub fn spawn_map_tiles(
                                 TileSize::square(1.0),
                                 Position { x, y, z: 1 },
                                 SpriteSheetBundle {
-                                texture_atlas: atlas.atlas.clone(),
-                                sprite: TextureAtlasSprite {
-                                    color: glyph.color,
-                                    custom_size: Some(Vec2::new(1.0, 1.0)),
-                                    index: glyph.index,
+                                    sprite: Sprite {
+                                        color: glyph.color,
+                                        custom_size: Some(Vec2::new(1.0, 1.0)),
+                                        
+                                        ..Default::default()
+                                    },
+                                    atlas: TextureAtlas {
+                                        layout: atlas.atlas.clone(),
+                                        index: glyph.index,
+                                    },
+                                    texture: atlas.texture.clone(),
+
+                                    visibility: Visibility::Hidden,
                                     ..Default::default()
-                                },
-                                visibility: Visibility::Hidden,
-                                ..Default::default()
-                            }));
+                                }
+                            ));
                     }
                     TileType::Void => ()
                 }

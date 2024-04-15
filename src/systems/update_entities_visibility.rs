@@ -3,7 +3,7 @@ use crate::prelude::*;
 pub fn update_entities_visibility(
     mut gamelog: ResMut<GameLog>,
     player_fov_q: Query<&FieldOfView, With<Player>>,
-    mut entities_q: Query<(Entity, &Position, &mut Visibility, Option<&MapTile>, Option<&mut Sprite>, Option<&mut TextureAtlasSprite>)>,
+    mut entities_q: Query<(Entity, &Position, &mut Visibility, Option<&MapTile>, Option<&mut Sprite>)>,
     names_enemies_q: Query<&Naming, With<Enemy>>,
     names_items_q: Query<&Naming, With<Item>>,
 ) {
@@ -18,7 +18,6 @@ pub fn update_entities_visibility(
         mut vis, 
         map_tile, 
         sprite, 
-        atlas_sprite
     ) in entities_q.iter_mut() {
 
         // first check if it is a map tile or some other entity. If it is a map tile...
@@ -30,17 +29,11 @@ pub fn update_entities_visibility(
                 if let Some(mut sprite) = sprite {
                     sprite.color.set_a(1.0);
                 }
-                if let Some(mut atlas_sprite) = atlas_sprite {
-                    atlas_sprite.color.set_a(1.0);
-                }
             } 
             else if *vis == Visibility::Visible { // if visible true but not in fov, tint
                 // decrease the color alpha, to both sprites or atlas_sprite
                 if let Some(mut sprite) = sprite {
                     sprite.color.set_a(0.1);
-                }
-                if let Some(mut atlas_sprite) = atlas_sprite {
-                    atlas_sprite.color.set_a(0.1);
                 }
             }
         } else { // if it is not a map tile, but some character or entity

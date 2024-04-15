@@ -29,12 +29,16 @@ pub fn spawn_player(
 
     let entity = commands
         .spawn((SpriteSheetBundle {
-            texture_atlas: atlas.atlas.clone(),
-            sprite: TextureAtlasSprite {
+            sprite: Sprite {
                 custom_size: Some(Vec2::new(1.0, 1.0)),
-                index: '@' as usize,
+                
                 ..Default::default()
             },
+            atlas: TextureAtlas {
+                layout: atlas.atlas.clone(),
+                index: '@' as usize,
+            },
+            texture: atlas.texture.clone(),
             ..Default::default()
         },
                 Player{map_level: 0},
@@ -69,13 +73,19 @@ fn spawn_amulet_of_yala(
         let amulet_start = mb.amulet_start;
         commands
         .spawn((SpriteSheetBundle {
-            texture_atlas: atlas.atlas.clone(),
-            sprite: TextureAtlasSprite {
+
+
+            sprite: Sprite {
                 color: Color::GOLD,
                 custom_size: Some(Vec2::new(1.0, 1.0)),
-                index: 6,
+                
                 ..Default::default()
             },
+            atlas: TextureAtlas {
+                layout: atlas.atlas.clone(),
+                index: 6,
+            },
+            texture: atlas.texture.clone(),
             visibility: Visibility::Hidden,
             ..Default::default()
         },

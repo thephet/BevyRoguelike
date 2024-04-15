@@ -11,9 +11,11 @@ mod ui;
 
 mod prelude {
     pub use bevy::prelude::*;
-    pub use bevy::winit::WinitSettings;
     pub use bevy::window::PrimaryWindow;
-    pub use bracket_lib::prelude::*;
+    pub use bracket_lib::geometry::Point;
+    pub use bracket_lib::terminal::DistanceAlg;
+    pub use bracket_lib::pathfinding::DijkstraMap;
+    pub use bracket_lib::pathfinding::Algorithm2D;
     pub const SCREEN_WIDTH: i32 = 80;
     pub const SCREEN_HEIGHT: i32 = 80;
     pub const UI_HEIGHT: i32 = 10;
@@ -33,14 +35,14 @@ use prelude::*;
 fn setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
-    mut texture_atlases: ResMut<Assets<TextureAtlas>>,
+    mut atlases: ResMut<Assets<TextureAtlasLayout>>,
 ) {
     // Setup the sprite sheet
-    let texture_handle = asset_server.load("terminal8x8_transparent.png");
-    let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(8.0, 8.0), 16, 16, None, None);
-    let texture_atlas_handle = texture_atlases.add(texture_atlas);
+    let texture_handle: Handle<Image> = asset_server.load("terminal8x8_transparent.png");
+    let layout = TextureAtlasLayout::from_grid(Vec2::new(8.0, 8.0), 16, 16, None, None);
+    let layout_handle = atlases.add(layout);
     // add sprite atlas as resource
-    commands.insert_resource(CharsetAsset { atlas: texture_atlas_handle.clone() });
+    commands.insert_resource(CharsetAsset { atlas: layout_handle.clone(), texture: texture_handle.clone() });
     
     // Add a 2D Camera
     let mut cam = Camera2dBundle::default();
@@ -62,9 +64,8 @@ fn main() {
                 }),
                 ..Default::default()
             }))
-        .add_state::<TurnState>()
-        .add_state::<PopUpState>()
-        //.insert_resource(WinitSettings::desktop_app())
+        .init_state::<TurnState>()
+        .init_state::<PopUpState>()
         .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
         .add_systems(Startup, setup)
         .add_plugins(MapPlugin)

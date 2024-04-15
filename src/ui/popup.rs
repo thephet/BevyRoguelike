@@ -191,7 +191,7 @@ fn popup_ui(
 fn player_input(
     mut chosen_item: EventWriter<ChosenItemEvent>,
     mut highlighted_item: ResMut<HighlightedItem>,
-    mut keyboard_input: ResMut<Input<KeyCode>>,
+    mut keyboard_input: ResMut<ButtonInput<KeyCode>>,
     popup_currentstate: ResMut<State<PopUpState>>,
     mut popup_nextstate: ResMut<NextState<PopUpState>>,
     mut turn_nextstate: ResMut<NextState<TurnState>>,
@@ -218,13 +218,13 @@ fn player_input(
                 popup_nextstate.set(PopUpState::None);
                 turn_nextstate.set(TurnState::AwaitingInput);
             }
-            KeyCode::Return => { // activate selected item and close inventory window
+            KeyCode::Enter => { // activate selected item and close inventory window
                 chosen_item.send(ChosenItemEvent(highlighted_item.0));
             }
-            KeyCode::Up => { // move to previous item in list
+            KeyCode::ArrowUp => { // move to previous item in list
                 highlighted_item.0 = i32::max(0, highlighted_item.0-1);
             }
-            KeyCode::Down => { // move to next item in list
+            KeyCode::ArrowDown => { // move to next item in list
                 highlighted_item.0 = i32::min(list_len as i32, highlighted_item.0+1);
             }
             _ => (),
