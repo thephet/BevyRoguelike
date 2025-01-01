@@ -27,13 +27,13 @@ pub fn update_entities_visibility(
                 *vis = Visibility::Visible;
                 // increase the color alpha to 1, to both sprites or atlas_sprite
                 if let Some(mut sprite) = sprite {
-                    sprite.color.set_a(1.0);
+                    sprite.color.set_alpha(1.0);
                 }
             } 
             else if *vis == Visibility::Visible { // if visible true but not in fov, tint
                 // decrease the color alpha, to both sprites or atlas_sprite
                 if let Some(mut sprite) = sprite {
-                    sprite.color.set_a(0.1);
+                    sprite.color.set_alpha(0.1);
                 }
             }
         } else { // if it is not a map tile, but some character or entity

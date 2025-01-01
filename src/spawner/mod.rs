@@ -2,6 +2,9 @@ use crate::prelude::*;
 mod template;
 use template::Templates;
 
+use bevy::color::palettes::css::GOLD;
+
+
 pub fn spawn_level(
     mut commands: Commands,
     atlas: Res<CharsetAsset>,
@@ -28,26 +31,27 @@ pub fn spawn_player(
     let player_start = mb.player_start;
 
     let entity = commands
-        .spawn((SpriteSheetBundle {
-            sprite: Sprite {
-                custom_size: Some(Vec2::new(1.0, 1.0)),
-                
+        .spawn((
+            SpriteBundle {
+                sprite: Sprite {
+                    custom_size: Some(Vec2::new(1.0, 1.0)),
+                    ..Default::default()
+                },
+                texture: atlas.texture.clone(),
                 ..Default::default()
             },
-            atlas: TextureAtlas {
+            TextureAtlas {
                 layout: atlas.atlas.clone(),
                 index: '@' as usize,
+                ..default()
             },
-            texture: atlas.texture.clone(),
-            ..Default::default()
-        },
-                Player{map_level: 0},
-                Naming("Player".to_string()),
-                Position { x: player_start.x, y: player_start.y, z: 2 },
-                TileSize::square(1.0),
-                Health{current: 10, max: 20},
-                FieldOfView::new(8),
-                Damage(1)
+            Player{map_level: 0},
+            Naming("Player".to_string()),
+            Position { x: player_start.x, y: player_start.y, z: 2 },
+            TileSize::square(1.0),
+            Health{current: 10, max: 20},
+            FieldOfView::new(8),
+            Damage(1)
         ))
         .id();
     mb.entity_occupy_tile(entity, player_start);
@@ -72,28 +76,26 @@ fn spawn_amulet_of_yala(
     if level == 2 {
         let amulet_start = mb.amulet_start;
         commands
-        .spawn((SpriteSheetBundle {
-
-
+        .spawn((SpriteBundle {
             sprite: Sprite {
-                color: Color::GOLD,
+                color: GOLD.into(),
                 custom_size: Some(Vec2::new(1.0, 1.0)),
-                
                 ..Default::default()
-            },
-            atlas: TextureAtlas {
-                layout: atlas.atlas.clone(),
-                index: 6,
             },
             texture: atlas.texture.clone(),
             visibility: Visibility::Hidden,
             ..Default::default()
         },
-                Item,
-                TileSize::square(1.0),
-                Position { x: amulet_start.x, y: amulet_start.y, z: 2 },
-                Naming("Amulet of Yala".to_string()),
-                AmuletOfYala
+        TextureAtlas {
+            layout: atlas.atlas.clone(),
+            index: 6,
+            ..default()
+        },
+        Item,
+        TileSize::square(1.0),
+        Position { x: amulet_start.x, y: amulet_start.y, z: 2 },
+        Naming("Amulet of Yala".to_string()),
+        AmuletOfYala
         ));
     }
 }

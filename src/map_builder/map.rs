@@ -178,22 +178,21 @@ pub fn spawn_map_tiles(
                                 MapTile,
                                 TileSize::square(1.0),
                                 Position { x, y, z: 1 },
-                                SpriteSheetBundle {
+                                SpriteBundle {
+                                    texture: atlas.texture.clone(),
+                                    visibility: Visibility::Hidden,
                                     sprite: Sprite {
                                         color: glyph.color,
-                                        custom_size: Some(Vec2::new(1.0, 1.0)),
-                                        
+                                        custom_size: Some(Vec2::new(1.0, 1.0)), 
                                         ..Default::default()
                                     },
-                                    atlas: TextureAtlas {
-                                        layout: atlas.atlas.clone(),
-                                        index: glyph.index,
-                                    },
-                                    texture: atlas.texture.clone(),
-
-                                    visibility: Visibility::Hidden,
-                                    ..Default::default()
-                                }
+                                    ..default()
+                                },
+                                TextureAtlas {
+                                    layout: atlas.atlas.clone(),
+                                    index: glyph.index,
+                                    ..default()
+                                },
                             ));
                     }
                     TileType::Void => ()

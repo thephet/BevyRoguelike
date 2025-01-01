@@ -2,6 +2,8 @@ use crate::prelude::*;
 use super::inventory;
 use super::equipment;
 
+use bevy::color::palettes::css::GOLD;
+
 #[derive(Component)]
 pub struct InventoryUI;
 
@@ -25,7 +27,7 @@ fn popup_ui(
     popup_state: Res<State<PopUpState>>,
 ) {
     // background color for the inventory window
-    let bkg_color = BackgroundColor(Color::rgb(0.15, 0.15, 0.15));
+    let bkg_color = BackgroundColor(Color::srgb(0.15, 0.15, 0.15));
 
     commands
     .spawn((NodeBundle {
@@ -38,7 +40,7 @@ fn popup_ui(
             border: UiRect::all(Val::Px(5.0)),
             ..Default::default()
         },
-        background_color: BackgroundColor(Color::rgb(0.65, 0.65, 0.65)),
+        background_color: BackgroundColor(Color::srgb(0.65, 0.65, 0.65)),
         ..Default::default()
     }, InventoryUI))
     
@@ -95,7 +97,7 @@ fn popup_ui(
                         TextStyle {
                             font_size: 50.0,
                             font: font_manager.font.clone(),
-                            color: Color::GOLD,
+                            color: GOLD.into(),
                         },
                     ),
                     ..Default::default()

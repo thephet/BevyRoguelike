@@ -62,8 +62,8 @@ impl FieldOfView {
     }
 }
 
-#[derive(Component)]
-pub struct MovingRandomly;
+// #[derive(Component)]
+// pub struct MovingRandomly;
 #[derive(Component)]
 pub struct ChasingPlayer;
 

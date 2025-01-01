@@ -36,7 +36,7 @@ pub fn player_input(
                     .filter(|(_, item_pos, _)| **item_pos == *pos)
                     .for_each(|(item_ent, _, name)| {
                         // remove render info and add carried component
-                        commands.entity(item_ent).remove::<SpriteSheetBundle>()
+                        commands.entity(item_ent).remove::<SpriteBundle>()
                             .insert(Carried(player_ent));
                         let message = format!("{} grabbed.\n", name.0);
                         game_log.add_entry(message);
@@ -54,7 +54,7 @@ pub fn player_input(
                 action = false;
             }
             KeyCode::Escape => {
-                exit.send(AppExit);
+                exit.send(AppExit::Success);
             }
             _ => wait = true,
         }

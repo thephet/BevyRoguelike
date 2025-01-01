@@ -24,7 +24,7 @@ fn tooltip_ui(
             position_type: PositionType::Absolute,
             ..Default::default()
         },
-        background_color: BackgroundColor(Color::rgb(0.0, 0.0, 0.0)),
+        background_color: BackgroundColor(Color::srgb(0.0, 0.0, 0.0)),
         ..Default::default()
     }, ToolTipBox))
     .with_children(|parent| {

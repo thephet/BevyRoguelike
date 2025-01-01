@@ -4,6 +4,9 @@ use ron::de::from_reader;
 use std::fs::File;
 use std::collections::HashSet;
 
+use bevy::color::palettes::css::GREEN;
+
+
 #[derive(Clone, Deserialize, Debug)]
 pub struct Template {
     pub entity_type: EntityType,
@@ -77,24 +80,24 @@ impl Templates {
         texture: Handle<Image>,
         mb: &mut ResMut<MapBuilder>,
     ) {
-        let mut entity = commands.spawn((SpriteSheetBundle {
-            sprite: Sprite {
-                color: match template.entity_type {
-                    EntityType::Item => Color::GREEN,
-                    EntityType::Enemy => Color::rgb(0.698, 0.094, 0.168),
-                    },
-                custom_size: Some(Vec2::new(1.0, 1.0)),
-                
+        let mut entity = commands.spawn((
+            SpriteBundle {
+                sprite: Sprite {
+                    color: match template.entity_type {
+                        EntityType::Item => GREEN.into(),
+                        EntityType::Enemy => Color::srgb(0.698, 0.094, 0.168),
+                        },
+                    custom_size: Some(Vec2::new(1.0, 1.0)),
+                    ..Default::default()
+                },
+                texture: texture,
+                visibility: Visibility::Hidden,
                 ..Default::default()
             },
-            atlas: TextureAtlas {
+            TextureAtlas {
                 layout: atlas,
                 index: template.glyph as usize,
             },
-            texture: texture,
-            visibility: Visibility::Hidden,
-            ..Default::default()
-        },
             TileSize::square(1.0),
             Naming(template.name.clone().to_string()),
             Position { x: position.x, y: position.y, z: 2 }

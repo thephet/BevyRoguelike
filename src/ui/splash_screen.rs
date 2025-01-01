@@ -1,4 +1,6 @@
 use crate::prelude::*;
+use bevy::color::palettes::css::*;
+
 
 #[derive(Component)]
 struct MenuUI;
@@ -25,7 +27,7 @@ fn splash_screen(
             height: Val::Percent(100.),
             ..Default::default()
         },
-        background_color: BackgroundColor(Color::rgb(0.0, 0.0, 0.0)),
+        background_color: BackgroundColor(Color::srgb(0.0, 0.0, 0.0)),
         ..Default::default()
     })
     .insert(MenuUI)
@@ -33,12 +35,12 @@ fn splash_screen(
 
         // chose title based on State
         let mut title = "";
-        let mut title_color = Color::GOLD;
+        let mut title_color = GOLD.into();
         if *turn_state.get() == TurnState::StartScreen {
             title = "Rogue Quest";
         } else if *turn_state.get() == TurnState::GameOver {
             title = "Game Over";
-            title_color = Color::RED;
+            title_color = RED.into();
         } else if *turn_state.get() == TurnState::Victory {
             title = "You win!";
         } else if *turn_state.get() == TurnState::NextLevel {

@@ -32,14 +32,14 @@ mod prelude {
 
 use prelude::*;
 
-fn setup(
+fn initial_setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut atlases: ResMut<Assets<TextureAtlasLayout>>,
 ) {
     // Setup the sprite sheet
     let texture_handle: Handle<Image> = asset_server.load("terminal8x8_transparent.png");
-    let layout = TextureAtlasLayout::from_grid(Vec2::new(8.0, 8.0), 16, 16, None, None);
+    let layout = TextureAtlasLayout::from_grid(UVec2::new(8, 8), 16, 16, None, None);
     let layout_handle = atlases.add(layout);
     // add sprite atlas as resource
     commands.insert_resource(CharsetAsset { atlas: layout_handle.clone(), texture: texture_handle.clone() });
@@ -50,6 +50,9 @@ fn setup(
     commands.spawn((MainCamera, cam));
 }
 
+fn transition_to_in_menu(mut app_state: ResMut<NextState<TurnState>>) {
+    app_state.set(TurnState::StartScreen);
+}
 
 fn main() {
 
@@ -66,8 +69,10 @@ fn main() {
             }))
         .init_state::<TurnState>()
         .init_state::<PopUpState>()
-        .insert_resource(ClearColor(Color::rgb(0.0, 0.0, 0.0)))
-        .add_systems(Startup, setup)
+        .insert_resource(ClearColor(Color::srgb(0.0, 0.0, 0.0)))
+        //.add_systems(Startup, setup)
+        .add_systems(OnEnter(TurnState::Setup), initial_setup)
+        .add_systems(Update, transition_to_in_menu.run_if(in_state(TurnState::Setup)))
         .add_plugins(MapPlugin)
         .add_plugins(SpawnerPlugin)
         .add_plugins(SystemsPlugin)

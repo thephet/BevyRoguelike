@@ -1,5 +1,8 @@
 use crate::prelude::*;
 
+use bevy::color::palettes::css::YELLOW;
+
+
 // UI components
 #[derive(Component)]
 struct LogUI;
@@ -32,7 +35,7 @@ fn bottom_hud(
             bottom: Val::Px(0.0),
             ..Default::default()
         },
-        background_color: BackgroundColor(Color::rgb(0.0, 0.0, 0.0)),
+        background_color: BackgroundColor(Color::srgb(0.0, 0.0, 0.0)),
         ..Default::default()
     }, TopUINode))
     // left vertical fill (content).
@@ -45,7 +48,7 @@ fn bottom_hud(
                 border: UiRect::all(Val::Px(5.0)),
                 ..Default::default()
             },
-            background_color: BackgroundColor(Color::rgb(0.65, 0.65, 0.65)),
+            border_color: BorderColor(Color::srgb(0.65, 0.65, 0.65)),
             ..Default::default()
         })
         // now inner rectangle
@@ -57,7 +60,7 @@ fn bottom_hud(
                     // align_items: AlignItems::Stretch,
                     ..Default::default()
                 },
-                background_color: BackgroundColor(Color::rgb(0.0, 0.0, 0.0)),
+                background_color: BackgroundColor(Color::srgb(0.0, 0.0, 0.0)),
                 ..Default::default()
             })
             // text
@@ -76,7 +79,7 @@ fn bottom_hud(
                                     style: TextStyle {
                                         font: font_manager.font.clone(),
                                         font_size: 20.0,
-                                        color: Color::YELLOW,
+                                        color: YELLOW.into(),
                                     },
                                 },
                                 TextSection {
@@ -84,7 +87,7 @@ fn bottom_hud(
                                     style: TextStyle {
                                         font: font_manager.font.clone(),
                                         font_size: 20.0,
-                                        color: Color::YELLOW,
+                                        color: YELLOW.into(),
                                     },
                                 },
                                 TextSection {
@@ -92,7 +95,7 @@ fn bottom_hud(
                                     style: TextStyle {
                                         font: font_manager.font.clone(),
                                         font_size: 20.0,
-                                        color: Color::YELLOW,
+                                        color: YELLOW.into(),
                                     },
                                 },
                                 TextSection {
@@ -100,7 +103,7 @@ fn bottom_hud(
                                     style: TextStyle {
                                         font: font_manager.font.clone(),
                                         font_size: 20.0,
-                                        color: Color::YELLOW,
+                                        color: YELLOW.into(),
                                     },
                                 },
                             ],
@@ -119,7 +122,7 @@ fn bottom_hud(
                 border: UiRect::all(Val::Px(5.0)),
                 ..Default::default()
             },
-            background_color: Color::rgb(0.65, 0.65, 0.65).into(),
+            border_color: BorderColor(Color::srgb(0.65, 0.65, 0.65)),
             ..Default::default()
         })
         // now inner rectangle
@@ -131,7 +134,7 @@ fn bottom_hud(
                     flex_direction: FlexDirection::Column,
                     ..Default::default()
                 },
-                background_color: Color::rgb(0.0, 0.0, 0.0).into(),
+                background_color: Color::srgb(0.0, 0.0, 0.0).into(),
                 ..Default::default()
             })
             // top level with HP information
@@ -144,7 +147,7 @@ fn bottom_hud(
                         flex_direction: FlexDirection::Row,
                         ..Default::default()
                     },
-                    background_color: Color::rgb(0.0, 0.0, 0.0).into(),
+                    background_color: Color::srgb(0.0, 0.0, 0.0).into(),
                     ..Default::default()
                 })
                 // container where to place the HP text
@@ -156,7 +159,7 @@ fn bottom_hud(
                                 height: Val::Percent(100.0),
                                 ..Default::default()
                             },
-                            background_color: Color::rgb(0.0, 0.0, 0.0).into(),
+                            background_color: Color::srgb(0.0, 0.0, 0.0).into(),
                             ..Default::default()
                         })
                         // the actual HP text
@@ -178,7 +181,7 @@ fn bottom_hud(
                                     TextStyle {
                                         font_size: 20.0,
                                         font: font_manager.font.clone(),
-                                        color: Color::rgb(0.99, 0.99, 0.99),
+                                        color: Color::srgb(0.99, 0.99, 0.99),
                                     },
                                 ),
                                 ..Default::default()
@@ -199,7 +202,7 @@ fn bottom_hud(
                                 },
                                 ..Default::default()
                             },
-                            background_color: Color::rgb(0.5, 0.1, 0.1).into(),
+                            background_color: Color::srgb(0.5, 0.1, 0.1).into(),
                             ..Default::default()
                         })
                         // inside HP bar
@@ -210,7 +213,7 @@ fn bottom_hud(
                                     height: Val::Percent(100.0),
                                     ..Default::default()
                                 },
-                                background_color: Color::rgb(0.99, 0.1, 0.1).into(),
+                                background_color: Color::srgb(0.99, 0.1, 0.1).into(),
                                 ..Default::default()
                             }, HPBar));
                         });
@@ -224,7 +227,7 @@ fn bottom_hud(
                         flex_direction: FlexDirection::Row,
                         ..Default::default()
                     },
-                    background_color: Color::rgb(0.0, 0.0, 0.0).into(),
+                    background_color: Color::srgb(0.0, 0.0, 0.0).into(),
                     ..Default::default()
                 })
                     // container where to place the Inventory text
@@ -236,7 +239,7 @@ fn bottom_hud(
                                     height: Val::Percent(100.0),
                                     ..Default::default()
                                 },
-                                background_color: Color::rgb(0.0, 0.0, 0.0).into(),
+                                background_color: Color::srgb(0.0, 0.0, 0.0).into(),
                                 ..Default::default()
                             })
                         // the actual Inventory text
@@ -259,7 +262,7 @@ fn bottom_hud(
                                     TextStyle {
                                         font_size: 20.0,
                                         font: font_manager.font.clone(),
-                                        color: Color::rgb(0.99, 0.99, 0.99),
+                                        color: Color::srgb(0.99, 0.99, 0.99),
                                     },
                                 ),
                                 ..Default::default()
@@ -276,7 +279,7 @@ fn bottom_hud(
                                     height: Val::Percent(100.0),
                                     ..Default::default()
                                 },
-                                background_color: Color::rgb(0.0, 0.0, 0.0).into(),
+                                background_color: Color::srgb(0.0, 0.0, 0.0).into(),
                                 ..Default::default()
                             })
                         // the actual Inventory text
@@ -299,7 +302,7 @@ fn bottom_hud(
                                     TextStyle {
                                         font_size: 20.0,
                                         font: font_manager.font.clone(),
-                                        color: Color::rgb(0.99, 0.99, 0.99),
+                                        color: Color::srgb(0.99, 0.99, 0.99),
                                     },
                                 ),
                                 ..Default::default()
@@ -315,7 +318,7 @@ fn bottom_hud(
                         flex_direction: FlexDirection::Row,
                         ..Default::default()
                     },
-                    background_color: Color::rgb(0.0, 0.0, 0.0).into(),
+                    background_color: Color::srgb(0.0, 0.0, 0.0).into(),
                     ..Default::default()
                 })
                 // container where to place the Dungeon level text
@@ -326,7 +329,7 @@ fn bottom_hud(
                                 height: Val::Percent(100.0),
                                 ..Default::default()
                             },
-                        background_color: Color::rgb(0.0, 0.0, 0.0).into(),
+                        background_color: Color::srgb(0.0, 0.0, 0.0).into(),
                             ..Default::default()
                     })
                     // the actual Dungeon level text
@@ -349,7 +352,7 @@ fn bottom_hud(
                                 TextStyle {
                                     font_size: 20.0,
                                     font: font_manager.font.clone(),
-                                    color: Color::rgb(0.99, 0.99, 0.99),
+                                    color: Color::srgb(0.99, 0.99, 0.99),
                                 },
                             ),
                             ..Default::default()

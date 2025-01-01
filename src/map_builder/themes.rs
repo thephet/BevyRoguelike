@@ -28,9 +28,9 @@ impl DungeonTheme {
 impl MapTheme for DungeonTheme {
     fn tile_to_render(&self, tile_type: TileType) -> Option<Glyph> 
     {
-        let glyph_color = Color::rgba(0.3, 0.3, 0.3, 1.0);
-        let wall_color = Color::rgba(0.05, 0.05, 0.05, 1.0);
-        let floor_color = Color::rgba(0.529, 0.529, 0.529, 1.0);
+        let glyph_color = Color::srgba(0.3, 0.3, 0.3, 1.0);
+        let wall_color = Color::srgba(0.05, 0.05, 0.05, 1.0);
+        let floor_color = Color::srgba(0.529, 0.529, 0.529, 1.0);
 
         match tile_type {
             // index 219 is a full square
@@ -47,8 +47,8 @@ pub struct ForestTheme {}
 impl MapTheme for ForestTheme {
     fn tile_to_render(&self, tile_type: TileType) -> Option<Glyph> 
     {
-        let glyph_color = Color::rgba(0.105, 0.470, 0.215, 1.0);
-        let cell_color = Color::rgba(0.352, 0.682, 0.380, 1.0);
+        let glyph_color = Color::srgba(0.105, 0.470, 0.215, 1.0);
+        let cell_color = Color::srgba(0.352, 0.682, 0.380, 1.0);
 
         match tile_type {
             // index 219 is a full square
@@ -71,8 +71,8 @@ pub struct CaveTheme {}
 impl MapTheme for CaveTheme {
     fn tile_to_render(&self, tile_type: TileType) -> Option<Glyph> 
     {
-        let glyph_color = Color::rgba(0.549, 0.317, 0.039, 1.0);
-        let cell_color = Color::rgba(0.749, 0.505, 0.176, 1.0);
+        let glyph_color = Color::srgba(0.549, 0.317, 0.039, 1.0);
+        let cell_color = Color::srgba(0.749, 0.505, 0.176, 1.0);
 
         match tile_type {
             // index 219 is a full square

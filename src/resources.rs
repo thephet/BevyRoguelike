@@ -10,6 +10,7 @@ pub struct CharsetAsset {
 #[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, States)]
 pub enum TurnState {
     #[default]
+    Setup,
     StartScreen,
     AwaitingInput,
     InMenus,
