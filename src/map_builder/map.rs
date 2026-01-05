@@ -135,16 +135,14 @@ pub fn spawn_map_tiles(
                 {
                     TileType::Floor => 
                     {
-                        commands
-                        .spawn(SpriteBundle {
-                            sprite: Sprite {
+                        commands.spawn((
+                            Sprite {
                                 color: glyph.color,
                                 custom_size: Some(Vec2::new(1.0, 1.0)),
                                 ..Default::default()
                             },
-                            visibility: Visibility::Hidden,
-                            ..Default::default()
-                        })
+                            Visibility::Hidden,
+                        ))
                         .insert(MapTile)
                         .insert(Position { x: x, y: y, z: 1 })
                         .insert(TileSize::square(1.0));
@@ -157,43 +155,35 @@ pub fn spawn_map_tiles(
                             commands.spawn((Position { x, y, z: 1 }, ExitTile));
                         }
                         if let Some(bkg_color) = glyph.bkg_color {
-                            commands
-                            .spawn((
+                            commands.spawn((
                                 MapTile,
                                 TileSize::square(1.0),
                                 Position { x, y, z: 0 },
-                                SpriteBundle {
-                                sprite: Sprite {
+                                Sprite {
                                     color: bkg_color,
                                     custom_size: Some(Vec2::new(1.0, 1.0)),
                                     ..Default::default()
                                 },
-                                visibility: Visibility::Hidden,
-                                ..Default::default()
-                            }));
+                                Visibility::Hidden,
+                            ));
                         }
 
-                        commands
-                            .spawn((
-                                MapTile,
-                                TileSize::square(1.0),
-                                Position { x, y, z: 1 },
-                                SpriteBundle {
-                                    texture: atlas.texture.clone(),
-                                    visibility: Visibility::Hidden,
-                                    sprite: Sprite {
-                                        color: glyph.color,
-                                        custom_size: Some(Vec2::new(1.0, 1.0)), 
-                                        ..Default::default()
-                                    },
-                                    ..default()
-                                },
-                                TextureAtlas {
+                        commands.spawn((
+                            MapTile,
+                            TileSize::square(1.0),
+                            Position { x, y, z: 1 },
+                            Sprite {
+                                image: atlas.texture.clone(),
+                                texture_atlas: Some(TextureAtlas {
                                     layout: atlas.atlas.clone(),
                                     index: glyph.index,
-                                    ..default()
-                                },
-                            ));
+                                }),
+                                color: glyph.color,
+                                custom_size: Some(Vec2::new(1.0, 1.0)),
+                                ..Default::default()
+                            },
+                            Visibility::Hidden,
+                        ));
                     }
                     TileType::Void => ()
                 }

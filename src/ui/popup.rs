@@ -30,8 +30,7 @@ fn popup_ui(
     let bkg_color = BackgroundColor(Color::srgb(0.15, 0.15, 0.15));
 
     commands
-    .spawn((NodeBundle {
-        style: Style {
+        .spawn((Node {
             width: Val::Percent(50.),
             height: Val::Percent(50.),
             position_type: PositionType::Absolute,
@@ -40,37 +39,33 @@ fn popup_ui(
             border: UiRect::all(Val::Px(5.0)),
             ..Default::default()
         },
-        background_color: BackgroundColor(Color::srgb(0.65, 0.65, 0.65)),
-        ..Default::default()
-    }, InventoryUI))
+        BackgroundColor(Color::srgb(0.65, 0.65, 0.65)),
+        InventoryUI))
     
     // now inner rectangle
     .with_children(|parent| {
-        parent.spawn(NodeBundle {
-            style: Style {
-                width: Val::Percent(100.0),
-                height: Val::Percent(100.0),
-                flex_direction: FlexDirection::Column,
-                ..Default::default()
-            },
-            background_color: bkg_color,
+        parent.spawn((Node {
+            width: Val::Percent(100.0),
+            height: Val::Percent(100.0),
+            flex_direction: FlexDirection::Column,
+            border: UiRect::all(Val::Px(5.0)),
             ..Default::default()
-        })
-
+        },
+        BorderColor(Color::srgb(0.85, 0.85, 0.85)),
+        bkg_color,
+        ))
         // now the different text inside box
         .with_children(|parent| 
         {
             // inventory title
-            parent.spawn(NodeBundle {
-                style: Style {
-                    width: Val::Percent(100.0),
-                    height: Val::Percent(100.0),
-                    flex_direction: FlexDirection::Column,
-                    ..Default::default()
-                },
-                background_color: bkg_color,
+            parent.spawn((Node {
+                width: Val::Percent(100.0),
+                height: Val::Px(90.0),
+                flex_direction: FlexDirection::Column,
                 ..Default::default()
-            })
+            },
+            bkg_color,
+            ))
             .with_children(|parent| {
                 
                 // chose title based on State, either inventory or equipment
@@ -81,109 +76,113 @@ fn popup_ui(
                     title = "Equipment"
                 }
 
-                parent.spawn(TextBundle {
-                    style: Style {
-                        height: Val::Px(50. * 1.),
+                parent.spawn((
+                    Text::new(title.to_string()),
+                    TextFont {
+                        font: font_manager.font.clone(),
+                        font_size: 50.0,
+                        ..default()
+                    },
+                    TextColor(GOLD.into()),
+                    TextLayout::new_with_justify(JustifyText::Center),
+                    Node {
                         margin: UiRect {
                             left: Val::Auto,
                             right: Val::Auto,
-                            top: Val::Auto,
                             bottom: Val::Auto,
+                            top: Val::Px(15.0),
                         },
-                        ..Default::default()
+                        ..default()
                     },
-                    text: Text::from_section(
-                        title.to_string(),
-                        TextStyle {
-                            font_size: 50.0,
-                            font: font_manager.font.clone(),
-                            color: GOLD.into(),
-                        },
-                    ),
-                    ..Default::default()
-                });
+                ));
             });
 
-            parent.spawn(NodeBundle {
-                style: Style {
-                    width: Val::Percent(100.0),
-                    height: Val::Px(20. * INVENTORY_SLOTS as f32),
-                    flex_direction: FlexDirection::Column,
-                    ..Default::default()
-                },
-                background_color: bkg_color,
+            parent.spawn((Node {
+                width: Val::Percent(100.0),
+                height: Val::Px(20. * INVENTORY_SLOTS as f32),
+                flex_direction: FlexDirection::Column,
                 ..Default::default()
-            })
+            },
+            bkg_color,
+            ))
+
+
             .with_children(|parent| {
-                // create vector with text sections
-                let mut sections = Vec::new();
-                for _ in 0..INVENTORY_SLOTS {
-                    sections.push(TextSection {
-                        value: "\n ".to_string(),
-                        style: TextStyle {
+                parent
+                    .spawn((
+                        // Parent text entity (no direct content, we’ll use child spans)
+                        Text::default(),
+                        TextFont {
                             font: font_manager.font.clone(),
                             font_size: 20.0,
-                            color: Color::WHITE,
+                            ..Default::default()
                         },
+                        // Layout of the whole text block
+                        TextLayout::new_with_justify(JustifyText::Left),
+                        // UI layout (replaces Style in TextBundle)
+                        Node {
+                            height: Val::Px(20.0 * (INVENTORY_SLOTS + 1) as f32),
+                            margin: UiRect {
+                                left: Val::Auto,
+                                right: Val::Auto,
+                                top: Val::Auto,
+                                bottom: Val::Auto,
+                            },
+                            ..Default::default()
+                        },
+                        InventoryText,
+                    ))
+                    .with_children(|parent| {
+                        // Create one span per inventory slot
+                        for _ in 0..INVENTORY_SLOTS {
+                            parent.spawn((
+                                TextSpan::new("\n ".to_string()),
+                                TextFont {
+                                    font: font_manager.font.clone(),
+                                    font_size: 20.0,
+                                    ..Default::default()
+                                },
+                                TextColor(Color::WHITE),
+                            ));
+                        }
                     });
-                }
-                parent.spawn((TextBundle {
-                    style: Style {
-                        height: Val::Px(20. * (INVENTORY_SLOTS+1) as f32),
-                        margin: UiRect {
-                            left: Val::Auto,
-                            right: Val::Auto,
-                            top: Val::Auto,
-                            bottom: Val::Auto,
-                        },
-                        ..Default::default()
-                    },
-                    text: Text {
-                        // Construct a `Vec` of `TextSection`s
-                        sections: sections,
-                        ..Default::default()
-                    },
-                    ..Default::default()
-                }, InventoryText));
             });
 
             // hint section
-            parent.spawn(NodeBundle {
-                style: Style {
-                    width: Val::Percent(100.0),
-                    margin: UiRect {
-                        left: Val::Auto,
-                        right: Val::Auto,
-                        top: Val::Auto,
-                        bottom: Val::Auto,
-                    },
-                    ..Default::default()
+            parent.spawn((Node {
+                width: Val::Percent(100.0),
+                margin: UiRect {
+                    left: Val::Auto,
+                    right: Val::Auto,
+                    top: Val::Auto,
+                    bottom: Val::Auto,
                 },
-                background_color: bkg_color,
                 ..Default::default()
-            })
+            },
+            bkg_color,
+            ))
             .with_children(|parent| {
-                parent.spawn((TextBundle {
-                    style: Style {
-                        height: Val::Px(20.),
+
+                parent.spawn((
+                    Text::new(" ".to_string()),
+                    TextFont {
+                        font: font_manager.font.clone(),
+                        font_size: 20.0,
+                        ..default()
+                    },
+                    Node {
                         margin: UiRect {
                             left: Val::Auto,
                             right: Val::Auto,
-                            top: Val::Auto,
                             bottom: Val::Auto,
+                            top: Val::Px(15.0),
                         },
-                        ..Default::default()
+                        ..default()
                     },
-                    text: Text::from_section(
-                        " ".to_string(),
-                        TextStyle {
-                            font_size: 20.0,
-                            font: font_manager.font.clone(),
-                            color: Color::WHITE,
-                        },
-                    ),
-                    ..Default::default()
-                }, DescriptionText));
+                    TextColor(Color::WHITE.into()),
+                    TextLayout::new_with_justify(JustifyText::Center),
+                    DescriptionText));
+                
             });
 
         });

@@ -81,27 +81,28 @@ impl Templates {
         mb: &mut ResMut<MapBuilder>,
     ) {
         let mut entity = commands.spawn((
-            SpriteBundle {
-                sprite: Sprite {
-                    color: match template.entity_type {
-                        EntityType::Item => GREEN.into(),
-                        EntityType::Enemy => Color::srgb(0.698, 0.094, 0.168),
-                        },
-                    custom_size: Some(Vec2::new(1.0, 1.0)),
-                    ..Default::default()
+            Sprite {
+                image: texture,
+                texture_atlas: Some(TextureAtlas {
+                    layout: atlas,
+                    index: template.glyph as usize,
+                }),
+
+                color: match template.entity_type {
+                    EntityType::Item => GREEN.into(),
+                    EntityType::Enemy => Color::srgb(0.698, 0.094, 0.168),
                 },
-                texture: texture,
-                visibility: Visibility::Hidden,
+
+                custom_size: Some(Vec2::new(1.0, 1.0)),
                 ..Default::default()
             },
-            TextureAtlas {
-                layout: atlas,
-                index: template.glyph as usize,
-            },
+
+            Visibility::Hidden,
             TileSize::square(1.0),
             Naming(template.name.clone().to_string()),
-            Position { x: position.x, y: position.y, z: 2 }
+            Position { x: position.x, y: position.y, z: 2 },
         ));
+
 
         match template.entity_type {
             EntityType::Item => {

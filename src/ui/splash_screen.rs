@@ -21,15 +21,13 @@ fn splash_screen(
     }
 
     commands
-    .spawn(NodeBundle {
-        style: Style {
-            width: Val::Percent(100.),
-            height: Val::Percent(100.),
-            ..Default::default()
-        },
-        background_color: BackgroundColor(Color::srgb(0.0, 0.0, 0.0)),
+    .spawn((Node {
+        width: Val::Percent(100.),
+        height: Val::Percent(100.),
         ..Default::default()
-    })
+    },
+        BackgroundColor(Color::srgb(0.0, 0.0, 0.0)),
+    ))
     .insert(MenuUI)
     .with_children(|parent| {
 
@@ -48,43 +46,45 @@ fn splash_screen(
         }
 
         // Spawn menu text
-        parent.spawn(TextBundle {
-            style: Style {
-                height: Val::Px(140. * 1.),
-                margin: UiRect {
-                    left: Val::Auto,
-                    right: Val::Auto,
-                    bottom: Val::Auto,
-                    top: Val::Auto,
+
+        parent
+            .spawn((
+                Text::default(),
+                TextLayout::new_with_justify(JustifyText::Center),
+                Node {
+                    margin: UiRect {
+                        left: Val::Auto,
+                        right: Val::Auto,
+                        bottom: Val::Auto,
+                        top: Val::Auto,
+                    },
+                    ..Default::default()
                 },
-                ..Default::default()
-            },
-            // Use `Text` directly
-            text: Text {
-                // Construct a `Vec` of `TextSection`s
-                sections: vec![
-                    TextSection {
-                        value: title.to_string(),
-                        style: TextStyle {
-                            font: font_manager.font.clone(),
-                            font_size: 100.0,
-                            color: title_color,
-                        },
+            ))
+            .with_children(|parent| {
+                // First "section": the big title
+                parent.spawn((
+                    TextSpan::new(title.to_string()),
+                    TextFont {
+                        font: font_manager.font.clone(),
+                        font_size: 100.0,
+                        ..Default::default()
                     },
-                    TextSection {
-                        value: "\nPress any key to start game.".to_string(),
-                        style: TextStyle {
-                            font: font_manager.font.clone(),
-                            font_size: 40.0,
-                            color: Color::WHITE,
-                        },
+                    TextColor(title_color),
+                ));
+
+                // Second "section": smaller subtitle on a new line
+                parent.spawn((
+                    TextSpan::new("\nPress any key to start game.".to_string()),
+                    TextFont {
+                        font: font_manager.font.clone(),
+                        font_size: 40.0,
+                        ..Default::default()
                     },
-                ],
-                justify: JustifyText::Center,
-                ..default()
-            },
-            ..Default::default()
-        });
+                    TextColor(Color::WHITE),
+                ));
+            });
+
     });
 }
 

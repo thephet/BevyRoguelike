@@ -45,9 +45,11 @@ fn initial_setup(
     commands.insert_resource(CharsetAsset { atlas: layout_handle.clone(), texture: texture_handle.clone() });
     
     // Add a 2D Camera
-    let mut cam = Camera2dBundle::default();
-    cam.transform.scale = Vec3::new(0.5, 0.5, 1.0);
-    commands.spawn((MainCamera, cam));
+    commands.spawn((
+        MainCamera,
+        Camera2d,
+        Transform::from_scale(Vec3::new(0.5, 0.5, 1.0)),
+    ));
 }
 
 fn transition_to_in_menu(mut app_state: ResMut<NextState<TurnState>>) {

@@ -5,25 +5,28 @@ use super::popup;
 fn update_equipment_text(
     highlighted_item: Res<popup::HighlightedItem>,
     player_query: Query<Entity, With<Player>>,
-    mut text_query: Query<&mut Text, (With<popup::InventoryText>, Without<popup::DescriptionText>)>,
-    mut description_query: Query<&mut Text, (With<popup::DescriptionText>, Without<popup::InventoryText>)>,
+    text_query: Query<Entity, (With<popup::InventoryText>, Without<popup::DescriptionText>)>,
+    description_query: Query<Entity, (With<popup::DescriptionText>, Without<popup::InventoryText>)>,
     items_query: Query<(Entity, &Naming, &Description, &Carried), With<Weapon>>,
     equipped_query: Query<(Entity, &Equipped)>,
+    mut writer: TextUiWriter,
 ) {
 
     // get player entity, we will need it to filter out items carried by player
     let player_ent = player_query.single();
 
     // text list of items, and the description at the bottom
-    let mut text = text_query.single_mut();
-    let mut description = description_query.single_mut();
+    let text = text_query.single();
+    let description = description_query.single();
 
     if items_query.is_empty() {
         for i in 1..popup::INVENTORY_SLOTS as usize {
-            text.sections[i].value = format!("\n ");
+            *writer.text(text, i) = format!("\n ");
+
         }
-        text.sections[0].value = format!("No equipment.");
-        description.sections[0].value = format!(" ");
+        *writer.text(text, 0) = format!("No equipment.");
+        *writer.text(description, 0) = format!(" ");
+
 
     } else {
         items_query.iter()
@@ -36,7 +39,7 @@ fn update_equipment_text(
                 let mark;
                 if index as i32 == highlighted_item.0 {
                     mark = "-";
-                    description.sections[0].value = format!("{}", desc.0);
+                    *writer.text(description, 0) = format!("{}", desc.0);
                 } else {
                     mark = " ";
                 }
@@ -49,9 +52,10 @@ fn update_equipment_text(
 
                 // update text
                 if index == 0 {
-                    text.sections[index].value = format!("{} {} {} {}", mark, item.0, equipped, mark);
+                    *writer.text(text, index) = format!("{} {} {} {}", mark, item.0, equipped, mark);
                 } else {
-                    text.sections[index].value = format!("\n{} {} {} {}", mark, item.0, equipped, mark);
+                    *writer.text(text, index) = format!("\n{} {} {} {}", mark, item.0, equipped, mark);
+
                 }
             });
     }

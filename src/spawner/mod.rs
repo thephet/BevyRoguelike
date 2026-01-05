@@ -31,29 +31,28 @@ pub fn spawn_player(
     let player_start = mb.player_start;
 
     let entity = commands
-        .spawn((
-            SpriteBundle {
-                sprite: Sprite {
-                    custom_size: Some(Vec2::new(1.0, 1.0)),
-                    ..Default::default()
-                },
-                texture: atlas.texture.clone(),
-                ..Default::default()
-            },
-            TextureAtlas {
+    .spawn((
+        Sprite {
+            image: atlas.texture.clone(),
+
+            texture_atlas: Some(TextureAtlas {
                 layout: atlas.atlas.clone(),
                 index: '@' as usize,
-                ..default()
-            },
-            Player{map_level: 0},
-            Naming("Player".to_string()),
-            Position { x: player_start.x, y: player_start.y, z: 2 },
-            TileSize::square(1.0),
-            Health{current: 10, max: 20},
-            FieldOfView::new(8),
-            Damage(1)
-        ))
-        .id();
+            }),
+
+            custom_size: Some(Vec2::new(1.0, 1.0)),
+            ..Default::default()
+        },
+
+        Player { map_level: 0 },
+        Naming("Player".to_string()),
+        Position { x: player_start.x, y: player_start.y, z: 2 },
+        TileSize::square(1.0),
+        Health { current: 15, max: 20 },
+        FieldOfView::new(8),
+        Damage(1),
+    ))
+    .id();
     mb.entity_occupy_tile(entity, player_start);
 }
 
@@ -76,27 +75,38 @@ fn spawn_amulet_of_yala(
     if level == 2 {
         let amulet_start = mb.amulet_start;
         commands
-        .spawn((SpriteBundle {
-            sprite: Sprite {
-                color: GOLD.into(),
-                custom_size: Some(Vec2::new(1.0, 1.0)),
-                ..Default::default()
-            },
-            texture: atlas.texture.clone(),
-            visibility: Visibility::Hidden,
-            ..Default::default()
-        },
-        TextureAtlas {
-            layout: atlas.atlas.clone(),
-            index: 6,
-            ..default()
-        },
-        Item,
-        TileSize::square(1.0),
-        Position { x: amulet_start.x, y: amulet_start.y, z: 2 },
-        Naming("Amulet of Yala".to_string()),
-        AmuletOfYala
-        ));
+            .spawn((
+                // `SpriteBundle` → `Sprite` in 0.15
+                Sprite {
+                    // `texture` from SpriteBundle → `image` field on Sprite
+                    image: atlas.texture.clone(),
+
+                    // `TextureAtlas` is no longer a separate component:
+                    // it is now embedded directly in the Sprite
+                    texture_atlas: Some(TextureAtlas {
+                        layout: atlas.atlas.clone(),
+                        index: 6,
+                    }),
+
+                    // same color and size as before
+                    color: GOLD.into(),
+                    custom_size: Some(Vec2::new(1.0, 1.0)),
+
+                    // visibility & transform are auto-added when Sprite is added
+                    ..Default::default()
+                },
+
+                // Visibility is still its own component in 0.15
+                Visibility::Hidden,
+
+                // your own game ECS components remain unchanged
+                Item,
+                TileSize::square(1.0),
+                Position { x: amulet_start.x, y: amulet_start.y, z: 2 },
+                Naming("Amulet of Yala".to_string()),
+                AmuletOfYala,
+            ));
+
     }
 }
 

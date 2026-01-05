@@ -15,37 +15,42 @@ fn tooltip_ui(
 
     commands
     // root node, just a black rectangle where the text will be
-    .spawn((NodeBundle {
-        // by default we set visible to false so it starts hidden
-        visibility: Visibility::Hidden,
-        style: Style {
-            width: Val::Px(200.0),
-            height: Val::Px(30.0),
-            position_type: PositionType::Absolute,
-            ..Default::default()
-        },
-        background_color: BackgroundColor(Color::srgb(0.0, 0.0, 0.0)),
+    .spawn((Node {
+        width: Val::Px(200.0),
+        height: Val::Px(30.0),
+        position_type: PositionType::Absolute,
+        border: UiRect::all(Val::Px(2.0)),
         ..Default::default()
-    }, ToolTipBox))
+        },
+        BackgroundColor(Color::srgb(0.1, 0.1, 0.1)),
+        BorderColor(Color::srgb(0.85, 0.85, 0.85)),
+        Visibility::Hidden, 
+        ToolTipBox))
+
     .with_children(|parent| {
-        // text
-        parent.spawn((TextBundle {
-            visibility: Visibility::Hidden,
-            style: Style {
-                height: Val::Px(20. * 1.),
-                margin: UiRect::all(Val::Auto),
-                ..Default::default()
+
+        parent.spawn((
+            Text::new("Goblin. HP: 2 / 2"),
+            Visibility::Hidden,
+            TextFont {
+                // This font is loaded and will be used instead of the default font.
+                font: font_manager.font.clone(),
+                font_size: 20.0,
+                ..default()
             },
-            text: Text::from_section(
-                "Goblin. HP: 2 / 2",
-                TextStyle {
-                    font: font_manager.font.clone(),
-                    font_size: 20.0,
-                    color: Color::WHITE,
+            TextColor(Color::WHITE.into()),
+            TextLayout::new_with_justify(JustifyText::Center),
+            Node {
+                margin: UiRect {
+                    left: Val::Auto,
+                    right: Val::Auto,
+                    bottom: Val::Auto,
+                    top: Val::Auto,
                 },
-            ),
-            ..Default::default()
-        }, ToolTipText));
+                ..default()
+            },
+            ToolTipText,));
+
     });
 }
 
@@ -78,10 +83,10 @@ fn update_tooltip(
     q_camera: Query<(&Camera, &GlobalTransform), With<MainCamera>>,
     // query to get all the entities with Name component
     q_names: Query<(&Naming, &Position, Option<&Health>)>,
-    // // query to get tooltip text and box
+    // query to get tooltip text and box
     mut text_box_query : ParamSet<(
         Query<(&mut Text, &mut Visibility), With<ToolTipText>>,
-        Query<(&mut Style, &mut Visibility), With<ToolTipBox>>
+        Query<(&mut Node, &mut Visibility), With<ToolTipBox>>
     )>,
     // query to get the player field of view
     player_fov_q: Query<&FieldOfView, With<Player>>,
@@ -133,12 +138,13 @@ fn update_tooltip(
             // update tooltip text
             for (mut text, mut visible) in text_box_query.p0().iter_mut() {
                 if currenth > 0 {
-                    text.sections[0].value = format!("{} HP: {} / {}", s, currenth, maxh);
+                    text.0 = format!("{} HP: {} / {}", s, currenth, maxh);
                 } else {
-                    text.sections[0].value = format!("{}", s);
+                    text.0 = format!("{}", s);
                 }
                 *visible = Visibility::Visible;
-            }
+}
+
 
             // update box position
             for (mut boxnode, mut visible) in text_box_query.p1().iter_mut() {
