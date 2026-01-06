@@ -13,7 +13,7 @@ pub fn player_input(
     mut exit: EventWriter<AppExit>
 ) {
 
-    let (player_ent, pos) = player_position.single();
+    let (player_ent, pos) = player_position.single().unwrap();
     let mut action = true;
     let mut wait = false;
 
@@ -54,7 +54,7 @@ pub fn player_input(
                 action = false;
             }
             KeyCode::Escape => {
-                exit.send(AppExit::Success);
+                exit.write(AppExit::Success);
             }
             _ => wait = true,
         }

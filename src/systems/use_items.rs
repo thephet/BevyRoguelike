@@ -38,9 +38,9 @@ pub fn use_items(
         }
 
         // delete the message
-        commands.entity(message_entity).despawn();
+        commands.entity(message_entity).remove::<Children>().despawn();
         // remove the item
-        commands.entity(activated_item.item).despawn_recursive();
+        commands.entity(activated_item.item).despawn();
     }
 
 }

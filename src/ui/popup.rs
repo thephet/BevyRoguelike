@@ -220,7 +220,7 @@ fn player_input(
                 turn_nextstate.set(TurnState::AwaitingInput);
             }
             KeyCode::Enter => { // activate selected item and close inventory window
-                chosen_item.send(ChosenItemEvent(highlighted_item.0));
+                chosen_item.write(ChosenItemEvent(highlighted_item.0));
             }
             KeyCode::ArrowUp => { // move to previous item in list
                 highlighted_item.0 = i32::max(0, highlighted_item.0-1);
@@ -240,7 +240,7 @@ fn despawn_menu(
     query_inventory: Query<Entity, With<InventoryUI>>,
 ) {
     for e in query_inventory.iter() {
-        commands.entity(e).despawn_recursive();
+        commands.entity(e).despawn();
     }
 }
 

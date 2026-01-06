@@ -16,8 +16,10 @@ fn splash_screen(
 ) {
     // If we are not in StartScreen we need to remove ALL the other UI stuff around the game
     if *turn_state.get() != TurnState::StartScreen {
-        let top_ui_node = top_ui_node_q.single();
-        commands.entity(top_ui_node).despawn_recursive();
+        if let Ok(top_ui_node) = top_ui_node_q.single() {
+            commands.entity(top_ui_node).despawn();
+        };
+        
     }
 
     commands
@@ -95,10 +97,10 @@ fn despawn_splashscreen(
     query_gameoverscreen: Query<Entity, With<GameOverUI>>,
 ) {
     for e in query_startscreen.iter() {
-        commands.entity(e).despawn_recursive();
+        commands.entity(e).despawn();
     }
     for e in query_gameoverscreen.iter() {
-        commands.entity(e).despawn_recursive();
+        commands.entity(e).despawn();
     }
 }
 

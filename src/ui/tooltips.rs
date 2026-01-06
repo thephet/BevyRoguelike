@@ -94,13 +94,17 @@ fn update_tooltip(
     // if the user left clicks
     if buttons.just_pressed(MouseButton::Left) {
         // get the primary window
-        let wnd = wnds.get_single().unwrap();
+        let Ok(wnd) = wnds.single() else {
+            panic!("No window found")
+        };
 
         // check if the cursor is in the primary window
         if let Some(pos) = wnd.cursor_position() {
 
             // assuming there is exactly one main camera entity, so this is OK
-            let (camera, camera_transform) = q_camera.single();
+            let Ok((camera, camera_transform)) = q_camera.single() else {
+                panic!("No camera found")
+            };
 
             let tile_size_x = wnd.width() / SCREEN_WIDTH as f32;
             let tile_size_y = wnd.height() / SCREEN_HEIGHT as f32;
@@ -120,7 +124,9 @@ fn update_tooltip(
             let mut maxh = 0;
             let mut currenth = 0;
             // obtain also player fov
-            let player_fov = player_fov_q.single();
+            let Ok(player_fov) = player_fov_q.single() else {
+                panic!("Can't find Player FoV")
+            };
 
             q_names.iter()
                 .filter(|(_, pos, _)| 

@@ -286,7 +286,9 @@ pub fn build_map(
     // if it doesnt exist, then it is level 0
     let mut level= 0;
     if player_q.iter().count() > 0 {
-        level = player_q.single().map_level;
+        if let Ok(player_ent) = player_q.single() {
+            level = player_ent.map_level;
+        }
         // increase level by 1, because this system gets executed before the post_nextlevel
         level += 1;
     }

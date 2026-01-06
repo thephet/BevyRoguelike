@@ -48,12 +48,12 @@ pub fn combat(
                     
                 } else {
                     mb.free_occupy_tile(*pos);
-                    commands.entity(*victim).despawn();
+                    commands.entity(*victim).remove::<Children>().despawn();
                 }
             }
         }
         // remove the message
-        commands.entity(*message).despawn();
+        commands.entity(*message).remove::<Children>().despawn();
     });
 
 }

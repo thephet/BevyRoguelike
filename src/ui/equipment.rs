@@ -13,11 +13,17 @@ fn update_equipment_text(
 ) {
 
     // get player entity, we will need it to filter out items carried by player
-    let player_ent = player_query.single();
+    let Ok(player_ent) = player_query.single() else {
+        panic!("Can't get player entity");
+    };
 
     // text list of items, and the description at the bottom
-    let text = text_query.single();
-    let description = description_query.single();
+    let Ok(text) = text_query.single() else {
+        panic!("Can't get text entity")
+    };
+    let Ok(description) = description_query.single() else {
+        panic!("Can't get description entity")
+    };
 
     if items_query.is_empty() {
         for i in 1..popup::INVENTORY_SLOTS as usize {
@@ -78,14 +84,17 @@ fn equip_weapon(
     }
 
     // get player entity, we will need it to filter out items carried by player
-    let player_ent = player_query.single();
+    let Ok(player_ent) = player_query.single()  else {
+        panic!("Can't get player entity")
+    };
 
     // get the item entity selected by the player
     let item_entity = items_query.iter()
-            .filter(|(_, carried)| carried.0 == player_ent)
-            .enumerate()
-            .filter(|(item_count, (_,_))| *item_count as i32 == selected_item)
-            .find_map(|(_, (item_entity, _))| Some(item_entity));
+    .filter(|(_, carried)| carried.0 == player_ent)
+    .enumerate()
+    .filter(|(item_count, (_,_))| *item_count as i32 == selected_item)
+    .find_map(|(_, (item_entity, _))| Some(item_entity));
+
 
     // if the item exists, remove equipped from other weapons, and equip this one
     if let Some(item_entity) = item_entity 

@@ -8,7 +8,9 @@ pub fn end_turn(
     exit_q: Query<&Position, With<ExitTile>>
 ) {
 
-    let (player_hp, player_pos) = player_hp_q.single();
+    let Ok((player_hp, player_pos)) = player_hp_q.single() else {
+        panic!("Can't get player_hp and player_pos")
+    };
     //let current_state: TurnState = *turn_state.get().clone();
     let current_state: TurnState = turn_state.clone();
 

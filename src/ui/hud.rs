@@ -65,7 +65,8 @@ fn bottom_hud(
                     Text::new("Log...\n"),
                     TextFont {
                         font: font_manager.font.clone(),
-                        font_size: 17.0,
+                        font_size: 20.0,
+                        line_height: bevy::text::LineHeight::RelativeToFont(1.05),
                         ..Default::default()
                     },
                     TextColor(YELLOW.into()),
@@ -81,7 +82,8 @@ fn bottom_hud(
                         TextSpan::new("Use the arrow keys to move.\n"),
                         TextFont {
                             font: font_manager.font.clone(),
-                            font_size: 17.0,
+                            font_size: 20.0,
+                            line_height: bevy::text::LineHeight::RelativeToFont(1.05),
                             ..Default::default()
                         },
                         TextColor(YELLOW.into()),
@@ -92,7 +94,8 @@ fn bottom_hud(
                         TextSpan::new("Bump into the enemies to attack them.\n"),
                         TextFont {
                             font: font_manager.font.clone(),
-                            font_size: 17.0,
+                            font_size: 20.0,
+                            line_height: bevy::text::LineHeight::RelativeToFont(1.05),
                             ..Default::default()
                         },
                         TextColor(YELLOW.into()),
@@ -103,7 +106,8 @@ fn bottom_hud(
                         TextSpan::new("Find the amulet to win the game.\n"),
                         TextFont {
                             font: font_manager.font.clone(),
-                            font_size: 17.0,
+                            font_size: 20.0,
+                            line_height: bevy::text::LineHeight::RelativeToFont(1.05),
                             ..Default::default()
                         },
                         TextColor(YELLOW.into()),
@@ -360,7 +364,7 @@ fn update_game_log(
     // All text spans (children "sections")
     mut spans_q: Query<&mut TextSpan>,
 ) {
-    if let Ok((mut root_text, children)) = log_ui_q.get_single_mut() {
+    if let Ok((mut root_text, children)) = log_ui_q.single_mut() {
         for (i, entry) in game_log.entries.iter().enumerate() {
             if i == 0 {
                 // First log entry goes into the root Text
@@ -384,11 +388,13 @@ fn update_dungeonleveltext(
     player_q: Query<&Player>,
     mut text_query: Query<&mut Text, Added<DungeonLevelText>>,
 ) {
-    let level = player_q.single().map_level;
+    let Ok(level) = player_q.single() else {
+        panic!("Can't get map level")
+    };
 
     // Update dungeon level text
     for mut text in text_query.iter_mut() {
-        text.0 = format!("Dungeon Level: {}", level + 1);
+        text.0 = format!("Dungeon Level: {}", level.map_level + 1);
     }
 }
 

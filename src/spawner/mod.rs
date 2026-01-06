@@ -15,7 +15,9 @@ pub fn spawn_level(
     // if it doesnt exist, then it is level 0
     let mut level= 0;
     if player_q.iter().count() > 0 {
-        level = player_q.single().map_level;
+        if let Ok(player_ent) = player_q.single() {
+            level = player_ent.map_level;
+        }
     }
     
     // load template from file and spawn entities
@@ -66,7 +68,9 @@ fn spawn_amulet_of_yala(
     // if it doesnt exist, then it is level 0
     let mut level= 0;
     if player_q.iter().count() > 0 {
-        level = player_q.single().map_level;
+        if let Ok(player_ent) = player_q.single() {
+            level = player_ent.map_level;
+        }
         // increase level by 1, because this system gets executed before the post_nextlevel
         level += 1;
     }
@@ -116,7 +120,7 @@ fn despawn_all_with_position(
     position_q: Query<Entity, With<Position>>,
 ) {
     for e in position_q.iter() {
-        commands.entity(e).despawn_recursive();
+        commands.entity(e).despawn();
     }
 }
 
@@ -129,7 +133,7 @@ fn pre_advance_level(
 ) {
     // remove all the entities with position component except player
     for e in position_q.iter() {
-        commands.entity(e).despawn_recursive();
+        commands.entity(e).despawn();
     }
 
     // set all the fov is_dirty to true, so they will need to be recalculated
@@ -145,7 +149,7 @@ fn post_advance_level(
     let player_start = mb.player_start;
 
     // get player and set its position based on new map and also update map level
-    let (player_ent, mut player_pos, mut player) = player_q.single_mut();
+    let (player_ent, mut player_pos, mut player) = player_q.single_mut().unwrap();
     player_pos.x = player_start.x;
     player_pos.y = player_start.y;
     player.map_level += 1;

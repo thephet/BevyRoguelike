@@ -7,7 +7,9 @@ pub fn chasing(
     positions: Query<(Entity, &Position), With<Health>>,
     player: Query<(Entity, &Position), With<Player>>,
 ) {
-    let (_, player_pos) = player.single();
+    let Ok((_, player_pos)) = player.single() else {
+        panic!("Can't get player_pos")
+    };
     // transform x,y position to index in array
     let player_idx = map_idx(player_pos.x, player_pos.y);
     // just get the map

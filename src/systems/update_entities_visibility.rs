@@ -9,7 +9,9 @@ pub fn update_entities_visibility(
 ) {
 
     // get the player fov
-    let player_fov = player_fov_q.single();
+    let Ok(player_fov) = player_fov_q.single() else {
+        panic!("Can't get player FoV")
+    };
 
     // for every entity with position
     for (

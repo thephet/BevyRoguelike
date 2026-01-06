@@ -28,6 +28,6 @@ pub fn movement(
             }
         }
         // delete the message
-        commands.entity(message_ent).despawn();
+        commands.entity(message_ent).remove::<Children>().despawn();
     }
 }
