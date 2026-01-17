@@ -10,7 +10,7 @@ pub fn player_input(
     items: Query<(Entity, &Position, &Naming), With<Item>>,
     mut next_state: ResMut<NextState<TurnState>>,
     mut popup_state: ResMut<NextState<PopUpState>>,
-    mut exit: EventWriter<AppExit>
+    mut exit: MessageWriter<AppExit>
 ) {
 
     let (player_ent, pos) = player_position.single().unwrap();

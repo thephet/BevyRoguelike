@@ -70,7 +70,7 @@ fn update_equipment_text(
 fn equip_weapon(
     mut commands: Commands,
     mut highlighted_item: ResMut<popup::HighlightedItem>,
-    mut chosen_item: EventReader<popup::ChosenItemEvent>,
+    mut chosen_item: MessageReader<popup::ChosenItemEvent>,
     player_query: Query<Entity, With<Player>>,
     items_query: Query<(Entity, &Carried), With<Weapon>>,
     equipped_query: Query<(Entity, &Equipped)>,

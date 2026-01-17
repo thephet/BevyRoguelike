@@ -52,7 +52,7 @@ fn splash_screen(
         parent
             .spawn((
                 Text::default(),
-                TextLayout::new_with_justify(JustifyText::Center),
+                TextLayout::new_with_justify(Justify::Center),
                 Node {
                     margin: UiRect {
                         left: Val::Auto,

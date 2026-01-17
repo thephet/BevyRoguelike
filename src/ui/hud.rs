@@ -45,7 +45,7 @@ fn bottom_hud(
             border: UiRect::all(Val::Px(5.0)),
             ..Default::default()
         },
-            BorderColor(Color::srgb(0.65, 0.65, 0.65)),
+            BorderColor::all(Color::srgb(0.65, 0.65, 0.65)),
         ))
         // now inner rectangle
         .with_children(|parent| {
@@ -70,7 +70,7 @@ fn bottom_hud(
                         ..Default::default()
                     },
                     TextColor(YELLOW.into()),
-                    TextLayout::new_with_justify(JustifyText::Left),
+                    TextLayout::new_with_justify(Justify::Left),
                     Node {
                         margin: UiRect::all(Val::Px(5.0)),
                         ..Default::default()
@@ -124,7 +124,7 @@ fn bottom_hud(
             border: UiRect::all(Val::Px(5.0)),
             ..Default::default()
         },
-        BorderColor(Color::srgb(0.65, 0.65, 0.65)),
+        BorderColor::all(Color::srgb(0.65, 0.65, 0.65)),
         ))
         // now inner rectangle
         .with_children(|parent| {
@@ -170,7 +170,7 @@ fn bottom_hud(
                                     ..Default::default()
                                 },
                                 TextColor(Color::srgb(0.99, 0.99, 0.99)),
-                                TextLayout::new_with_justify(JustifyText::Left),
+                                TextLayout::new_with_justify(Justify::Left),
                                 Node {
                                     height: Val::Px(20.0 * 1.0), // font size * lines
                                     margin: UiRect {
@@ -250,7 +250,7 @@ fn bottom_hud(
                                     ..Default::default()
                                 },
                                 TextColor(Color::srgb(0.99, 0.99, 0.99)),
-                                TextLayout::new_with_justify(JustifyText::Left),
+                                TextLayout::new_with_justify(Justify::Left),
                                 Node {
                                     height: Val::Px(20.0 * 1.0),
                                     margin: UiRect {
@@ -288,7 +288,7 @@ fn bottom_hud(
                                     ..Default::default()
                                 },
                                 TextColor(Color::srgb(0.99, 0.99, 0.99)),
-                                TextLayout::new_with_justify(JustifyText::Left),
+                                TextLayout::new_with_justify(Justify::Left),
                                 Node {
                                     height: Val::Px(20.0 * 1.0),
                                     margin: UiRect {
@@ -334,7 +334,7 @@ fn bottom_hud(
                                 ..Default::default()
                             },
                             TextColor(Color::srgb(0.99, 0.99, 0.99)),
-                            TextLayout::new_with_justify(JustifyText::Left),
+                            TextLayout::new_with_justify(Justify::Left),
                             Node {
                                 height: Val::Px(20.0 * 1.0),
                                 margin: UiRect {

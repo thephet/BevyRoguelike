@@ -1,6 +1,6 @@
 # Bevy Roguelike game
 
-<span style="color:blue">*Now updated to Bevy 0.16.*</span>
+<span style="color:blue">*Now updated to Bevy 0.17.*</span>
 
 <p float="left">
   <img src="https://raw.githubusercontent.com/thephet/BevyRoguelike/main/screenshots/title_screen.png" width="24%" />

@@ -23,7 +23,7 @@ fn tooltip_ui(
         ..Default::default()
         },
         BackgroundColor(Color::srgb(0.1, 0.1, 0.1)),
-        BorderColor(Color::srgb(0.85, 0.85, 0.85)),
+        BorderColor::all(Color::srgb(0.85, 0.85, 0.85)),
         Visibility::Hidden, 
         ToolTipBox))
 
@@ -39,7 +39,7 @@ fn tooltip_ui(
                 ..default()
             },
             TextColor(Color::WHITE.into()),
-            TextLayout::new_with_justify(JustifyText::Center),
+            TextLayout::new_with_justify(Justify::Center),
             Node {
                 margin: UiRect {
                     left: Val::Auto,

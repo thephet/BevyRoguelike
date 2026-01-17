@@ -13,7 +13,7 @@ pub struct InventoryText;
 #[derive(Component)]
 pub struct DescriptionText;
 
-#[derive(Event)]
+#[derive(Message)]
 pub struct ChosenItemEvent(pub i32);
 
 #[derive(Resource)]
@@ -51,7 +51,7 @@ fn popup_ui(
             border: UiRect::all(Val::Px(5.0)),
             ..Default::default()
         },
-        BorderColor(Color::srgb(0.85, 0.85, 0.85)),
+        BorderColor::all(Color::srgb(0.85, 0.85, 0.85)),
         bkg_color,
         ))
         // now the different text inside box
@@ -84,7 +84,7 @@ fn popup_ui(
                         ..default()
                     },
                     TextColor(GOLD.into()),
-                    TextLayout::new_with_justify(JustifyText::Center),
+                    TextLayout::new_with_justify(Justify::Center),
                     Node {
                         margin: UiRect {
                             left: Val::Auto,
@@ -118,7 +118,7 @@ fn popup_ui(
                             ..Default::default()
                         },
                         // Layout of the whole text block
-                        TextLayout::new_with_justify(JustifyText::Left),
+                        TextLayout::new_with_justify(Justify::Left),
                         // UI layout (replaces Style in TextBundle)
                         Node {
                             height: Val::Px(20.0 * (INVENTORY_SLOTS + 1) as f32),
@@ -180,7 +180,7 @@ fn popup_ui(
                         ..default()
                     },
                     TextColor(Color::WHITE.into()),
-                    TextLayout::new_with_justify(JustifyText::Center),
+                    TextLayout::new_with_justify(Justify::Center),
                     DescriptionText));
                 
             });
@@ -190,7 +190,7 @@ fn popup_ui(
 }
 
 fn player_input(
-    mut chosen_item: EventWriter<ChosenItemEvent>,
+    mut chosen_item: MessageWriter<ChosenItemEvent>,
     mut highlighted_item: ResMut<HighlightedItem>,
     mut keyboard_input: ResMut<ButtonInput<KeyCode>>,
     popup_currentstate: ResMut<State<PopUpState>>,
@@ -249,7 +249,7 @@ impl Plugin for PopUpPlugin {
     fn build(&self, app: &mut App) {
         app
 
-        .add_event::<ChosenItemEvent>()
+        .add_message::<ChosenItemEvent>()
         .insert_resource(HighlightedItem(0))
 
         .add_plugins(inventory::InventoryPlugin)

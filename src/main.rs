@@ -64,7 +64,7 @@ fn main() {
             .set(WindowPlugin {
                 primary_window: Some(Window {
                     title: "Roguelike Game".to_string(),
-                    resolution: (SCREEN_WIDTH as f32 * 10.0, SCREEN_HEIGHT as f32 * 10.0).into(),
+                    resolution: (SCREEN_WIDTH as u32 * 10, SCREEN_HEIGHT as u32 * 10).into(),
                     ..Default::default()
                 }),
                 ..Default::default()

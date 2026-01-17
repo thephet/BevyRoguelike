@@ -60,7 +60,7 @@ fn update_inventory_text(
 fn use_item(
     mut commands: Commands,
     mut highlighted_item: ResMut<popup::HighlightedItem>,
-    mut chosen_item: EventReader<popup::ChosenItemEvent>,
+    mut chosen_item: MessageReader<popup::ChosenItemEvent>,
     player_query: Query<Entity, With<Player>>,
     items_query: Query<(Entity, &Carried)>,
     mut turn_state: ResMut<NextState<TurnState>>,
